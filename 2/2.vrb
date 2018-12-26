@@ -1,0 +1,19 @@
+\frametitle{Noninformative Priors}
+
+Example $p(y \mid \theta) = \binom{n}{y} \theta^y (1-\theta)^{n-y}$. We fix a parameterization.
+\newline
+
+\begin{enumerate}
+\item Bayes'-Laplace: $p(\theta) \propto 1$
+\item Jeffreys': $\sqrt{J(\theta)} \propto \theta^{1/2-1}(1-\theta)^{1/2-1}$
+\item $p(\theta) \propto \theta^{0-1}(1-\theta)^{0-1}$ (if $p(\text{logit} \theta) \propto 1$)
+\end{enumerate}
+
+Hopefully our likelihood will stay away from those side peaks.
+
+
+\begin{center}
+\includegraphics[width=80mm]{pics/Rplot2.png}
+\end{center}
+
+

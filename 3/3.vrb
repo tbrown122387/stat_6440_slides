@@ -1,0 +1,13 @@
+\frametitle{Multivariate Normal Observations with known covariance matrix}
+
+A conjugate prior for $p(y \mid \mu) = \det(\Sigma)^{-n/2} \exp\left[-\frac{1}{2} \text{tr}\left\{\overbrace{\Sigma^{-1}}^{ \text{known} } S_0 \right\} \right]$ is
+$$
+p(\mu \mid \mu_0, \Lambda_0) = \det(\Lambda_0)^{-1/2} \exp\left[(\mu - \mu_0)'\Lambda^{-1}(\mu - \mu_0) \right]
+$$
+This makes the posterior distribution (homework question exercise 3.13) normal with mean and precision
+\[
+\mu_n  = (\Lambda_0 + n \Sigma^{-1})^{-1}(\Lambda_0^{-1} \mu_0 + n \Sigma^{-1} \bar{y})
+\]
+\[
+\Lambda_n^{-1} = \Lambda_0^{-1} + n \Sigma^{-1}.
+\]
