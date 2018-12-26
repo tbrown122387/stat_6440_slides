@@ -1,13 +1,14 @@
-\frametitle{Multivariate Normal Observations with known covariance matrix}
+\frametitle{A few notes on example 3.7}
 
-A conjugate prior for $p(y \mid \mu) = \det(\Sigma)^{-n/2} \exp\left[-\frac{1}{2} \text{tr}\left\{\overbrace{\Sigma^{-1}}^{ \text{known} } S_0 \right\} \right]$ is
-$$
-p(\mu \mid \mu_0, \Lambda_0) = \det(\Lambda_0)^{-1/2} \exp\left[(\mu - \mu_0)'\Lambda^{-1}(\mu - \mu_0) \right]
-$$
-This makes the posterior distribution (homework question exercise 3.13) normal with mean and precision
-\[
-\mu_n  = (\Lambda_0 + n \Sigma^{-1})^{-1}(\Lambda_0^{-1} \mu_0 + n \Sigma^{-1} \bar{y})
-\]
-\[
-\Lambda_n^{-1} = \Lambda_0^{-1} + n \Sigma^{-1}.
-\]
+For each group:
+\begin{gather}
+y_i \mid \alpha, \beta \sim \text{Binomial}(n_i, \text{invlogit}(\alpha + \beta x_i))
+\end{gather}
+
+
+\begin{enumerate}
+\item The {\bf dose-response} is the relationship between $x_i$ and $\theta_i$ (which is assumed the same for each group $i$).
+\item {\bf LD-50} is the unknown quantity $-\alpha/\beta$. It only makes sense when $\beta > 0$, and it is the value of $x_i$ that yields $\theta_i = .5$ (plug it into eqn (1) above). Sometimes scientists are more interested in estimating this than they are in estimating individual parameters.
+\item One of the authors has provided \verb|R| code: \url{https://github.com/avehtari/BDA_R_demos/tree/master/demos_ch3}
+\end{enumerate}
+

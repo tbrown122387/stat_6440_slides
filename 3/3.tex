@@ -57,6 +57,7 @@
 \usepackage{amsfonts}
 \usepackage{mathrsfs, bbold}
 \usepackage{amsmath,amssymb,graphicx}
+\usepackage{mathtools} % gather
 
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
@@ -343,9 +344,9 @@ Let each observation $y$ follow a multivariate normal distribution. The likeliho
 \begin{frame}[fragile]
 \frametitle{Multivariate Normal Observations with known covariance matrix}
 
-A conjugate prior for $p(y \mid \mu) = \det(\Sigma)^{-n/2} \exp\left[-\frac{1}{2} \text{tr}\left\{\overbrace{\Sigma^{-1}}^{ \text{known} } S_0 \right\} \right]$ is
+A conjugate prior for $p(y \mid \mu) \propto \det(\Sigma)^{-n/2} \exp\left[-\frac{1}{2} \text{tr}\left\{\overbrace{\Sigma^{-1}}^{ \text{known} } S_0 \right\} \right]$ is
 $$
-p(\mu \mid \mu_0, \Lambda_0) = \det(\Lambda_0)^{-1/2} \exp\left[(\mu - \mu_0)'\Lambda^{-1}(\mu - \mu_0) \right]
+p(\mu \mid \mu_0, \Lambda_0) = \det(\Lambda_0)^{-1/2} \exp\left[(\mu - \mu_0)'\Lambda_0^{-1}(\mu - \mu_0) \right]
 $$
 This makes the posterior distribution (homework question exercise 3.13) normal with mean and precision
 \[
@@ -356,7 +357,152 @@ This makes the posterior distribution (homework question exercise 3.13) normal w
 \]
 \end{frame}
 
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Multivariate Normal Observations with unknown covariance matrix}
 
+When all of the elements of $\Sigma$ are unknown, we need a prior for that as well. This prior must put zero mass on matrices that aren't positive definite or aren't symmetric. 
+\newline
+
+A popular option is the {\bf inverse Wishart} distribution, which is analagous to the inverse-Gamma distribution. It has a degrees of freedom parameter: $\nu_0$. And it has a scale matrix parameter $\Lambda_0$. 
+\newline
+\pause
+
+If $\Sigma \in \mathbb{R}^{d \times d}$, we will write
+$$
+\Sigma \sim \text{Inv-Wishart}_{\nu_0}(\Lambda_0^{-1})
+$$
+and we can write (something proportional to) the density as 
+$$
+p(\Sigma) \propto \det(\Sigma)^{-(\nu_0 + d + 1)/2}\exp\left( -\frac{1}{2} \text{tr}\left[\Lambda_0 \Sigma^{-1} \right] \right)
+$$
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Multivariate Normal Observations with unknown covariance matrix}
+
+The following is a conjugate prior
+\begin{align*}
+p(\mu \mid \Sigma)p(\Sigma) &= \text{N}(\mu_0, \Sigma / \kappa_0)\text{Inv-Wishart}_{\nu_0}(\Lambda_0^{-1}) \\
+&\propto \left[\det(\Sigma)^{-1/2}\exp\left(-\frac{\kappa_0}{2}(\mu - \mu_0)'\Sigma^{-1}(\mu - \mu_0) \right) \right] \times \\
+& \hspace{5mm} \left[   \det(\Sigma)^{-(\nu_0 + d + 1)/2}\exp\left( -\frac{1}{2} \text{tr}\left[\Lambda_0 \Sigma^{-1} \right] \right) \right]
+\end{align*}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Multivariate Normal Observations with unknown covariance matrix}
+
+Here's the posterior:
+\begin{align*}
+p(\mu, \Sigma \mid y) &\propto p(y \mid \mu, \Sigma)p(\mu \mid \Sigma)p(\Sigma) \\
+&\propto \det(\Sigma)^{-n/2} \exp\left[-\frac{1}{2} \text{tr}\left\{\Sigma^{-1} \sum_i (\mu-y_i)(\mu-y_i)' \right\} \right] \times \\
+& \hspace{5mm} \det(\Sigma)^{-1/2}\exp\left(-\frac{\kappa_0}{2}(\mu - \mu_0)'\Sigma^{-1}(\mu - \mu_0) \right)  \times \\
+& \hspace{5mm}    \det(\Sigma)^{-(\nu_0 + d + 1)/2}\exp\left( -\frac{1}{2} \text{tr}\left[\Lambda_0 \Sigma^{-1} \right] \right) \\
+&= \cdots
+\end{align*}
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Multivariate Normal Observations with unknown covariance matrix}
+It helps to recognize $p(\mu \mid \Sigma, y)$ first, and then $p(\Sigma \mid y)$. Here is negative twice the log of the exponent:
+\begin{align*}
+&\text{tr}\left\{\Sigma^{-1} \sum_i (\mu-y_i)(\mu-y_i)'  + \kappa_0(\mu - \mu_0)'\Sigma^{-1}(\mu - \mu_0)  \right\} + c_1 \\
+&=\sum_i (\mu-y_i)' \Sigma^{-1} (\mu-y_i)  + \kappa_0(\mu - \mu_0)'\Sigma^{-1}(\mu - \mu_0) + c_1 \\
+&= n\mu ' \Sigma^{-1}\mu - 2  n\mu' \Sigma^{-1}\bar{y}  + \kappa_0\mu'\Sigma^{-1}\mu - 2  \kappa_0\mu' \Sigma^{-1}\mu_0  + c_2 \\
+&= \mu ' \left[ (\Sigma/n)^{-1} + (\Sigma/\kappa_0)^{-1} \right] \mu - 2  \mu' \left[ (\Sigma/n)^{-1}\bar{y} +  (\Sigma/\kappa_0)^{-1}\mu_0 \right]    + c_2 \\
+&= (\mu - \mu_n)'B(\mu - \mu_n) + c_3 
+\end{align*}
+where $B = (\Sigma/n)^{-1} + (\Sigma/\kappa_0)^{-1}$ and $\mu_n = B^{-1}\left[ (\Sigma/n)^{-1}\bar{y} +  (\Sigma/\kappa_0)^{-1}\mu_0 \right]$
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Multivariate Normal Observations with unknown covariance matrix}
+
+Clearly 
+$$
+B = (\Sigma/n)^{-1} + (\Sigma/\kappa_0)^{-1} = \Sigma^{-1}(n + \kappa_0)
+$$
+and
+$$
+\mu_n = B^{-1}\left[ (\Sigma/n)^{-1}\bar{y} +  (\Sigma/\kappa_0)^{-1}\mu_0 \right] = \frac{\kappa_0 }{\kappa_0 + n }\mu_0 + \frac{n}{\kappa_0 + n}\bar{y}
+$$
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Multivariate Normal Observations with unknown covariance matrix}
+
+Back to neg. twice the log-exponent of the *entire* posterior (can't ignore $\Sigma$ anymore so keep track of $c_1,c_2,c_3$)
+\begin{align*}
+&(\mu - \mu_n)'B(\mu - \mu_n) - \mu_n'B\mu_n + \text{tr}\left[\Lambda_0 \Sigma^{-1} + \sum_i y_i'\Sigma^{-1}y_i + \kappa_0 \mu_0\mu_0'\Sigma^{-1}\right]  \\
+&= (\mu - \mu_n)'B(\mu - \mu_n)- \mu_n'B\mu_n + \text{tr}\left[\left( \Lambda_0  + \sum_i y_i y_i' +\kappa_0 \mu_0\mu_0'\right)\Sigma^{-1}\right]  \\
+&= (\mu - \mu_n)'B(\mu - \mu_n) + \\
+& \hspace{10mm} \text{tr}\left[ \underbrace{\left( \Lambda_0  + \sum_i y_i y_i' +\kappa_0 \mu_0\mu_0' - (n + \kappa_0) \mu_n \mu_n'\right)}_{ \text{hw is to show that this equals } \Lambda_n} \Sigma^{-1}\right]  
+\end{align*}
+
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{A few notes on example 3.7}
+
+\begin{enumerate}
+\item The setup of example 3.7 will be re-used again and again in later chapters
+\item It's a logistic regression model with two parameters: slope and intercept
+\item Groups: $i=1,2,3,4$
+\item For each group, sample size $n_i$ is known
+\item For each group, $y_i$ is a count (tumors, deaths, etc.)
+\item For each group, $x_i$ is a dose (continuous amount of treatment for each group)
+\end{enumerate}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{A few notes on example 3.7}
+
+For each group:
+\begin{gather*}
+y_i \mid \alpha, \beta \sim \text{Binomial}(n_i, \text{invlogit}(\alpha + \beta x_i))
+\end{gather*}
+
+We can write $\theta_i = \text{invlogit}(\alpha + \beta x_i)$ to make it cleaner, but note that this isn't introducing more parameters. The likelihood is
+$$
+p(y \mid \alpha, \beta) = \prod_{i=1}^4 \theta_i^{y_i}(1-\theta_i)^{n_i-y_i}
+$$
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{A few notes on example 3.7}
+
+For each group:
+\begin{gather}
+y_i \mid \alpha, \beta \sim \text{Binomial}(n_i, \text{invlogit}(\alpha + \beta x_i))
+\end{gather}
+
+
+\begin{enumerate}
+\item The {\bf dose-response} is the relationship between $x_i$ and $\theta_i$ (which is assumed the same for each group $i$).
+\item {\bf LD-50} is the unknown quantity $-\alpha/\beta$. It only makes sense when $\beta > 0$, and it is the value of $x_i$ that yields $\theta_i = .5$ (plug it into eqn (1) above). Sometimes scientists are more interested in estimating this than they are in estimating individual parameters.
+\item One of the authors has provided \verb|R| code: \url{https://github.com/avehtari/BDA_R_demos/tree/master/demos_ch3}
+\end{enumerate}
+
+\end{frame}
 
 
 \end{document} 
