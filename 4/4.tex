@@ -1,0 +1,488 @@
+\documentclass{beamer}
+
+\mode<presentation> {
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{amsfonts}
+\usepackage{mathrsfs, bbold}
+\usepackage{amsmath,amssymb,graphicx}
+\usepackage{mathtools} % gather
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title["4"]{4: Asymptotic and connections to non-Bayesian approaches}
+
+\author{Taylor} 
+\institute[UVA] 
+{
+University of Virginia \\
+\medskip
+\textit{} 
+}
+\date{} 
+
+\begin{document}
+%----------------------------------------------------------------------------------------
+
+\begin{frame}
+\titlepage 
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Introduction}
+
+We examine what happens to posterior distributions when $n \to \infty$. These results help us understand our models better, and they can suggest useful approximations (when computation is too difficult).
+\newline
+
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Bayesian Consistency}
+
+A mathematical framework
+\begin{enumerate}
+\item likelihood we are using/assuming: $p(y \mid \theta)$
+\item prior we are using $p(\theta)$
+\item the true distribution $f(y) = \prod_{i=1}^n f(y_i)$
+\item Kullback-Leibler divergence: $0 \underset{\text{hw q}}{<} KL(\theta) = E_f\left[\log\left(\frac{ f(y_i) }{p(y_i \mid \theta) } \right) \right]$
+\item $\theta_0$ is the minimizer of $KL(\theta)$
+\end{enumerate}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Bayesian Consistency on finite parameter space}
+
+\begin{block}{Theorem 1}
+Suppose there exists $\theta$ such that $f(y_i) = p(y_i \mid \theta)$ and the parameter space is finite. If $p(\theta_0) > 0$ (prior puts mass on the true value), then
+$$
+p(\theta_0 \mid y) \to 1 
+$$
+as $n \to \infty$.
+\end{block}
+Convergence is with respect to $f(y)$!
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Bayesian Consistency }
+
+Recall that if $\bar{Y}_n \overset{p}{\to} \mu < 0$, then $\sum_i Y_i \overset{p}{\to} -\infty$.
+\newline
+
+The $y_i$ are random here! We are keeping parameters fixed. Also $\theta \neq \theta_0$:
+\begin{align*}
+\frac{1}{n} \sum_{i=1}^n \log \left(\frac{p(y_i \mid \theta) }{p(y_i \mid \theta_0) } \right) &\overset{p}{\to} E_f\left[\log \left(\frac{p(y_i \mid \theta)f(y_i) }{p(y_i \mid \theta_0)f(y_i) } \right) \right] \\
+&= KL(\theta_0) - KL(\theta) < 0
+\end{align*}
+
+
+\begin{enumerate}
+\item so $\sum_{i=1}^n \log \left(\frac{p(y_i \mid \theta) }{p(y_i \mid \theta_0) } \right) \overset{p}{\to} -\infty$
+\item so $\log \left(\frac{p(\theta \mid y)}{ p(\theta_0 \mid y) } \right) = \log \frac{p(\theta)}{p(\theta_0)} + \sum_{i=1}^n \log \left(\frac{p(y_i \mid \theta) }{p(y_i \mid \theta_0) } \right) \overset{p}{\to} -\infty$ if $p(\theta_0 ) > 0 $
+\item so $\frac{p(\theta \mid y)}{ p(\theta_0 \mid y) }   \overset{p}{\to} 0$ as long as $p(\theta_0) > 0$
+\item so $p(\theta_0 \mid y)  \overset{p}{\to} 1$ as long as $p(\theta_0) > 0$
+\end{enumerate}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Bayesian Consistency}
+
+\begin{block}{Theorem 2}
+Suppose there exists $\theta$ such that $f(y_i) = p(y_i \mid \theta)$ and the parameter space is uncountable and compact. Let $A_{\epsilon} = \{ \theta \in \Theta : \rho(\theta, \theta_0 ) < \epsilon \}$ be the $\epsilon$-ball about $\theta_0$. For any $\epsilon > 0$, if $p(\theta \in A_{\epsilon}) > 0$, then
+$$
+p(\theta \in A_{\epsilon} \mid y) \to 1 
+$$
+as $n \to \infty$.
+\end{block}
+Convergence is with respect to $f(y)$!
+
+
+\end{frame}
+
+
+
+% %----------------------------------------------------------------------------------------
+% \begin{frame}
+% \frametitle{Bayesian Consistency }
+% 
+% Let $B$ be any set that doesn't contain $\theta_0$. There will be a finite number of these if we use compactness.
+% \begin{align*}
+% \frac{1}{n} \sum_{i=1}^n \log \left(\frac{ p(y_i \mid \theta \in B)}{  p(y_i \mid \theta' \in A_{\epsilon})  } \right) &\overset{p}{\to} E_f\left[ \log \left(\frac{ p(y_i \mid \theta \in B)}{  p(y_i \mid \theta' \in A_{\epsilon})  } \right)  \right] < 0\\
+% \end{align*}
+% % &= \int \log \left(\frac{ f(y)  }{  \int_{A_{\epsilon}} p(y \mid \theta') \text{d}\theta' } \right)f(y) \text{d}y \\
+% % &-  \int \log \left(\frac{ f(y)  }{  \int_{B} p(y \mid \theta) \text{d}\theta } \right) f(y) \text{d}y < 0
+% 
+% 
+% \begin{enumerate}
+% \item so $\sum_{i=1}^n \log \left(\frac{ p(y_i \mid \theta \in B)}{  p(y_i \mid \theta' \in A_{\epsilon})  } \right) \overset{p}{\to} -\infty$
+% \item so $\log \left(\frac{p(\theta \in B \mid y)}{ p(\theta \in A_{\epsilon} \mid y) } \right) = \log \frac{p(\theta \in B)}{p(\theta \in A_{\epsilon} )} + \sum_{i=1}^n \log \left(\frac{ p(y_i \mid \theta \in B)}{  p(y_i \mid \theta' \in A_{\epsilon})  } \right) \overset{p}{\to} -\infty$ if $p(\theta \in A_{\epsilon} ) > 0 $
+% \item so $\frac{p(\theta \in B \mid y)}{ p(\theta \in A_{\epsilon} \mid y) }   \overset{p}{\to} 0$ as long as $p(\theta \in A_{\epsilon}) > 0$
+% \item so $p(\theta \in A_{\epsilon} \mid y)  \overset{p}{\to} 1$ by compactness (finite number of other $B$s) and $p(\theta \in A_{\epsilon}) > 0$
+% \end{enumerate}
+% 
+% \end{frame}
+% %----------------------------------------------------------------------------------------
+% \begin{frame}
+% \frametitle{Bayesian Consistency }
+% 
+% I haven't been able to prove the following:
+% \[
+% E_f\left[ \log \left(\frac{ p(y_i \mid \theta \in B)}{  p(y_i \mid \theta' \in A_{\epsilon})  } \right)  \right] < 0
+% \]
+% 
+% \end{frame}
+% 
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Asymptotic Normality}
+
+These ideas are based on using a Taylor approximation for your posterior distribution. 
+\begin{enumerate}
+\item approximations are second-order (quadratic)
+\item centered about the posterior mode $\hat{\theta}$
+\item Assume the posterior is unimodal and symmetric
+\item Assume the mode is in the interior of the parameter space
+\end{enumerate}
+\pause
+
+\begin{align*}
+&\log p(\theta \mid y ) \approx \\
+&\log p(\hat{\theta} \mid y) + \overbrace{(\theta - \hat{\theta})'\left[ \frac{\text{d}}{\text{d}\theta} \log p(\theta \mid y) \right] \bigg|_{\theta = \hat{\theta}}}^{0}  \\
+&\hspace{5mm}  + \frac{1}{2}(\theta - \hat{\theta})'\left[\frac{\text{d}^2}{\text{d}\theta^2} \log p(\theta \mid y)\right] \bigg|_{\theta = \hat{\theta}}(\theta - \hat{\theta}) \\
+&= c  - \frac{1}{2}(\theta - \hat{\theta})'\left[-\frac{\text{d}^2}{\text{d}\theta^2} \log p(\theta \mid y)\right] \bigg|_{\theta = \hat{\theta}}(\theta - \hat{\theta})
+\end{align*}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Asymptotic Normality}
+
+\[
+\log p(\theta \mid y ) \approx 
+c  - \frac{1}{2}(\theta - \underbrace{\hat{\theta} }_{\text{mean}} )' \underbrace{\left[-\frac{\text{d}^2}{\text{d}\theta^2} \log p(\theta \mid y)\right] \bigg|_{\theta = \hat{\theta}}}_{\text{precision} } (\theta - \hat{\theta})
+\]
+
+\begin{align*}
+\left[-\frac{\text{d}^2}{\text{d}\theta^2} \log p(\theta \mid y)\right] \bigg|_{\theta = \hat{\theta}} 
+&=
+\left[-\frac{\text{d}^2}{\text{d}\theta^2} \log p(\theta)\right] \bigg|_{\theta = \hat{\theta}} \\
+&+
+\sum_{i=1}^n \left[-\frac{\text{d}^2}{\text{d}\theta^2} \log p(y \mid \theta)\right] \bigg|_{\theta = \hat{\theta}}
+\end{align*}
+
+% So we have, approximately for large $n$, 
+% \[
+% \theta \mid (y_1, \ldots, y_n) \sim \text{Normal}\left(\hat{\theta} , [nJ(\theta_0)]^{-1} )\right)
+% \]
+% or
+% \[
+% \theta \mid y_1, \ldots, y_n \sim \text{Normal}\left(\hat{\theta} , [nJ(\hat{\theta})]^{-1} )\right
+% \]
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Asymptotic Normality}
+
+
+So we have, approximately for large $n$,
+\[
+\theta \mid y_1, \ldots, y_n \sim \text{Normal}\left(\hat{\theta} , n^{-1}J(\hat{\theta})^{-1} )\right)
+\]
+\begin{enumerate}
+\item $\hat{\theta}$ is the posterior mode. Using MLE (ignoring prior) is also justified. 
+\item $J(\hat{\theta})$ is the Fisher Information (of an individual datum's likelihood) evaluated at the posterior mode.
+\item This result is known as the Bernstein-von Mises theorem. Proof omitted.
+\end{enumerate}
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Asymptotic Normality: example}
+
+Let $y_i \mid \mu, \theta \sim \text{N}(\mu, \exp(2\theta))$ and $p(\mu, \theta) \propto 1$ with $\theta = \log \sigma$. Then 
+\begin{align*}
+p(\mu, \theta \mid y) &\propto (2\pi)^{-n/2} \exp(-n\theta) \exp\left[-\frac{1}{2 \exp(2\theta) } \sum_i (y_i - \mu)^2 \right] \\
+&= (2\pi)^{-n/2} \exp(-n\theta) \exp\left[-\frac{1}{2 \exp(2\theta) } \left\{ n(\mu - \bar{y})^2 + (n-1)s^2 \right\} \right]
+\end{align*}
+let's approximate this for some practice!
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Asymptotic Normality: example}
+
+\begin{align*}
+&\frac{\text{d}}{\text{d} \mu} \log p(\mu, \theta \mid y) \\
+&= \frac{\text{d}}{\text{d} \mu}\left[ -\frac{n}{2}\log(2\pi) -n\theta -\frac{1}{2 \exp(2\theta) } \left\{ n(\mu - \bar{y})^2 + (n-1)s^2 \right\} \right] \\
+&=  -\frac{n(\mu - \bar{y})}{ \exp(2\theta) }  \overset{\text{set}}{=} 0 
+\end{align*}
+which means $\hat{\mu} = \bar{y}$
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Asymptotic Normality: example}
+
+\begin{align*}
+&\frac{\text{d}}{\text{d} \theta} \log p(\mu, \theta \mid y) \\
+&= \frac{\text{d}}{\text{d} \theta }\left[ -\frac{n}{2}\log(2\pi) -n\theta -\frac{1}{2 \exp(2\theta) } \left\{ n(\mu - \bar{y})^2 + (n-1)s^2 \right\} \right] \\
+&=  -n + \left\{ n(\mu - \bar{y})^2 + (n-1)s^2 \right\} \exp(-2\theta) \overset{\text{set}}{=} 0 
+\end{align*}
+which means $\hat{\theta} = \log \left\{ \sqrt{ \frac{n-1}{n}s^2}  \right\}$ after we plug in $\hat{\mu}$
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Asymptotic Normality: example}
+
+The mean vector is
+$$
+\left[\begin{array}{c}
+\hat{\mu} \\
+\hat{\theta}
+\end{array}\right]
+= 
+\left[\begin{array}{c}
+\bar{y}\\
+\log \left\{ \sqrt{ \frac{n-1}{n}s^2}  \right\}
+\end{array}\right]
+$$
+
+Now let's find the precision matrix
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Asymptotic Normality: example}
+
+\begin{align*}
+&\frac{\text{d}^2}{\text{d} \mu^2} \log p(\mu, \theta \mid y) = - \frac{\text{d}}{\text{d} \mu}  \frac{n(\mu - \bar{y})}{ \exp(2\theta) }  \\
+&= - n \exp(-2\theta)
+\end{align*}
+
+\begin{align*}
+& \frac{\text{d}^2}{\text{d} \theta^2} \log p(\mu, \theta \mid y) =  \frac{\text{d}}{\text{d} \theta} \left\{ n(\mu - \bar{y})^2 + (n-1)s^2 \right\} \exp(-2\theta) \\
+&=  -2 \left\{ n(\mu - \bar{y})^2 + (n-1)s^2 \right\} \exp(-2\theta) 
+\end{align*}
+
+\begin{align*}
+& \frac{\text{d}^2}{\text{d} \mu \text{d} \theta} \log p(\mu, \theta \mid y) \\
+&=  \frac{\text{d}}{\text{d} \mu} \left\{ n(\mu - \bar{y})^2 + (n-1)s^2 \right\} \exp(-2\theta) \\
+&=  2 n(\mu - \bar{y})\exp(-2\theta) 
+\end{align*}
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Asymptotic Normality: example}
+
+When we plug in the estimates, then the precision matrix is
+$$
+-\frac{\text{d}^2}{\text{d}\theta^2} \log p(\theta \mid y) \bigg|_{\theta = \hat{\theta}} = 
+\left[ \begin{array}{cc}
+\frac{n^2}{(n-1)s^2} & 0 \\
+0 & 2n
+\end{array}\right]
+$$
+so
+$$
+p(\mu, \theta \mid y) \approx \text{N}\left(
+\left[\begin{array}{c}
+\bar{y}\\
+\log \left\{ \sqrt{ \frac{n-1}{n}s^2}  \right\}
+\end{array}\right],
+\left[ \begin{array}{cc}
+\frac{(n-1)s^2}{n^2} & 0 \\
+0 & \frac{1}{2n}
+\end{array}\right]
+\right)
+$$
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Asymptotic Normality: cases of unmet assumptions}
+
+We go through some common examples where one of the above assumptions is not met. In these cases, using asymptotics is not allowed.
+
+\end{frame}
+
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Asymptotic Normality: cases of unmet assumptions}
+
+A *model* is {\bf underidentified} given data $y$ if the likelihood, $p(y \mid \theta)$, is equal for a range of values $\theta$. 
+\newline
+
+A *model* is {\bf weakly identified} given data $y$ if the likelihood, $p(y \mid \theta)$, is close to being equal for a range of values $\theta$. 
+\newline
+
+These can be problematic because $\hat{\theta}$ will not have any specific number/vector $\theta$ to which it can converge. These are violations of assumption (3).
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Asymptotic Normality: cases of unmet assumptions}
+
+\[
+\left[\begin{array}{c}
+u \\
+v
+\end{array}\right]
+\bigg|
+\rho
+\sim
+\text{Normal}\left( 
+\left[\begin{array}{c}
+0 \\
+0
+\end{array}\right]
+,
+\left[\begin{array}{cc}
+1 & \rho \\
+\rho & 1
+\end{array}\right]
+\right)
+\]
+If $v$ is latent/hidden, then we work with the marginal likelihood $p(u \mid \rho)$:
+\[
+u \mid \rho \sim \text{Normal}\left(0, 1 \right)
+\]
+Notice that this is free of $\rho$! 
+\[
+p(\rho \mid u) \propto p(u \mid \rho) p(\rho) \propto p(\rho)
+\]
+Here we say the *parameter* is {\bf nonidentified}.
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Asymptotic Normality: cases of unmet assumptions}
+
+Sometimes it is harder to spot nonidentifiable parameters. It may be the case that $p(y \mid \theta)$ yields the same function in $y$ for two different values of $\theta$. If this is true, then for any particular data set $y$, $p(y \mid \theta)$ will be equal for these two values of $\theta$.
+\newline
+
+Example $y \mid \theta \sim \text{Normal}(0, \theta^2)$. Then $p(y \mid \theta) = p(y \mid -\theta)$!
+\newline
+
+We can fix this easily by restricting the parameter space. The model is no longer underidentified if $\theta \in \mathbb{R}^+$. When this happens, we call this problem {\bf aliasing}.
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Asymptotic Normality: cases of unmet assumptions}
+
+Another example of {\bf aliasing}. If you look at a histogram of $y$ and it's bimodal, then a possibly suitable model is the {\bf normal mixture model}:
+
+\begin{align*}
+&p(y_i \mid \mu_1, \mu_2, \sigma_1^2, \sigma_2^2, \lambda) \\
+= \lambda &\frac{1}{\sqrt{2\pi \sigma_1^2}} \exp\left[-\frac{1}{2 \sigma_1^2}(y_i - \mu_1)^2 \right] \\
++ (1-\lambda) &\frac{1}{\sqrt{2\pi \sigma_2^2}}\exp\left[-\frac{1}{2 \sigma_2^2}(y_i - \mu_2)^2 \right]
+\end{align*}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Asymptotic Normality: cases of unmet assumptions}
+
+When the number of parameters increases with the sample size, the standard asymptotics won't apply. For example, if $p(y_i \mid \theta_i)$ is the likelihood, and $\theta_i$ is a different parameter for each datum. This happens with Gaussian Process Models, which we talk about in Chap 21.
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Asymptotic Normality: cases of unmet assumptions}
+
+{\bf Unbounded likelihoods} might also be a problem. Assume 
+\[
+p(y \mid \sigma^2) = \frac{1}{\sqrt{2 \pi \sigma^2}}\exp\left[ -\frac{y^2}{2 \sigma^2} \right].
+\]
+If $y=0$, then this simplifies to
+\[
+p(y \mid \sigma^2) = \frac{1}{\sqrt{2 \pi \sigma^2}}
+\]
+which goes to $\infty$ as $\sigma^2 \to 0$. The theoretical probablity of you getting $y=0$ is obviously $0$, but it is possible to get $0$s computationally if you have an {\bf underflow} problem. Double precision floating point numbers give you about 15-17 digits of precision. 
+
+
+\end{frame}
+
+
+
+\end{document} 
+
