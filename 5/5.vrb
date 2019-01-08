@@ -1,0 +1,17 @@
+\frametitle{Finding $p(\alpha,\beta \mid y)$ }
+
+Note that this plot is of the *unnormalized* marginal density. We do not know the normalizing constant!
+\newline
+
+They approximate the normalized density by making $p(\alpha,\beta \mid y)$ a discrete distribution defined on a grid (recall \verb|A| and \verb|B| from our code above). They evaluate the unnormalized density on this grid, but because there are a finite number of points, they can divide by the sum, yielding a pmf that sums to $1$.
+
+\begin{verbatim}
+samp_indices <- sample(length(df_marg$p),
+                       size = nsamp,
+                       replace = T,
+                       prob = df_marg$p/sum(df_marg$p))
+\end{verbatim}
+\pause
+
+We will spend a lot of time in this class talking about different ways to sample from a posterior without knowing its normalizing constant!
+
