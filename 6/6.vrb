@@ -1,0 +1,9 @@
+\frametitle{Example 2: Are our Bernoulli rvs Correlated?}
+
+$P(T(y^{\text{rep} } ) > T(y ) \mid y) \approx .97$
+
+\begin{center}
+\includegraphics[width=80mm]{switches_hist.png}
+\end{center}
+
+

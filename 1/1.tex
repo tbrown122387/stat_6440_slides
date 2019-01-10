@@ -193,7 +193,7 @@ Both are averages but with different distributions for $\theta$
 Often $y = (y_1, \ldots, y_n)$ are assumed to be {\bf exchangeable}, or
 
 \[
-p_{Y_1, \ldots, Y_n}(y_1, \ldots, y_n) = p_{Y_\sigma(1), \ldots, Y_\sigma(n)}(y_1, \ldots, y_n)
+p_{Y_1, \ldots, Y_n}(y_1, \ldots, y_n) = p_{Y_{\sigma(1)}, \ldots, Y_{\sigma(n)} }(y_1, \ldots, y_n)
 \]
 where $\sigma$ is any permutation of the indexes.
 \pause
@@ -258,6 +258,24 @@ Apply the law of total variance:
 outer expectation on the rhs is taken with respect to $p(y)$.
 
 \end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Conditional Independence}
+
+Conditional independence will be used extensively. $X$ and $Y$ are {\bf conditionally independent given $Z$} if $$
+p(x,y \mid z) = p(x \mid z) p(y \mid z).
+$$
+
+This is equivalent to a more useful form:
+$$
+p(x \mid y, z) = p(x \mid z).
+$$
+
+Knowing when you are conditioning on redundant variables will help derive a lot of things.
+
+\end{frame}
+
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
