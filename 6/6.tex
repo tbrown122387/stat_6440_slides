@@ -319,7 +319,7 @@ mean(sapply(sampt1000, min) > min(y))
 \begin{frame}
 \frametitle{Example: Speed of Light Measurements}
 
-Let $T(y) = |y_{(61)} - \theta| - |y_{(6)} - \theta|$
+Let $T(y,\theta) = |y_{(61)} - \theta| - |y_{(6)} - \theta|$
 
 \begin{center}
 \includegraphics[width=80mm]{T_scatter.png}
@@ -408,6 +408,61 @@ $P(T(y^{\text{rep} } ) > T(y ) \mid y) \approx .97$
 
 
 \end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{p-values and u-values}
+
+If $\theta$ is perfectly estimated, 
+$$
+P(T(y^{\text{rep} } ) > T(y ) \mid y) = P(T(y^{\text{rep} } ) > T(y ) \mid \theta, y) \sim \text{Uniform}(0,1)
+$$
+\newline
+
+This is related to the ``CDF transformation." For $X, \tilde{X} \mid \theta \overset{\text{iid}}{\sim} F$: 
+$$
+F_X(X) = P(X \le x \mid \tilde{X} = x, \theta) \sim \text{Uniform}(0,1)
+$$
+
+% \begin{align*}
+% P(T(y^{\text{rep}}) > T(y) \mid y) &= \int_A \int p(y^{\text{rep} }  \mid \theta)p(\theta \mid y) \text{d} \theta \text{d} y^{\text{rep}} \\
+% &= \int_A \int p(y^{\text{rep} }  \mid \theta)\delta_{\theta'}(\theta)  \text{d} \theta \text{d} y^{\text{rep}} \\
+% &= \int_A p(y^{\text{rep} }  \mid \theta')\text{d} y^{\text{rep}} \\
+% &= 1-F_{T(y^{\text{rep}}) \mid y}(  T(y) )
+% \end{align*}
+
+In our case, they are saying that 
+$$
+P(T(y^{\text{rep}}) > T(y) \mid y) = P(T(y^{\text{rep}}) > T(y) \mid \theta, y),
+$$
+or in other words
+$$
+P(T(y^{\text{rep}}) \le T(y) \mid y) = P(T(y^{\text{rep}}) \le T(y) \mid \theta, y) 
+$$
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{p-values and u-values}
+
+They say, generally $P(T(y^{\text{rep}}) \le T(y) \mid \theta, y)$ is ``stochastically more variable" than $P(T(y^{\text{rep}}) \le T(y) \mid y)$. 
+\newline
+
+One thing the authors \*could\* mean is that these conditional probabilities are {\bf convex ordered}. 
+\newline
+
+
+Random variables $X$ and $Y$ are convex-ordered if, for any convex function $u$, 
+$$
+E\left[u(X) \right] \le E\left[ u(Y) \right].
+$$
+
+Conditional probabilities are convex ordered when one conditions on less than another (homework question).
+
+\end{frame}
+
 
 \end{document} 
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  9 JAN 2019 21:56
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  10 JAN 2019 17:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1012,7 +1012,7 @@ Overfull \vbox (2.46284pt too high) detected at line 397
 \openout4 = `6.vrb'.
 
  (./6.vrb
-<switches_hist.png, id=633, 887.315pt x 628.3475pt>
+<switches_hist.png, id=634, 887.315pt x 628.3475pt>
 File: switches_hist.png Graphic file (type png)
 <use switches_hist.png>
 Package pdftex.def Info: switches_hist.png  used on input line 6.
@@ -1020,6 +1020,16 @@ Package pdftex.def Info: switches_hist.png  used on input line 6.
 ) [23
 
  <./switches_hist.png>]
+\openout4 = `6.vrb'.
+
+ (./6.vrb) [24
+
+]
+\openout4 = `6.vrb'.
+
+ (./6.vrb) [25
+
+]
 \tf@nav=\write6
 \openout6 = `6.nav'.
 
@@ -1029,19 +1039,20 @@ Package pdftex.def Info: switches_hist.png  used on input line 6.
 \tf@snm=\write8
 \openout8 = `6.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 412.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 412.
- (./6.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 412.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 412.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 467.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 467.
+
+(./6.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 467.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 467.
 Package rerunfilecheck Info: File `6.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 17735 strings out of 492982
- 337189 string characters out of 6134895
+ 17747 strings out of 492982
+ 337283 string characters out of 6134895
  410737 words of memory out of 5000000
- 20823 multiletter control sequences out of 15000+600000
+ 20827 multiletter control sequences out of 15000+600000
  12285 words of font info for 46 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  56i,15n,55p,768b,622s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1057,10 +1068,10 @@ blic/amsfonts/cm/cmssi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
 s/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
 tt10.pfb>
-Output written on 6.pdf (23 pages, 293710 bytes).
+Output written on 6.pdf (25 pages, 299000 bytes).
 PDF statistics:
- 712 PDF objects out of 1000 (max. 8388607)
- 645 compressed objects within 7 object streams
- 47 named destinations out of 1000 (max. 500000)
+ 766 PDF objects out of 1000 (max. 8388607)
+ 697 compressed objects within 7 object streams
+ 51 named destinations out of 1000 (max. 500000)
  97 words of extra memory for PDF output out of 10000 (max. 10000000)
 

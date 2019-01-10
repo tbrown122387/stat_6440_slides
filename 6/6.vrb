@@ -1,9 +1,16 @@
-\frametitle{Example 2: Are our Bernoulli rvs Correlated?}
+\frametitle{p-values and u-values}
 
-$P(T(y^{\text{rep} } ) > T(y ) \mid y) \approx .97$
+They say, generally $P(T(y^{\text{rep}}) \le T(y) \mid \theta, y)$ is ``stochastically more variable" than $P(T(y^{\text{rep}}) \le T(y) \mid y)$.
+\newline
 
-\begin{center}
-\includegraphics[width=80mm]{switches_hist.png}
-\end{center}
+One thing the authors \*could\* mean is that these conditional probabilities are {\bf convex ordered}.
+\newline
 
+
+Random variables $X$ and $Y$ are convex-ordered if, for any convex function $u$,
+$$
+E\left[u(X) \right] \le E\left[ u(Y) \right].
+$$
+
+Conditional probabilities are convex ordered when one conditions on less than another (homework question).
 
