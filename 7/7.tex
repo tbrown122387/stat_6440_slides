@@ -1,0 +1,282 @@
+\documentclass{beamer}
+
+\mode<presentation> {
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{amsfonts}
+\usepackage{mathrsfs, bbold}
+\usepackage{amsmath,amssymb,graphicx}
+\usepackage{mathtools} % gather
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title["7"]{7: Evaluating, comparing and expanding models}
+
+\author{Taylor} 
+\institute[UVA] 
+{
+University of Virginia \\
+\medskip
+\textit{} 
+}
+\date{} 
+
+\begin{document}
+%----------------------------------------------------------------------------------------
+
+\begin{frame}
+\titlepage 
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Introduction}
+
+This chapter focuses mostly on quantifying a model's predictive capabilities for the purposes of model selection and expansion. 
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{New Notation!}
+
+\begin{enumerate}
+\item $f$ is the true model 
+\item $y$ is the data we use to estimate our model
+\item $\tilde{y}$ is the future (time series) or alternative (not time series) data that we test our predictions on
+\item $p_{\text{post}}(\tilde{y}) = p(\tilde{y} \mid y )$
+\item $p_{\text{post}}(\theta) = p(\theta \mid y)$
+\item $E_{\text{post}}[ \cdot ] $ is taken with respect to $p(\theta \mid y)$
+\end{enumerate}
+
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Definitions}
+
+A {\bf scoring rule/function} $S(p,\tilde{y})$ is a function that takes
+\begin{enumerate}
+\item the distribution you're using to forecast $p$ (ppd, or likelihood with estimated parameters), and 
+\item a realized value $\tilde{y}$
+\end{enumerate}
+and then gives you a real-valued number/score/utility. Higher is better, although this convention isn't always followed in the literature.
+\newline
+
+Keep in mind that the realized value cannot be used to fit the data.
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Examples}
+
+
+Example: $S(p,\tilde{y}) = -(\tilde{y} - E_p[\tilde{y}])^2$
+\newline
+
+
+Example: $S(p,\tilde{y}) = \log p(\tilde{y})$
+\newline
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Definitions}
+
+Future/unseen data is unknown, so we must take the expected score under the true distribution $f$:
+$$
+E_f[S(p,\tilde{y})].
+$$
+
+A scoring rule is {\bf proper} if the above expectation is minimized when $f = p$.
+\newline
+
+A scoring rule is {\bf local} if $S(p,\tilde{y})$ only depends on $p(\tilde{y})$ (don't care about events that didn't happen).
+\newline
+
+Note, when we are dealing with a logarithmic scoring rule, $E[-2\log p(\tilde{y})]$ is often called an {\bf information criterion.} The book switches back and forth between dealing with expected score, and information criteria. 
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Examples}
+
+
+Example: $S(p,y) = -(\tilde{y} - E_p[\tilde{y}])^2$ \\
+Most common, perhaps not local or proper for non-Gaussian data.
+\newline
+
+Example: $S(p,y) = \log p(\tilde{y})$\\
+Obviously local. Proper, too (homework question).
+
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Problem}
+
+% We may predict data with the ppd, or plug some point estimate $\hat{\theta}$ into the likelihood. 
+% \newline
+
+We are generally not able to evaluate the expectation because we don't know $f$. However, we may be able to wait for new out-of-sample data and use a Monte-Carlo approach:
+\[
+\tilde{n}^{-1}\sum_{i=1}^{\tilde{n}} S(p,\tilde{y}^i) \to E_f[S(p,\tilde{y})]
+\]
+as $\tilde{n} \to \infty$
+\newline
+\pause
+
+If we can afford to wait for an infinite amount of data, though, what is the point of trying to predict it?
+\newline
+\pause
+
+NB: textbook looks at the same instead of the average (calls it ``elppd").
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Another problem}
+
+If we're using the ppd, it might not be in closed form. We have to draw $\theta^j \sim p(\theta \mid y)$, too:
+
+\[
+\tilde{n}^{-1}\sum_{i=1}^{\tilde{n}} \log \left\{ S^{-1} \sum_{j=1}^{S} p(\tilde{y}^i \mid \theta^j) \right\} \to E_f[\log p_{\text{post}}(\tilde{y})]
+\]
+
+The textbook calls the above quantity multiplied by $\tilde{n}$ the ``computed lppd"
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{A third problem}
+
+Don't want to wait for $\tilde{y}$...
+\newline
+
+and unfortunately, we cannot plug in the same data that we used for estimation. This overestimates the average predictive score. 
+\newline
+
+However, we can get around this in two ways generally:
+\begin{enumerate}
+\item plug in the already-used $y$ data, but then add an extra penalty term (e.g. AIC, DIC, WAIC, etc.)
+\item Cross-Validation: split the data $y$, many different ways, into a train and test set; estimate and evaluate on each split.
+\end{enumerate}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Information Criteria}
+
+{\bf AIC} stands for ``an information criterion" or ``Akaike's Information Criterion." Let $k$ be the number of parameters:
+\newline
+
+\[
+\widehat{\text{elpd}}_{\text{AIC}} = \log p(y \mid \hat{\theta}_{\text{MLE}}) - \underbrace{k}_{\text{penalty}}
+\]
+or
+\[
+\text{AIC} = \underbrace{-2\log p(y \mid \hat{\theta}_{\text{MLE}})}_{\text{a deviance}} +2 k
+\]
+
+We estimate $\hat{\theta}_{\text{MLE}}$ using $y$, \*and\* we plug $y$ into the log likelihood. 
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Information Criteria}
+
+{\bf DIC} replaces the point estimate with $\hat{\theta}_{\text{Bayes}} = E[\theta \mid y]$, and replaces the penalty term with $p_{\text{DIC}}$
+\newline
+
+\[
+\widehat{\text{elpd}}_{\text{DIC}} = \log p(y \mid \hat{\theta}_{\text{Bayes}}) - p_{\text{DIC}}
+\]
+or
+\[
+\text{DIC} = -2\log p(y \mid \hat{\theta}_{\text{Bayes}}) +2 p_{\text{DIC}}
+\]
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Information Criteria}
+
+The book gives two ways to estimate $p_{\text{DIC}}$:
+
+\begin{enumerate}
+\item $p_{\text{DIC}} = 2\left(\log p(y \mid \hat{\theta}_{\text{Bayes}} - E_{\text{post}}\left[ \log p(y \mid \theta) \right] \right)$
+\item $p_{\text{DIC alt}} = 2 \operatorname{Var}_{\text{post}}\left[ \log p(y \mid \theta) \right]$
+\end{enumerate}
+
+Both of these can be approximated using samples from the posterior.
+
+\end{frame}
+
+\end{document} 
+
+
