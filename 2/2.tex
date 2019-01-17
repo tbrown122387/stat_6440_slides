@@ -227,10 +227,10 @@ p(\theta \mid y) = \frac{1}{\text{B}(\alpha + \sum_i y_i, \beta + n - \sum_i y_i
 inverse gamma-normal (known mean):
 \begin{enumerate}
 \item $p(\sigma^2 ) \propto (\sigma^2)^{-(\alpha+1)} \exp\left( -\beta / \sigma^2 \right)$
-\item $p(y \mid \theta) \propto (\sigma^2)^{-n/2} \exp\left[-\frac{1}{2 \sigma^2} \sum_i \left(y_i - \theta \right)^2 \right] $
+\item $p(y \mid \sigma^2) \propto (\sigma^2)^{-n/2} \exp\left[-\frac{1}{2 \sigma^2} \sum_i \left(y_i - \theta \right)^2 \right] $
 \item $p(\sigma^2 \mid y) = \text{Inverse-Gamma}\left(\frac{n + \nu_0}{2}, \frac{ \nu_0 \sigma^2 + n v }{2} \right)$
 \end{enumerate}
-where $v = \sum_i(y_i - \theta)^2 / n$.
+where $\theta$ is some known mean, and $v = \sum_i(y_i - \theta)^2 / n$.
 
 \end{frame}
 
@@ -329,21 +329,6 @@ where $\frac{1}{\tau_n^2} = \frac{1}{\sigma^2} + \frac{1}{\tau_0^2}$ and $\mu_n 
 \end{frame}
 
 
-
-%----------------------------------------------------------------------------------------
-
-\begin{frame}[fragile]
-\frametitle{Conjugacy example 6}
-
-general exponential families:
-\begin{enumerate}
-\item $p(\theta) \propto g(\theta)^{\eta} \exp\left[\phi(\theta)' \nu \right]$
-\item $p(y \mid \theta) \propto g(\theta)^{n} \exp\left[\phi(\theta)' t(y) \right] $
-\item $p(\theta \mid y) \propto g(\theta)^{\eta + n} \exp\left[\phi(\theta)' \{t(y) + \nu\} \right] $
-\end{enumerate}
-
-
-\end{frame}
 
 %----------------------------------------------------------------------------------------
 

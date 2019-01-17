@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  9 JAN 2019 21:51
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  17 JAN 2019 12:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -982,12 +982,12 @@ Overfull \vbox (24.18846pt too high) detected at line 142
 
  (./2.vrb) [21
 
+] (./2.vrb) [22
+
 ]
 \openout4 = `2.vrb'.
 
- (./2.vrb) [22
-
-] (./2.vrb)
+ (./2.vrb)
 [23
 
 ]
@@ -1003,22 +1003,17 @@ Overfull \vbox (24.18846pt too high) detected at line 142
 ]
 \openout4 = `2.vrb'.
 
- (./2.vrb) [26
-
-]
-\openout4 = `2.vrb'.
-
  (./2.vrb
-<pics/Rplot2.png, id=732, 367.3725pt x 230.36063pt>
+<pics/Rplot2.png, id=706, 367.3725pt x 230.36063pt>
 File: pics/Rplot2.png Graphic file (type png)
 <use pics/Rplot2.png>
 Package pdftex.def Info: pics/Rplot2.png  used on input line 16.
 (pdftex.def)             Requested size: 227.62204pt x 142.73422pt.
 )
-Overfull \vbox (14.39284pt too high) detected at line 521
+Overfull \vbox (14.39284pt too high) detected at line 506
  []
 
-[27
+[26
 
  <./pics/Rplot2.png>]
 \tf@nav=\write6
@@ -1030,19 +1025,19 @@ Overfull \vbox (14.39284pt too high) detected at line 521
 \tf@snm=\write8
 \openout8 = `2.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 524.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 524.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 509.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 509.
  (./2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 524.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 524.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 509.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 509.
 Package rerunfilecheck Info: File `2.out' has not changed.
 (rerunfilecheck)             Checksum: 2B6BC13405912A32ADEBA514B61A3653;38.
  ) 
 Here is how much of TeX's memory you used:
- 17270 strings out of 492982
- 328457 string characters out of 6134895
+ 17264 strings out of 492982
+ 328410 string characters out of 6134895
  400460 words of memory out of 5000000
- 20319 multiletter control sequences out of 15000+600000
+ 20317 multiletter control sequences out of 15000+600000
  12560 words of font info for 48 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  56i,15n,59p,768b,607s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1060,10 +1055,10 @@ onts/cm/cmssi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
 cm/cmssi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cms
 y10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb
 ></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on 2.pdf (27 pages, 220603 bytes).
+Output written on 2.pdf (26 pages, 218746 bytes).
 PDF statistics:
- 823 PDF objects out of 1000 (max. 8388607)
- 756 compressed objects within 8 object streams
- 56 named destinations out of 1000 (max. 500000)
+ 796 PDF objects out of 1000 (max. 8388607)
+ 730 compressed objects within 8 object streams
+ 54 named destinations out of 1000 (max. 500000)
  91 words of extra memory for PDF output out of 10000 (max. 10000000)
 
