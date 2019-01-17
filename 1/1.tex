@@ -247,6 +247,7 @@ outer expectation on the rhs is taken with respect to $p(y)$.
 
 \end{frame}
 
+
 %----------------------------------------------------------------------------------------
 \begin{frame}
 \frametitle{LTE and LTV}
@@ -258,6 +259,21 @@ Apply the law of total variance:
 outer expectation on the rhs is taken with respect to $p(y)$.
 
 \end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{LTE and LTV}
+
+You can also switch things around:
+\[
+E[y] = E[E(y \mid \theta)]
+\]
+and
+\[
+var(y) = var[ E(y \mid \theta) ] + E[ var(y \mid \theta)]
+\]
+\end{frame}
+
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
@@ -287,7 +303,7 @@ We will be using \texttt{R}
 
 Some bookmarks:
 \begin{enumerate}
-\item \url{https://github.com/tbrown122387/stat_6440} 
+\item \url{https://github.com/tbrown122387/stat_6440_slides} 
 \item \url{http://www.stat.columbia.edu/~gelman/book/}
 \item \url{https://github.com/avehtari/BDA_R_demos}
 \item \url{http://www.stat.columbia.edu/~gelman/book/data/}
