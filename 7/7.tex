@@ -58,6 +58,7 @@
 \usepackage{mathrsfs, bbold}
 \usepackage{amsmath,amssymb,graphicx}
 \usepackage{mathtools} % gather
+\usepackage[export]{adjustbox} % right-aligned graphics
 
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
@@ -160,11 +161,11 @@ Note, when we are dealing with a logarithmic scoring rule, $E[-2\log p(\tilde{y}
 \frametitle{Examples}
 
 
-Example: $S(p,y) = -(\tilde{y} - E_p[\tilde{y}])^2$ \\
+Example: $S(p,\tilde{y}) = -(\tilde{y} - E_p[\tilde{y}])^2$ \\
 Most common, perhaps not local or proper for non-Gaussian data.
 \newline
 
-Example: $S(p,y) = \log p(\tilde{y})$\\
+Example: $S(p,\tilde{y}) = \log p(\tilde{y})$\\
 Obviously local. Proper, too (homework question).
 
 
@@ -180,42 +181,91 @@ Obviously local. Proper, too (homework question).
 
 We are generally not able to evaluate the expectation because we don't know $f$. However, we may be able to wait for new out-of-sample data and use a Monte-Carlo approach:
 \[
-\tilde{n}^{-1}\sum_{i=1}^{\tilde{n}} S(p,\tilde{y}^i) \to E_f[S(p,\tilde{y})]
+n^{-1}\sum_{i=1}^{n} S(p,\tilde{y}^i) \to E_f[S(p,\tilde{y})]
 \]
-as $\tilde{n} \to \infty$
+as $n \to \infty$
 \newline
 \pause
 
 If we can afford to wait for an infinite amount of data, though, what is the point of trying to predict it?
-\newline
-\pause
 
-NB: textbook looks at the same instead of the average (calls it ``elppd").
+\end{frame}
+
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Problem}
+
+NB: the textbook focuses on $S(p,\tilde{y}) = \log p(\tilde{y})$, and the data are iid (after conditioning on the parameter). They call the following quantity the ``elppd:"
+
+\begin{block}{expected log pointwise predictive density}
+\begin{align*}
+E_f[\log p(\tilde{y})] &= E_f[\log p(\tilde{y}_n)\cdots p(\tilde{y}_n)] \\
+&= E_f\left[\sum_{i=1}^n \log p(\tilde{y}_i) \right] \\
+&= \sum_{i=1}^nE_f\left[ \log p(\tilde{y}_i) \right]
+\end{align*}
+\end{block}
+
 \end{frame}
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
-\frametitle{Another problem}
+\frametitle{Problem}
 
-If we're using the ppd, it might not be in closed form. We have to draw $\theta^j \sim p(\theta \mid y)$, too:
+For the moment let's use $p(\tilde{y}) = p_{\text{post}}(\tilde{y})$
+\newline
 
+The ``elppd" is not obtainable because
+\begin{enumerate}
+\item you don't know $f$ (can't directly integrate)
+\item you don't have $\tilde{y}$ (no Monte-Carlo)
+\end{enumerate}
+\pause
+
+Using $y$ for $\tilde{y}$, we can come up with a rough elppd estimate called the ``lppd"
+\begin{block}{log pointwise predictive density}
 \[
-\tilde{n}^{-1}\sum_{i=1}^{\tilde{n}} \log \left\{ S^{-1} \sum_{j=1}^{S} p(\tilde{y}^i \mid \theta^j) \right\} \to E_f[\log p_{\text{post}}(\tilde{y})]
+\text{lppd} = \log p_{\text{post}}(y) = \sum_{i=1}^n \log p_{\text{post}}(y_i) 
+\]
+\end{block}
+
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Problem}
+
+There'a also the problem that arises where we cannot evaluate 
+\[
+p_{\text{post}}(y) = \int p(y \mid \theta) p(\theta \mid y) \text{d}\theta = E_{\text{post}}[p(y \mid \theta)]
 \]
 
-The textbook calls the above quantity multiplied by $\tilde{n}$ the ``computed lppd"
+The ``computed lppd" again uses $y$ for $\tilde{y}$, but it also uses Monte-Carlo to sample from the posterior 
+\begin{block}{log pointwise predictive density}
+\[
+\text{computed lppd} = \log \hat{p}_{\text{post}}(y) = \sum_{i=1}^n \log \left( \frac{1}{S} \sum_{j=1}^n p(y_i \mid \theta^j) \right) 
+\]
+\end{block}
+
+
+
 \end{frame}
+
 
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
 \frametitle{A third problem}
 
-Don't want to wait for $\tilde{y}$...
+Don't know $f$, don't want to wait for $\tilde{y}$...
 \newline
 
-and unfortunately, we cannot plug in the same data that we used for estimation. This overestimates the average predictive score. 
+and unfortunately, plugging the same data that we used for estimation into the predictive distribution might lead us to overfit because this strategy overestimates the average predictive score. 
 \newline
+\pause
 
 However, we can get around this in two ways generally:
 \begin{enumerate}
@@ -233,7 +283,7 @@ However, we can get around this in two ways generally:
 \newline
 
 \[
-\widehat{\text{elpd}}_{\text{AIC}} = \log p(y \mid \hat{\theta}_{\text{MLE}}) - \underbrace{k}_{\text{penalty}}
+\widehat{\text{elpd}}_{\text{AIC}} = \log p(y \mid \hat{\theta}_{\text{MLE}}) - \overbrace{k}^{\text{penalty}}
 \]
 or
 \[
@@ -269,13 +319,160 @@ or
 The book gives two ways to estimate $p_{\text{DIC}}$:
 
 \begin{enumerate}
-\item $p_{\text{DIC}} = 2\left(\log p(y \mid \hat{\theta}_{\text{Bayes}} - E_{\text{post}}\left[ \log p(y \mid \theta) \right] \right)$
+\item $p_{\text{DIC}} = 2\left(\log p(y \mid \hat{\theta}_{\text{Bayes}}) - E_{\text{post}}\left[ \log p(y \mid \theta) \right] \right)$
 \item $p_{\text{DIC alt}} = 2 \operatorname{Var}_{\text{post}}\left[ \log p(y \mid \theta) \right]$
 \end{enumerate}
 
 Both of these can be approximated using samples from the posterior.
 
 \end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Information Criteria}
+
+Motivation for $p_{\text{DIC}}$
+\begin{align*}
+E_f\left[-2  \log p(\tilde{y} \mid \hat{\theta}_{\text{Bayes}})  \right] &= - 2\log p(y \mid \hat{\theta}_{\text{Bayes}}) \\
+&+ E_Y\left[  -2\log p(\tilde{y} \mid \hat{\theta}_{\text{Bayes}})  \right] + 2\log p(y \mid \hat{\theta}_{\text{Bayes}})\\
+&\approx - 2\log p(y \mid \hat{\theta}_{\text{Bayes}}) \\
+&+  E_{\theta \mid y}\left[ - 2 \log p(y \mid \theta) \right] + 2 \log p(y \mid \hat{\theta}(y)) \\
+&= - 2\log p(y \mid \hat{\theta}_{\text{Bayes}}) + p_{\text{DIC}}
+\end{align*}
+
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Information Criteria}
+
+$p_{\text{WAIC}}$ either stands for ``widely applicable information criterion" or ``Watanabe-Akaike information criterion." 
+\newline
+
+The book refers to it as the most ``fully Bayesian" of the three, probably because it doesn't plug in point estimates into the likelihood instead of integrating.
+
+\[
+\widehat{\text{elppd}}_{\text{WAIC}} = \text{lppd} - p_{\text{WAIC}}
+\]
+or
+\[
+\text{WAIC} = -2\text{lppd} + 2 p_{\text{WAIC}}
+\]
+
+where $ \text{lppd} = \sum_{i=1}^n \log \left(\frac{1}{S}\sum_{s=1}^S p(y_i \mid \theta^s) \right)$
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Information Criteria}
+
+Two ways to estimate 
+
+\begin{enumerate}
+\item $p_{\text{WAIC 1}} = 2\left( \log p(y \mid y) - E_{\theta \mid y} \left\{  \log p(y \mid \theta) \right\} \right)$
+\item $p_{\text{WAIC 2}} = \sum_{i=1}^n var_{\text{post}}(\log p(y_i \mid \theta))$
+\end{enumerate}
+
+Both of these can be approximated using samples from the posterior.
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Information Criteria}
+
+Motivation for $p_{\text{WAIC}}$:
+
+\begin{align*}
+E_f\left[E_{\theta \mid y} \left\{-2  \log p(\tilde{y} \mid \theta) \right\} \right] &= - 2\log p(y \mid y) \\
+&+ 2\left( \log p(y \mid y) - E_f\left[E_{\theta \mid y} \left\{ \log p(\tilde{y} \mid \theta) \right\} \right]\right) \\
+&= - 2\log p(y \mid y) \\
+&+ 2\left( \log p(y \mid y) - E_{\theta \mid y} \left\{ E_f\left[ \log p(\tilde{y} \mid \theta) \right]\right\} \right) \\
+&\approx - 2\log p(y \mid y) \\
+&+ 2\left( \log p(y \mid y) - E_{\theta \mid y} \left\{  \log p(y \mid \theta) \right\} \right) \\
+&= - 2\log p(y \mid y) + p_{\text{WAIC} 1}
+\end{align*}
+
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Cross-Validation}
+
+To assess prediction performance, one may also use {\bf cross-validation}. Here the data is repeatedly partitioned into different training-set-test-set pairs (aka {\bf folds}).
+
+\begin{enumerate}
+\item The partitions are nonrandom, test sets are disjoint
+\item for each split/estimation/prediction, we never use a data point twice
+\item for each split/estimation/prediction, we lose parameter estimation accuracy because each training set is smaller than the full set
+\item however, we get to average over many prediction scores, which reduces variance
+\item there is still a bias that we have to estimate (but it's usually smaller than AIC/DIC/WAIC/etc.)
+\item it can be computationally brutal to calculate for some models
+\end{enumerate}
+\pause
+
+\includegraphics[width=50mm,right]{cv_logo.png}
+
+The logo of this QA website illustrates the idea nicely!
+\newline
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Cross-Validation}
+
+
+{\bf leave-one-out cross-validation} (loo-cv) is a special case where each training set is of size $1$.
+\newline
+
+This necessarily implies that each training set is of size $n-1$, and there are $n$ possible splits.
+\newline
+
+If this ends up being too computationally expensive, it is also possible to do {\bf $k$-fold cross-validation}, which selects $k$ splits/folds. This means the size of each test set is $n/k$, and the size of each training set is $n -n/k = n(1 - 1/k)$
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Cross-Validation Notation}
+
+We only discuss loo-cv...
+\newline
+
+$p_{\text{post}(-i)}(y_i)$ is the prediction for the $i$th point, using the ppd, which uses the posterior distribution conditioning on all values of the data {\bf except the} $i$th
+\newline
+
+If this ppd isn't tractable, we can use draws from the posterior as follows:
+\[
+p_{\text{post}(-i)}(y_i) = \frac{1}{S}\sum_{s=1}^S p(y_i \mid \theta^s)
+\]
+where $\theta^s$ are draws from $p_{\text{post}(-i)}(\theta)$
+\newline
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Cross-Validation}
+
+
+The Bayesian loo-cv estimate for out-of-sample predictive fit is 
+
+\[
+\text{lppd}_{\text{loo-cv}} = \sum_{i=1}^n \log p_{\text{post}(-i)}(y_i)
+\]
+
+There are also bias-corrected versions as well.
+
+\end{frame}
+
 
 \end{document} 
 
