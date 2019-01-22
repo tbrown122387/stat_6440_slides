@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  8 JAN 2019 19:05
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  22 JAN 2019 11:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -937,20 +937,23 @@ thkerncmss.
 
 ] [14
 
-] [15
-
 ]
 \openout4 = `3.vrb'.
 
  (./3.vrb
-<pics/Rplot.png, id=435, 367.3725pt x 230.36063pt>
+<pics/Rplot.png, id=409, 367.3725pt x 230.36063pt>
 File: pics/Rplot.png Graphic file (type png)
 <use pics/Rplot.png>
 Package pdftex.def Info: pics/Rplot.png  used on input line 6.
 (pdftex.def)             Requested size: 284.52756pt x 178.42569pt.
-) [16
+) [15
 
  <./pics/Rplot.png (PNG copy)>]
+\openout4 = `3.vrb'.
+
+ (./3.vrb) [16
+
+]
 \openout4 = `3.vrb'.
 
  (./3.vrb) [17
@@ -963,18 +966,18 @@ Package pdftex.def Info: pics/Rplot.png  used on input line 6.
 ]
 \openout4 = `3.vrb'.
 
- (./3.vrb) [19
+ (./3.vrb
+LaTeX Font Info:    Try loading font information for U+bbold on input line 10.
+
+(/usr/share/texlive/texmf-dist/tex/latex/bbold/Ubbold.fd)) [19
+
+] (./3.vrb)
+[20
 
 ]
 \openout4 = `3.vrb'.
 
- (./3.vrb
-LaTeX Font Info:    Try loading font information for U+bbold on input line 10.
-
-(/usr/share/texlive/texmf-dist/tex/latex/bbold/Ubbold.fd)) [20
-
-] (./3.vrb)
-[21
+ (./3.vrb) [21
 
 ]
 \openout4 = `3.vrb'.
@@ -994,13 +997,13 @@ LaTeX Font Info:    Try loading font information for U+bbold on input line 10.
 ]
 \openout4 = `3.vrb'.
 
- (./3.vrb) [25
+ (./3.vrb)
+[25
 
 ]
 \openout4 = `3.vrb'.
 
- (./3.vrb)
-[26
+ (./3.vrb) [26
 
 ]
 \openout4 = `3.vrb'.
@@ -1013,11 +1016,6 @@ LaTeX Font Info:    Try loading font information for U+bbold on input line 10.
  (./3.vrb) [28
 
 ]
-\openout4 = `3.vrb'.
-
- (./3.vrb) [29
-
-]
 \tf@nav=\write6
 \openout6 = `3.nav'.
 
@@ -1027,17 +1025,17 @@ LaTeX Font Info:    Try loading font information for U+bbold on input line 10.
 \tf@snm=\write8
 \openout8 = `3.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 507.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 507.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 506.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 506.
  (./3.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 507.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 507.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 506.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 506.
 Package rerunfilecheck Info: File `3.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 17784 strings out of 492982
- 337906 string characters out of 6134895
+ 17782 strings out of 492982
+ 337887 string characters out of 6134895
  412806 words of memory out of 5000000
  20839 multiletter control sequences out of 15000+600000
  12560 words of font info for 48 fonts, out of 8000000 for 9000
@@ -1056,10 +1054,10 @@ amsfonts/cm/cmssi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfon
 ts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
 cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.
 pfb>
-Output written on 3.pdf (29 pages, 213034 bytes).
+Output written on 3.pdf (28 pages, 210542 bytes).
 PDF statistics:
- 864 PDF objects out of 1000 (max. 8388607)
- 798 compressed objects within 8 object streams
- 59 named destinations out of 1000 (max. 500000)
+ 838 PDF objects out of 1000 (max. 8388607)
+ 773 compressed objects within 8 object streams
+ 57 named destinations out of 1000 (max. 500000)
  84 words of extra memory for PDF output out of 10000 (max. 10000000)
 

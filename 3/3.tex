@@ -118,7 +118,7 @@ Suppose instead that $\sigma^2$ is a nuisance parameter, and we're only interest
 
 Let $z = \frac{1}{2\sigma^2}\left\{(n-1)  s^2 + n(\bar{y} - \mu)^2 \right\} = \frac{A}{2\sigma^2}$. Then
 \begin{align*}
-p(\mu \mid y) &\propto \int (\sigma^2)^{-(n+2)/2} \exp\left[ - \frac{1}{2\sigma^2}\left\{(n-1)  s^2 + n(\bar{y} - \mu)^2 \right\} \right] \text{d} \sigma^2 \\
+p(\mu \mid y) &\propto \int_0^{\infty} (\sigma^2)^{-(n+2)/2} \exp\left[ - \frac{1}{2\sigma^2}\left\{(n-1)  s^2 + n(\bar{y} - \mu)^2 \right\} \right] \text{d} \sigma^2 \\
 &= \int_{\infty}^0 (A/2)^{-(n+2)/2}z^{(n+2)/2} \exp\left[ - z \right] (-A/2)z^{-2}\text{d} z \\
 &= (A/2)^{-n/2} \underbrace{\int^{\infty}_0 z^{n/2-1} \exp\left[ - z \right] \text{d} z}_{\Gamma(n/2)} \\
 \end{align*}
@@ -213,7 +213,6 @@ After we have figured out the joint posterior, we may be interested in predictin
 \[
 p(\tilde{y} \mid y) = \iint p(\tilde{y} \mid \mu, \sigma^2) p(\mu, \sigma^2 \mid y) \text{d} \mu \text{d} \sigma^2.
 \]
-\pause
 
 It's a homework question to show that 
 \[
