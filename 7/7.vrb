@@ -1,0 +1,23 @@
+\frametitle{Bayes Factors: The Jeffreys-Lindley's paradox}
+
+Say $\bar{y} = 1.5$ and $n = 10$. Then our p-value for the null is $2.101436e-06$, but
+\begin{center}
+\includegraphics[width=75mm]{jf_paradox.png}
+\end{center}
+
+Different decisions based on whether we are frequentist or Bayesian?!
+
+% \begin{verbatim}
+% n <- 10
+% ybar <- 1.5
+% freq_test_stat <- sqrt(n)*ybar
+% 2*pnorm(-abs(freq_test_stat))
+% bf <- function(tausq) {
+%   (n*tausq + 1)^(1/2)*exp( -(ybar^2/2 ))*( n - 1 / (tausq + 1/n) )
+% }
+% tausq_grid <- seq(0,10, .01)
+% plot(tausq_grid, bf(tausq_grid), xlab = "tau squared", ylab = "bf")
+% \end{verbatim}
+
+
+

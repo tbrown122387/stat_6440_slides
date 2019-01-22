@@ -473,6 +473,158 @@ There are also bias-corrected versions as well.
 
 \end{frame}
 
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Bayes Factors}
+
+{\bf Bayes factors} are another way to compare models, two at a time. You compare each model's prior predictive distribution
+\begin{block}{Bayes Factors}
+
+\begin{align*}
+B_{2,1} &= \frac{p(y \mid H_2)}{p(y \mid H_2)}\\
+&= \frac{\int p(y \mid \theta_2, H_2)p(\theta_2 \mid H_2) \text{d}\theta_2}{\int p(y \mid \theta_1, H_1)p(\theta_1 \mid H_1) \text{d}\theta_1}
+\end{align*}
+
+assuming $0 < p(y \mid H_i) < \infty$
+\end{block}
+
+NB: models do not have to be nested, and the parameters can be of varying dimension
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Bayes Factors}
+
+The reason they call it a Bayes factor is because
+\[
+\text{posterior odds} = \text{Bayes factor} \times \text{prior odds}
+\]
+\pause
+
+\begin{align*}
+\text{posterior odds} &= \frac{p(H_2 \mid y)}{p(H_1 \mid y)} \\
+&= \frac{p(y \mid H_2)p(H_2) / p(y)}{p(y \mid H_1)p(H_1) / p(y)} \tag{Bayes rule} \\
+&= \frac{p(y \mid H_2)}{p(y \mid H_1)} \frac{p(H_2)}{p(H_1)} \\
+&= \text{Bayes factor} \times \text{prior odds}
+\end{align*}
+
+
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Bayes Factors}
+
+You should not use improper priors when you calculate Bayes factors because
+\[
+p(y \mid H_1) = \int p(y \mid \theta_1, H_1)p(\theta_1 \mid H_1) \text{d}\theta_1
+\]
+is not a density (homework question), and the normalizing constant will be ambiguous.
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Bayes Factors}
+
+Even noninformative proper priors can be ``biased" towards one of the hypotheses. 
+\newline
+
+% Consider HW question on page 194. 
+% \newline
+
+Consider the following example of {\bf the Jeffreys-Lindley's paradox }: 
+\begin{enumerate}
+\item $p(\bar{y} \mid \theta, H_1)  = (2\pi)^{-n/2}n^{n/2} \exp\left[-\frac{n}{2}\bar{y}^2 \right]$
+\item under $H_1$: $\theta = 0$ with prior probability $1$
+\item under $H_2$: $p(\theta) = N(0,\tau^2)$
+\item $p(\bar{y} \mid H_2) = [2\pi(\tau^2 + n^{-1})]^{-n/2} \exp\left[-\frac{1}{2(\tau^2 + n^{-1})}\bar{y}^2 \right]$
+\end{enumerate}
+so
+\[
+B_{1,2} = (n\tau^2 + 1)^{1/2} \exp\left[-\frac{\bar{y}^2}{2}\left(n - \frac{1}{(\tau^2 + n^{-1})}\right) \right]
+\]
+
+% Setup:
+% \begin{enumerate}
+% \item $y_j \mid \theta_j \sim \text{Normal}(\theta_j, \sigma^2_j)$
+% \item $\sigma_1^2, \ldots, \sigma^2_J$ are known
+% \item under $H_1$: $p(\theta_1, \ldots, \theta_J \mid H_1) = (2 \pi A^2)^{-J/2} \exp\left[-\frac{1}{2A^2}\sum_j \theta_j^2 \right]$
+% \item under $H_2$: $\theta_1 = \cdots = \theta_J = \theta$
+% \item under $H_2$: $p(\theta_1, \ldots, \theta_J \mid H_1) = (2 \pi )^{-J/2}(A^2)^{-1/2} \exp\left[-\frac{1}{2A^2} \theta^2 \right]$
+% \end{enumerate}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Bayes Factors: The Jeffreys-Lindley's paradox}
+
+Say $\bar{y} = 1.5$ and $n = 10$. Then our p-value for the null is $2.101436e-06$, but 
+\begin{center}
+\includegraphics[width=75mm]{jf_paradox.png}
+\end{center}
+
+Different decisions based on whether we are frequentist or Bayesian?!
+
+% \begin{verbatim}
+% n <- 10
+% ybar <- 1.5
+% freq_test_stat <- sqrt(n)*ybar
+% 2*pnorm(-abs(freq_test_stat))
+% bf <- function(tausq) { 
+%   (n*tausq + 1)^(1/2)*exp( -(ybar^2/2 ))*( n - 1 / (tausq + 1/n) ) 
+% }
+% tausq_grid <- seq(0,10, .01)
+% plot(tausq_grid, bf(tausq_grid), xlab = "tau squared", ylab = "bf")
+% \end{verbatim}
+
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Bayes Factors}
+
+If you can't derive $p(y \mid H_i)$, then you can resort to simulation. Notice that the joint $p(y \mid \theta_i, H_i)p(\theta_i \mid H_i)$ is an unnormalized target!
+\newline
+
+For instance, here is the justification behind importance sampling:
+
+\begin{align*}
+p(y \mid H_i) &= \int p(y \mid \theta_i, H_i)p(\theta_i \mid H_i) \text{d}\theta_i \\
+&= \int \frac{p(y \mid \theta_i, H_i)p(\theta_i \mid H_i)}{q(\theta_i)}q(\theta_i) \text{d}\theta_i \\
+&\leftarrow \sum_{s=1}^n \frac{p(y \mid \theta^s_i, H_i)p(\theta^s_i \mid H_i)}{q(\theta^s_i)}
+\end{align*}
+
+where $\theta^s_i \sim q(\theta_i)$
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Bayes Factors and the ``Worst Monte Carlo Method Ever" }
+
+One might tempted to use the posterior samples, too:
+
+\begin{align*}
+p(y \mid H_i)
+&= \left[ \frac{1}{p(y \mid H_i)} \int p(\theta_i \mid  H_i) \text{d}\theta_i \right]^{-1} \\
+&= \left[  \int \frac{p(y \mid \theta_i,  H_i)p(\theta_i \mid H_i)}{p(y \mid H_i) p(y \mid \theta_i, H_i) } \text{d}\theta_i \right]^{-1}\\
+&= \left[  \int \frac{p(\theta_i\mid y,  H_i) }{p(y \mid \theta_i, H_i) } \text{d}\theta_i \right]^{-1} \\
+& \leftarrow  \left[  \frac{1}{S}\sum_{s=1}^S\frac{1 }{p(y \mid \theta_i^s, H_i) } \right]^{-1}
+\end{align*}
+
+where $\theta^s_i \sim p(\theta_i\mid y,  H_i)$ are samples from the posterior. 
+\newline
+
+However, this estimator often has infinite variance and so shouldn't be used. 
+\end{frame}
+
+
 
 \end{document} 
 
