@@ -1,0 +1,8 @@
+\frametitle{Example 2}
+
+Beware of bad proposal distributions!
+\begin{align*}
+var\left( \sum_{i=1}^S w_s(\theta^{1:S})h(\theta^s) \right)
+\end{align*}
+
+
