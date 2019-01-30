@@ -314,22 +314,22 @@ See \verb|3.r| for details:
 Let $y = (y_1, y_2, \ldots, y_k)$ be a vector of counts. Let $\theta = (\theta_1, \theta_2, \ldots, \theta_k)$ be the probabilities of any trial resulting in each of the $k$ outcomes. We assume that there is a known total count (which means $\sum_i y_i = n$) and that the only possible outcomes are these $k$ outcomes $\sum_i \theta_i = 1$.
 \newline
 
-The likelihood is a multinomial distribution
+The likelihood is a {\bf multinomial} (aka a {\bf categorical}) distribution
 $$
 p(y \mid \theta) \propto \prod_{i=1}^k \theta_i^{y_i},
 $$
 and the prior is a Dirichlet distribution
 $$
-p(\theta \mid \alpha) \propto \prod_{i=1}^k \theta_i^{\alpha_i - 1}.
+p(\theta) \propto \prod_{i=1}^k \theta_i^{\alpha_i - 1}.
 $$
-The hyper-parameters have a very nice interpretation of counts!
+The chosen hyper-parameters have a very nice interpretation of counts!
 \end{frame}
 
 %----------------------------------------------------------------------------------------
 \begin{frame}[fragile]
 \frametitle{Multivariate Normal Observations}
 
-Let each observation $y$ follow a multivariate normal distribution. The likelihood $p(y_1, \ldots, y_n \mid \mu, \Sigma)$ is usefully written with a few properties of the trace operator:
+Let each observation $y_i$ follow a multivariate normal distribution. The likelihood $p(y_1, \ldots, y_n \mid \mu, \Sigma)$ is usefully written with a few properties of the trace operator:
 \begin{align*}
 &\propto \det(\Sigma)^{-n/2} \exp\left(-\frac{1}{2}\sum_i (y_i - \mu)'\Sigma^{-1}(y_i- \mu) \right) \\
 &= \det(\Sigma)^{-n/2} \exp\left[-\frac{1}{2}\sum_i \text{tr}\{ (y_i - \mu)'\Sigma^{-1}(y_i- \mu) \} \right] \\
