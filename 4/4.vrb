@@ -1,0 +1,12 @@
+\frametitle{Asymptotic Normality: another example}
+
+\begin{verbatim}
+w0 <- c(0,0)
+optim_res <- optim(w0, bioassayfun, gr = NULL, df1,
+                   hessian = T)
+w <- optim_res$par
+S <- solve(optim_res$hessian)
+\end{verbatim}
+
+\url{http://avehtari.github.io/BDA_R_demos/demos_ch4/demo4_1.html}
+

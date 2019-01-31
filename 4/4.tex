@@ -99,7 +99,7 @@ A mathematical framework
 \item likelihood we are using/assuming: $p(y \mid \theta)$
 \item prior we are using $p(\theta)$
 \item the true distribution $f(y) = \prod_{i=1}^n f(y_i)$
-\item Kullback-Leibler divergence: $0 \underset{\text{hw q}}{<} KL(\theta) = E_f\left[\log\left(\frac{ f(y_i) }{p(y_i \mid \theta) } \right) \right]$
+\item Kullback-Leibler divergence: $0 \underset{\text{hw q}}{\le} KL(\theta) = E_f\left[\log\left(\frac{ f(y_i) }{p(y_i \mid \theta) } \right) \right]$
 \item $\theta_0$ is the minimizer of $KL(\theta)$
 \end{enumerate}
 
@@ -110,7 +110,7 @@ A mathematical framework
 \frametitle{Bayesian Consistency on finite parameter space}
 
 \begin{block}{Theorem 1}
-Suppose there exists $\theta$ such that $f(y_i) = p(y_i \mid \theta)$ and the parameter space is finite. If $p(\theta_0) > 0$ (prior puts mass on the true value), then
+Suppose there exists $\theta_0$ such that $f(y_i) = p(y_i \mid \theta_0)$ and the parameter space is finite. If $p(\theta_0) > 0$ (prior puts mass on the true value), then
 $$
 p(\theta_0 \mid y) \to 1 
 $$
@@ -126,7 +126,7 @@ Convergence is with respect to $f(y)$!
 Recall that if $\bar{Y}_n \overset{p}{\to} \mu < 0$, then $\sum_i Y_i \overset{p}{\to} -\infty$.
 \newline
 
-The $y_i$ are random here! We are keeping parameters fixed. Also $\theta \neq \theta_0$:
+The $y_i$ are random here! We are keeping parameters fixed. Whenever $\theta \neq \theta_0$,
 \begin{align*}
 \frac{1}{n} \sum_{i=1}^n \log \left(\frac{p(y_i \mid \theta) }{p(y_i \mid \theta_0) } \right) &\overset{p}{\to} E_f\left[\log \left(\frac{p(y_i \mid \theta)f(y_i) }{p(y_i \mid \theta_0)f(y_i) } \right) \right] \\
 &= KL(\theta_0) - KL(\theta) < 0
@@ -147,7 +147,7 @@ The $y_i$ are random here! We are keeping parameters fixed. Also $\theta \neq \t
 \frametitle{Bayesian Consistency}
 
 \begin{block}{Theorem 2}
-Suppose there exists $\theta$ such that $f(y_i) = p(y_i \mid \theta)$ and the parameter space is uncountable and compact. Let $A_{\epsilon} = \{ \theta \in \Theta : \rho(\theta, \theta_0 ) < \epsilon \}$ be the $\epsilon$-ball about $\theta_0$. For any $\epsilon > 0$, if $p(\theta \in A_{\epsilon}) > 0$, then
+Suppose there exists $\theta_0$ such that $f(y_i) = p(y_i \mid \theta_0)$ and the parameter space is uncountable and compact. Let $A_{\epsilon} = \{ \theta \in \Theta : \rho(\theta, \theta_0 ) < \epsilon \}$ be the $\epsilon$-ball about $\theta_0$. For any $\epsilon > 0$, if $p(\theta \in A_{\epsilon}) > 0$, then
 $$
 p(\theta \in A_{\epsilon} \mid y) \to 1 
 $$
@@ -222,12 +222,13 @@ These ideas are based on using a Taylor approximation for your posterior distrib
 c  - \frac{1}{2}(\theta - \underbrace{\hat{\theta} }_{\text{mean}} )' \underbrace{\left[-\frac{\text{d}^2}{\text{d}\theta^2} \log p(\theta \mid y)\right] \bigg|_{\theta = \hat{\theta}}}_{\text{precision} } (\theta - \hat{\theta})
 \]
 
+The {\bf observed posterior information} is
 \begin{align*}
-\left[-\frac{\text{d}^2}{\text{d}\theta^2} \log p(\theta \mid y)\right] \bigg|_{\theta = \hat{\theta}} 
+&\left[-\frac{\text{d}^2}{\text{d}\theta^2} \log p(\theta \mid y)\right] \bigg|_{\theta = \hat{\theta}} \\
 &=
-\left[-\frac{\text{d}^2}{\text{d}\theta^2} \log p(\theta)\right] \bigg|_{\theta = \hat{\theta}} \\
-&+
-\sum_{i=1}^n \left[-\frac{\text{d}^2}{\text{d}\theta^2} \log p(y \mid \theta)\right] \bigg|_{\theta = \hat{\theta}}
+\left[-\frac{\text{d}^2}{\text{d}\theta^2} \log p(\theta)\right] \bigg|_{\theta = \hat{\theta}} +
+\sum_{i=1}^n \left[-\frac{\text{d}^2}{\text{d}\theta^2} \log p(y \mid \theta)\right] \bigg|_{\theta = \hat{\theta}}\\
+&= I(\theta)  
 \end{align*}
 
 % So we have, approximately for large $n$, 
@@ -244,16 +245,37 @@ c  - \frac{1}{2}(\theta - \underbrace{\hat{\theta} }_{\text{mean}} )' \underbrac
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
+\frametitle{Asymptotic Normality: Laplace's Method}
+
+It's also justified to use the {\bf observed likelihood Fisher Information} $J(\theta) = -E\left(\frac{\text{d}^2 \log p(y \mid \theta) }{\text{d} \theta^2 } \right)$
+\begin{align*}
+&\left[-\frac{\text{d}^2}{\text{d}\theta^2} \log p(\theta \mid y)\right] \bigg|_{\theta = \hat{\theta}} \\
+&=
+\left[-\frac{\text{d}^2}{\text{d}\theta^2} \log p(\theta)\right] \bigg|_{\theta = \hat{\theta}} +
+n \underbrace{\frac{1}{n}\sum_{i=1}^n \left[-\frac{\text{d}^2}{\text{d}\theta^2} \log p(y \mid \theta)\right] \bigg|_{\theta = \hat{\theta}}}_{ \text{approx. } J(\hat{\theta} )}
+\end{align*}
+
+
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
 \frametitle{Asymptotic Normality}
 
 
 So we have, approximately for large $n$,
 \[
+\theta \mid y_1, \ldots, y_n \sim \text{Normal}\left(\hat{\theta} , I(\hat{\theta})^{-1} )\right)
+\]
+or
+\[
 \theta \mid y_1, \ldots, y_n \sim \text{Normal}\left(\hat{\theta} , n^{-1}J(\hat{\theta})^{-1} )\right)
 \]
 \begin{enumerate}
 \item $\hat{\theta}$ is the posterior mode. Using MLE (ignoring prior) is also justified. 
-\item $J(\hat{\theta})$ is the Fisher Information (of an individual datum's likelihood) evaluated at the posterior mode.
+\item $J(\hat{\theta})$ is the observed Fisher Information (of an individual datum's likelihood) evaluated at the posterior mode.
 \item This result is known as the Bernstein-von Mises theorem. Proof omitted.
 \end{enumerate}
 
@@ -349,6 +371,7 @@ Now let's find the precision matrix
 
 When we plug in the estimates, then the precision matrix is
 $$
+I(\hat{\theta} ) = 
 -\frac{\text{d}^2}{\text{d}\theta^2} \log p(\theta \mid y) \bigg|_{\theta = \hat{\theta}} = 
 \left[ \begin{array}{cc}
 \frac{n^2}{(n-1)s^2} & 0 \\
@@ -368,6 +391,22 @@ p(\mu, \theta \mid y) \approx \text{N}\left(
 \end{array}\right]
 \right)
 $$
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Asymptotic Normality: another example}
+
+\begin{verbatim}
+w0 <- c(0,0)
+optim_res <- optim(w0, bioassayfun, gr = NULL, df1, 
+                   hessian = T)
+w <- optim_res$par
+S <- solve(optim_res$hessian)
+\end{verbatim}
+
+\url{http://avehtari.github.io/BDA_R_demos/demos_ch4/demo4_1.html}
+
 \end{frame}
 
 %----------------------------------------------------------------------------------------

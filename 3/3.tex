@@ -497,6 +497,26 @@ y_i \mid \alpha, \beta \sim \text{Binomial}(n_i, \text{invlogit}(\alpha + \beta 
 \begin{enumerate}
 \item The {\bf dose-response} is the relationship between $x_i$ and $\theta_i$ (which is assumed the same for each group $i$).
 \item {\bf LD-50} is the unknown quantity $-\alpha/\beta$. It only makes sense when $\beta > 0$, and it is the value of $x_i$ that yields $\theta_i = .5$ (plug it into eqn (1) above). Sometimes scientists are more interested in estimating this than they are in estimating individual parameters.
+\end{enumerate}
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{A few notes on example 3.7}
+
+We assume an improper prior: $p(\alpha,\beta) \propto 1$. So
+\begin{align*}
+&\log p(\alpha,\beta \mid y) \\
+&= c + \log p(y \mid \alpha, \beta) + \log p(\alpha,\beta) \\
+&= c +  \log\prod_{i=1}^4 \theta_i^{y_i}(1-\theta_i)^{n_i-y_i} \\
+&= c +  \log\prod_{i=1}^4 \left(\frac{\theta_i}{(1-\theta_i)}\right)^{y_i}(1-\theta_i)^{n_i} \\
+&= c + \sum_{i=1}^4 y_i (\alpha + \beta x_i) - n_i\log[1 + \exp (\alpha + \beta x_i)] \\
+\end{align*}
+
+
+\begin{enumerate}
 \item One of the authors has provided \verb|R| code: \url{https://github.com/avehtari/BDA_R_demos/tree/master/demos_ch3}
 \end{enumerate}
 
