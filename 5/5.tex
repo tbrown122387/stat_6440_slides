@@ -151,12 +151,12 @@ You end up with $(\alpha,\beta) = (1.4, 8.6)$. Then, because $(y_{71},n_{71}) = 
 \begin{frame}
 \frametitle{Rat tumor example}
 
-Problems with this approach: can't really make inferences on $\theta_1, \ldots, \theta_{70}$.
+Problems with this approach: .
 
 \begin{enumerate}
-\item ``using the data twice"
+\item can't really make inferences on $\theta_1, \ldots, \theta_{70}$ unless you ``use the data twice"
 \item how do we know we used the right point estimates for prior construction?
-\item it's inappropriate for $\alpha$, $\beta$ to be statistics because they shouldn't be functions of the data, and their uncertainty is not quantified (TODO)
+\item put a prior on $\alpha$, $\beta$ using prior knowledge, don't estimate with data and then assume these estimates are the ``known" values (ignores uncertainty)
 \end{enumerate}
 
 
@@ -170,13 +170,12 @@ A better way:
 \begin{enumerate}
 \item choose (hyper)prior $p(\alpha,\beta)$ 
 \item choose prior $p(\theta_{1:71} \mid \alpha, \beta)$
-\item choose likelihood $p(y \mid \theta_{1:71}, \alpha, \beta)$
+\item choose likelihood $p(y \mid \theta_{1:71}, \alpha, \beta) = p(y \mid \theta_{1:71}) = \prod_{j=1}^{71}p(y_j \mid \theta_{j})$
 \end{enumerate}
 
 Then 
 \begin{align*}
-p(\theta_{1:71}, \alpha, \beta \mid y) &\propto p(y \mid \theta_{1:71}, \alpha, \beta)p(\theta_{1:71} , \alpha,\beta) \tag{Bayes'} \\
-&= p(y \mid \theta_{1:71}, \alpha, \beta)p(\theta_{1:71} \mid \alpha, \beta)p(\alpha,\beta) \tag{defn.}\\
+p(\theta_{1:71}, \alpha, \beta \mid y) &\propto p(y \mid \theta_{1:71}, \alpha, \beta)p(\theta_{1:71} \mid \alpha,\beta)p(\alpha,\beta) \tag{Bayes'} \\
 &= p(y \mid \theta_{1:71} )p(\theta_{1:71} \mid \alpha, \beta)p(\alpha,\beta) \tag{condtl. indep.} 
 \end{align*}
 
