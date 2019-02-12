@@ -88,7 +88,7 @@ University of Virginia \\
 On the one hand, we can assume that our data are iid, conditional on one parameter. On the other hand, we can assume that each data point gets its own parameter. The former might be too inflexible, while the latter might be too flexible, leading too overfitting.
 \newline
 
-Hierarchical models are agood ``in between" option that allows each data point to get its own parameter; however, these parameters are ``tied together" in a certain sense.
+Hierarchical models are a good ``in between" option that allows each data point to get its own parameter; however, these parameters are ``tied together" in a certain sense.
 
 \end{frame}
 
@@ -151,7 +151,7 @@ You end up with $(\alpha,\beta) = (1.4, 8.6)$. Then, because $(y_{71},n_{71}) = 
 \begin{frame}
 \frametitle{Rat tumor example}
 
-Problems with this approach: .
+Problems with this approach:
 
 \begin{enumerate}
 \item can't really make inferences on $\theta_1, \ldots, \theta_{70}$ unless you ``use the data twice"
@@ -502,10 +502,10 @@ If $p(\mu \mid \tau) \propto 1$, then
 \[
 p( \mu \mid \tau, y) = \text{Normal}(\hat{\mu}, V_{\mu})
 \]
-where $V_{\mu}^{-1} = \sum_{j} \left( \frac{1}{\sigma^2_j + \tau^2}\right)$  and $\hat{\mu} = V_{\mu} \sum_{j} \bar{y}_{\cdot,j}\left( \frac{1}{\sigma^2_j} + \frac{1}{\tau^2} \right)$
+where $V_{\mu}^{-1} = \sum_{j} \left( \frac{1}{\sigma^2_j + \tau^2}\right)$  and $\hat{\mu} = V_{\mu} \left[ \sum_{j} \bar{y}_{\cdot,j}\left( \frac{1}{\sigma^2_j} + \frac{1}{\tau^2} \right) \right]$
 \end{block}
 
-Proof: homework question! Start by showing that $p(y \mid \mu, \tau) = \text{Normal}(\mu, \sigma^2_j + \tau^2)$ (which we use again, later)
+Proof: homework question! Start by showing that $p(y \mid \mu, \tau) = \prod_j \text{Normal}(\mu, \sigma^2_j + \tau^2)$ (which we use again, later)
 
 
 \end{frame}
@@ -557,7 +557,7 @@ p(\tau \mid y) &\propto \frac{ p(y \mid \mu, \tau)  }{ p(\mu \mid \tau, y) } \\
 &\propto \frac{\prod_j (\sigma^2_j + \tau^2)^{-1/2} \exp\left[ -\frac{1}{2 (\sigma^2_j + \tau^2) } (\mu -  \hat{\mu} + \hat{\mu} - \bar{y}_{\cdot,j}  )^2\right] }{ V_{\mu}^{-1/2} \exp\left[ -\frac{1}{2 V_{\mu} } (\mu -\hat{\mu} )^2\right] } \\
 &\propto V_{\mu}^{1/2} \prod_{j} (\sigma^2_j + \tau^2)^{-1/2} \exp\left[ -\frac{ (\bar{y}_{\cdot,j} - \hat{\mu})^2 }{2(\sigma^2_j + \tau^2)}\right]
 \end{align*}
-last step is tricky!
+last step is tricky (see next slide)
 
 
 \end{frame}
