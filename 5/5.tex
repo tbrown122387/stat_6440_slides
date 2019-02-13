@@ -297,8 +297,8 @@ So $p(\theta_{1:71} \mid y, \alpha, \beta) = \prod_{j=1}^{71}\text{Beta}(\alpha 
 \begin{align*}
 p(\alpha, \beta \mid y) &\propto \frac{p(y \mid \theta_{1:71})p(\theta_{1:71} \mid \alpha, \beta)p(\alpha, \beta) }{p(\theta_{1:71} \mid y, \alpha, \beta) } \tag{earlier slides} \\
 &\propto \frac{p(\theta_{1:71} \mid \alpha, \beta)p(\alpha, \beta) }{ \prod_{j=1}^{71}\frac{\Gamma(n_j + \alpha + \beta )}{ \Gamma(y_j+\alpha)\Gamma(n_j - y_j + \beta) }\theta_j^{y_j+\alpha-1}(1-\theta_j)^{n_j - y_j + \beta-1} } \\
-&= \frac{ \prod_{j=1}^{71} \frac{\Gamma(\alpha + \beta )}{ \Gamma(\alpha)\Gamma( \beta) } \theta_j^{\alpha-1}(1-\theta_j)^{\beta-1} (\alpha + \beta)^{-5/2} }{ \prod_{j=1}^{71}\frac{\Gamma(n_j + \alpha + \beta )}{ \Gamma(y_j+\alpha)\Gamma(n_j - y_j + \beta) }\theta_j^{y_j+\alpha-1}(1-\theta_j)^{n_j - y_j + \beta-1} } \\
-&\propto \prod_{j=1}^{71} \frac{\Gamma(\alpha + \beta )}{ \Gamma(\alpha)\Gamma( \beta) } \bigg/ \frac{\Gamma(n_j + \alpha + \beta )}{ \Gamma(y_j+\alpha)\Gamma(n_j - y_j + \beta) } 
+&= \frac{ (\alpha + \beta)^{-5/2} \prod_{j=1}^{71} \frac{\Gamma(\alpha + \beta )}{ \Gamma(\alpha)\Gamma( \beta) } \theta_j^{\alpha-1}(1-\theta_j)^{\beta-1}  }{ \prod_{j=1}^{71}\frac{\Gamma(n_j + \alpha + \beta )}{ \Gamma(y_j+\alpha)\Gamma(n_j - y_j + \beta) }\theta_j^{y_j+\alpha-1}(1-\theta_j)^{n_j - y_j + \beta-1} } \\
+&\propto(\alpha + \beta)^{-5/2} \prod_{j=1}^{71} \frac{\Gamma(\alpha + \beta )}{ \Gamma(\alpha)\Gamma( \beta) } \bigg/ \frac{\Gamma(n_j + \alpha + \beta )}{ \Gamma(y_j+\alpha)\Gamma(n_j - y_j + \beta) } 
 \end{align*}
 
 \end{frame}
@@ -308,11 +308,12 @@ p(\alpha, \beta \mid y) &\propto \frac{p(y \mid \theta_{1:71})p(\theta_{1:71} \m
 \frametitle{Finding $p(\alpha,\beta \mid y)$ }
 
 \[
-p(\alpha, \beta \mid y) \propto \prod_{j=1}^{71} \frac{\Gamma(\alpha + \beta )}{ \Gamma(\alpha)\Gamma( \beta) } \bigg/ \frac{\Gamma(n_j + \alpha + \beta )}{ \Gamma(y_j+\alpha)\Gamma(n_j - y_j + \beta) }
+p(\alpha, \beta \mid y) \propto (\alpha + \beta)^{-5/2} \prod_{j=1}^{71} \frac{\Gamma(\alpha + \beta )}{ \Gamma(\alpha)\Gamma( \beta) } \bigg/ \frac{\Gamma(n_j + \alpha + \beta )}{ \Gamma(y_j+\alpha)\Gamma(n_j - y_j + \beta) }
 \]
 so
 \begin{align*}
-\log p(\alpha, \beta \mid y) &= c +  \sum_{j=1}^{71} \left\{ \log  \frac{\Gamma(\alpha + \beta )}{ \Gamma(\alpha)\Gamma( \beta) } - \log \frac{\Gamma(n_j + \alpha + \beta )}{ \Gamma(y_j+\alpha)\Gamma(n_j - y_j + \beta) } \right\}\\
+&\log p(\alpha, \beta \mid y) \\
+&= c +  \sum_{j=1}^{71} \left\{ \log  \frac{\Gamma(\alpha + \beta )}{ \Gamma(\alpha)\Gamma( \beta) } - \log \frac{\Gamma(n_j + \alpha + \beta )}{ \Gamma(y_j+\alpha)\Gamma(n_j - y_j + \beta) } \right\} - \frac{5}{2} \log (\alpha + \beta)\\
 \end{align*}
 \end{frame}
 
@@ -321,13 +322,15 @@ so
 \begin{frame}[fragile]
 \frametitle{Finding $p(\alpha,\beta \mid y)$ }
 
+Missing $- \frac{5}{2} \log (\alpha + \beta)$?
 \begin{verbatim}
 A <- seq(0.5, 6, length.out = 100)
 B <- seq(3, 33, length.out = 100)
 cA <- rep(A, each = length(B))
 cB <- rep(B, length(A))
 lpfun <- function(a, b, y, n) log(a+b)*(-5/2) +
-  sum(lgamma(a+b)-lgamma(a)-lgamma(b)+lgamma(a+y)+lgamma(b+n-y)-lgamma(a+b+n))
+  sum(lgamma(a+b)-lgamma(a)-lgamma(b)
+  +lgamma(a+y)+lgamma(b+n-y)-lgamma(a+b+n))
 lp <- mapply(lpfun, cA, cB, MoreArgs = list(y, n))
 \end{verbatim}
 
