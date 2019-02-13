@@ -3,7 +3,7 @@
 They say, generally $P(T(y^{\text{rep}}) \le T(y) \mid \theta, y)$ is ``stochastically more variable" than $P(T(y^{\text{rep}}) \le T(y) \mid y)$.
 \newline
 
-One thing the authors \*could\* mean is that these conditional probabilities are {\bf convex ordered}.
+One thing the authors *could* mean is that these conditional probabilities are {\bf convex ordered}.
 \newline
 
 

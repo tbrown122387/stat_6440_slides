@@ -139,9 +139,9 @@ p_B = P(T(y^{\text{rep}}) > T(y) \mid y) = \int_{\{T(y^{\text{rep}}) : T(y^{\tex
 \]
 
 \begin{enumerate}
-\item if $p_b = .5$, the median of $p(T(y^{\text{rep}}) \mid y)$ is exactly equal to $T(y)$.
-\item if $p_b > .5$, the median of $p(T(y^{\text{rep}}) \mid y)$ is greater than  $T(y)$.
-\item if $p_b < .5$, the median of $p(T(y^{\text{rep}}) \mid y)$ is less than  $T(y)$
+\item if $p_B = .5$, the median of $p(T(y^{\text{rep}}) \mid y)$ is exactly equal to $T(y)$.
+\item if $p_B > .5$, the median of $p(T(y^{\text{rep}}) \mid y)$ is greater than  $T(y)$.
+\item if $p_B < .5$, the median of $p(T(y^{\text{rep}}) \mid y)$ is less than  $T(y)$
 \end{enumerate}
 
 
@@ -155,10 +155,10 @@ p_B = P(T(y^{\text{rep}}) > T(y) \mid y) = \int_{\{T(y^{\text{rep}}) : T(y^{\tex
 \begin{frame}
 \frametitle{Posterior Predictive Checks}
 
-$p_b = .5$ does not \*prove\* your model is good! 
+$p_B = .5$ does not \*prove\* your model is good! 
 \begin{enumerate}
 \item Maybe you're overfitting. Remember, you're using the data twice.
-\item Maybe you're using an "easy" test function (e.g. a sufficient statistic).
+\item Maybe you're using an ``easy" test function (e.g. a sufficient statistic).
 \item Maybe it does poorly for other test functions.
 \end{enumerate}
 
@@ -223,7 +223,7 @@ Example: $y_i$ is the $i$th element of one data set
 \begin{frame}
 \frametitle{Example: Speed of Light Measurements}
 
-A histogram of $y$
+A histogram of real/observed/historical $y$
 \begin{center}
 \includegraphics[width=120mm]{speed_light_data.png}
 \end{center}
@@ -258,7 +258,7 @@ Let's simulate a data set $y^{\text{rep}} \sim p(y^{\text{rep}} \mid y)$
 
 Recall from chapter 3:
 \[
-y^{\text{rep}} \mid y \sim t_{n-1}(\bar{y}, s^2(1 + 1/n)).
+y^{\text{rep}}_i \mid y \sim t_{n-1}(\bar{y}, s^2(1 + 1/n)).
 \]
 
 \begin{verbatim}
@@ -450,7 +450,7 @@ $$
 They say, generally $P(T(y^{\text{rep}}) \le T(y) \mid \theta, y)$ is ``stochastically more variable" than $P(T(y^{\text{rep}}) \le T(y) \mid y)$. 
 \newline
 
-One thing the authors \*could\* mean is that these conditional probabilities are {\bf convex ordered}. 
+One thing the authors *could* mean is that these conditional probabilities are {\bf convex ordered}. 
 \newline
 
 
