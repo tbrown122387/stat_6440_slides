@@ -201,8 +201,7 @@ NB: the textbook focuses on $S(p,\tilde{y}) = \log p(\tilde{y})$, and the data a
 
 \begin{block}{expected log pointwise predictive density}
 \begin{align*}
-E_f[\log p(\tilde{y})] &= E_f[\log p(\tilde{y}_n)\cdots p(\tilde{y}_n)] \\
-&= E_f\left[\sum_{i=1}^n \log p(\tilde{y}_i) \right] \\
+E_f [\log p(\tilde{y})] &= E_f\left[\log \prod_i p(\tilde{y}_i) \right] \\
 &= \sum_{i=1}^nE_f\left[ \log p(\tilde{y}_i) \right]
 \end{align*}
 \end{block}
@@ -333,10 +332,9 @@ Both of these can be approximated using samples from the posterior.
 
 Motivation for $p_{\text{DIC}}$
 \begin{align*}
-E_f\left[-2  \log p(\tilde{y} \mid \hat{\theta}_{\text{Bayes}})  \right] &= - 2\log p(y \mid \hat{\theta}_{\text{Bayes}}) \\
-&+ E_Y\left[  -2\log p(\tilde{y} \mid \hat{\theta}_{\text{Bayes}})  \right] + 2\log p(y \mid \hat{\theta}_{\text{Bayes}})\\
-&\approx - 2\log p(y \mid \hat{\theta}_{\text{Bayes}}) \\
-&+  E_{\theta \mid y}\left[ - 2 \log p(y \mid \theta) \right] + 2 \log p(y \mid \hat{\theta}(y)) \\
+&E_{\tilde{y}}\left[-2  \log p(\tilde{y} \mid \hat{\theta}_{\text{Bayes}})  \right] \\
+&= - 2\log p(y \mid \hat{\theta}_{\text{Bayes}}) + E_{\tilde{y}}\left[  -2\log p(\tilde{y} \mid \hat{\theta}_{\text{Bayes}})  \right] + 2\log p(y \mid \hat{\theta}_{\text{Bayes}})\\
+&\approx - 2\log p(y \mid \hat{\theta}_{\text{Bayes}}) +  E_{\theta \mid y}\left[ - 2 \log p(y \mid \theta) \right] + 2 \log p(y \mid \hat{\theta}_{\text{Bayes}} ) \\
 &= - 2\log p(y \mid \hat{\theta}_{\text{Bayes}}) + p_{\text{DIC}}
 \end{align*}
 
@@ -388,12 +386,14 @@ Both of these can be approximated using samples from the posterior.
 Motivation for $p_{\text{WAIC}}$:
 
 \begin{align*}
-E_f\left[E_{\theta \mid y} \left\{-2  \log p(\tilde{y} \mid \theta) \right\} \right] &= - 2\log p(y \mid y) \\
-&+ 2\left( \log p(y \mid y) - E_f\left[E_{\theta \mid y} \left\{ \log p(\tilde{y} \mid \theta) \right\} \right]\right) \\
-&= - 2\log p(y \mid y) \\
-&+ 2\left( \log p(y \mid y) - E_{\theta \mid y} \left\{ E_f\left[ \log p(\tilde{y} \mid \theta) \right]\right\} \right) \\
-&\approx - 2\log p(y \mid y) \\
-&+ 2\left( \log p(y \mid y) - E_{\theta \mid y} \left\{  \log p(y \mid \theta) \right\} \right) \\
+&E_{\tilde{y}}\left[ -2  \log   p(\tilde{y} \mid y)  \right] \\
+&E_{\tilde{y}}\left[ -2  \log  E_{\theta \mid y} ( p(\tilde{y} \mid \theta) ) \right] \\
+&= - 2\log p(y \mid y) + 2\left( \log p(y \mid y) - E_{\tilde{y}}\left[  \log  E_{\theta \mid y} ( p(\tilde{y} \mid \theta) ) \right] \right) \\
+&\approx - 2\log p(y \mid y) + 2\left( \log p(y \mid y) - E_{\tilde{y}}\left[   E_{\theta \mid y} ( \log  p(\tilde{y} \mid \theta) ) \right] \right) \\
+&\approx - 2\log p(y \mid y) + 2\left( \log p(y \mid y) - E_{\theta \mid y}\left[   E_{\tilde{y}} (\log  p(\tilde{y} \mid \theta) ) \right] \right) \\
+&\approx - 2\log p(y \mid y) + 2\left( \log p(y \mid y) - E_{\theta \mid y}\left[  \log   p(y \mid \theta)  \right] \right) \\
+&= - 2\log p(y \mid y) + 2\left( \log \prod_i p(y_i \mid y) - E_{\theta \mid y}\left[  \log   \prod_i p(y_i \mid \theta)  \right] \right) \\
+&= - 2\log p(y \mid y) + 2 \sum_i \left(  \log p(y_i \mid y) - E_{\theta \mid y}\left[ \log p(y_i \mid \theta)  \right] \right) \\
 &= - 2\log p(y \mid y) + p_{\text{WAIC} 1}
 \end{align*}
 
@@ -406,6 +406,7 @@ E_f\left[E_{\theta \mid y} \left\{-2  \log p(\tilde{y} \mid \theta) \right\} \ri
 \frametitle{Cross-Validation}
 
 To assess prediction performance, one may also use {\bf cross-validation}. Here the data is repeatedly partitioned into different training-set-test-set pairs (aka {\bf folds}).
+\pause
 
 \begin{enumerate}
 \item The partitions are nonrandom, test sets are disjoint
@@ -429,13 +430,13 @@ The logo of this QA website illustrates the idea nicely!
 \frametitle{Cross-Validation}
 
 
-{\bf leave-one-out cross-validation} (loo-cv) is a special case where each training set is of size $1$.
+{\bf leave-one-out cross-validation} (loo-cv) is a special case where each test set is of size $1$.
 \newline
 
 This necessarily implies that each training set is of size $n-1$, and there are $n$ possible splits.
 \newline
 
-If this ends up being too computationally expensive, it is also possible to do {\bf $k$-fold cross-validation}, which selects $k$ splits/folds. This means the size of each test set is $n/k$, and the size of each training set is $n -n/k = n(1 - 1/k)$
+If this ends up being too computationally expensive, it is also possible to do {\bf $k$-fold cross-validation}, which selects $k$ splits/folds. This means the size of each test set is $n/k$, and the size of each training set is $n -n/k$
 
 \end{frame}
 
@@ -448,6 +449,7 @@ We only discuss loo-cv...
 
 $p_{\text{post}(-i)}(y_i)$ is the prediction for the $i$th point, using the ppd, which uses the posterior distribution conditioning on all values of the data {\bf except the} $i$th
 \newline
+\pause
 
 If this ppd isn't tractable, we can use draws from the posterior as follows:
 \[
@@ -481,7 +483,7 @@ There are also bias-corrected versions as well.
 \begin{block}{Bayes Factors}
 
 \begin{align*}
-B_{2,1} &= \frac{p(y \mid H_2)}{p(y \mid H_2)}\\
+B_{2,1} &= \frac{p(y \mid H_2)}{p(y \mid H_1)}\\
 &= \frac{\int p(y \mid \theta_2, H_2)p(\theta_2 \mid H_2) \text{d}\theta_2}{\int p(y \mid \theta_1, H_1)p(\theta_1 \mid H_1) \text{d}\theta_1}
 \end{align*}
 
@@ -491,6 +493,21 @@ assuming $0 < p(y \mid H_i) < \infty$
 NB: models do not have to be nested, and the parameters can be of varying dimension
 
 \end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Bayes Factors}
+
+$B_{2,1} = \frac{p(y \mid H_2)}{p(y \mid H_1)}$
+
+\begin{center}
+\includegraphics[width=80mm]{bf_scale.png}
+\end{center}
+
+From \url{http://www.andrew.cmu.edu/user/kk3n/simplicity/KassRaftery1995.pdf}
+
+\end{frame}
+
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
@@ -536,7 +553,7 @@ Even noninformative proper priors can be ``biased" towards one of the hypotheses
 % Consider HW question on page 194. 
 % \newline
 
-Consider the following example of {\bf the Jeffreys-Lindley's paradox }: 
+Consider the following example of the {\bf Jeffreys-Lindley's paradox}: 
 \begin{enumerate}
 \item $p(\bar{y} \mid \theta, H_1)  = (2\pi)^{-n/2}n^{n/2} \exp\left[-\frac{n}{2}\bar{y}^2 \right]$
 \item under $H_1$: $\theta = 0$ with prior probability $1$
@@ -621,9 +638,17 @@ p(y \mid H_i)
 where $\theta^s_i \sim p(\theta_i\mid y,  H_i)$ are samples from the posterior. 
 \newline
 
-However, this estimator often has infinite variance and so shouldn't be used. 
+However, this estimator often has infinite variance, and so it shouldn't be used. 
 \end{frame}
 
+%----------------------------------------------------------------------------------------
+% \begin{frame}
+% \frametitle{Bayes Factors}
+% 
+% $p(y \mid H_i)$ goes by many names: marginal likelihood, evidence, prior predictive distribution...
+% \newline
+% 
+% \end{frame}
 
 
 \end{document} 
