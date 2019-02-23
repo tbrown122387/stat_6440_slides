@@ -1,8 +1,22 @@
 \frametitle{Example 2}
 
-Beware of bad proposal distributions!
-\begin{align*}
-var\left( \sum_{i=1}^S w_s(\theta^{1:S})h(\theta^s) \right)
-\end{align*}
+\begin{verbatim}
+y <- 2 # fake data
+log_unnorm_weight <- function(theta){
+  # sqrt(2pi) because it will cancel out
+  -.5*(y - theta)^2 }
+getISEstimator <- function(num_samples){
+  theta_draws <- rt(num_samples , 1)
+  lunws <- log_unnorm_weight(theta_draws)
+  norm_weights <- exp(lunws)/sum(exp(lunws))
+  estimator <- sum(norm_weights * theta_draws)
+  list("estimate" = estimator,
+       "approx_var" = sum( norm_weights*(theta_draws - estimator)^2) ) }
+# two ways to calculate standard errors
+num_samps_per_estimate <- 10
+sqrt(getISEstimator(num_samps_per_estimate)$approx_var)
+sd(replicate(1000,
+    getISEstimator(num_samps_per_estimate)$estimate))
+\end{verbatim}
 
 

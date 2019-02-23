@@ -147,6 +147,7 @@ If it's available, you should probably use a Rao-Blackwellized procedure, though
 \[
 E[h(\tilde{y}) \mid y] = E[E\left( h(\tilde{y}) \mid \theta \right) \mid y] \approx \frac{1}{S} \sum_{s=1}^S E\left( h(\tilde{y}) \mid \theta^s \right)
 \]
+with $\theta^s \sim p(\theta \mid y)$
 
 
 \end{frame}
@@ -159,7 +160,7 @@ We used this method earlier for the rat tumor example!
 
 Given that we can evaluate the unnormalized target $p(\theta, y) = p(y \mid \theta)p(\theta)$, we choose a nonrandom grid of points (think \verb|seq|) $\theta_1, \ldots, \theta_S$, and then we approximate the the continuous posterior with a discrete random variable with pmf equal to
 \[
-p(\theta_j) = \frac{p(y \mid \theta_j)p(\theta_j)}{\sum_{s=1}^S p(y \mid \theta_s)p(\theta_s) }
+\tilde{p}(\theta_j \mid y) = \frac{p(y \mid \theta_j)p(\theta_j)}{\sum_{s=1}^S p(y \mid \theta_s)p(\theta_s) }
 \]
 for any $\theta_j \in \{\theta_1, \ldots, \theta_s\}$
 
@@ -174,7 +175,7 @@ From now on we will write the posterior in terms of an unnormalized density $q(\
 p(\theta \mid y) = \frac{q(\theta \mid y)}{ \int q(\theta \mid y) \text{d}\theta}
 \]
 
-Most (all?) of the sampling techniques will assume that we can't evaluate $p(\theta \mid y)$, but that we can evaluate $q(\theta \mid y)$
+Most (maybe all) of the sampling techniques will assume that we can't evaluate $p(\theta \mid y)$, but that we can evaluate $q(\theta \mid y)$
 
 \end{frame}
 %----------------------------------------------------------------------------------------
@@ -186,8 +187,8 @@ Setup
 \item $p(\theta \mid y)$ the target, posterior
 \item $q(\theta \mid y) = p(y \mid \theta) p(\theta)$ the unnormalized target
 \item $g(\theta)$ the ``instrumental" or ``proposal" distribution
-\item $q(\theta \mid y) / g(\theta) \le M$ uniformly
-\item $g \gg q$ the proposal ``dominates" your target
+\item need $q(\theta \mid y) / g(\theta) \le M$ uniformly
+\item $g \gg q$ the proposal ``dominates" your target (won't divide by $0$)
 \end{enumerate}
 We are free to choose our own $g(\theta)$. For the time being, we assume that $\int g(\theta) \text{d}\theta = 1$.
 
@@ -215,7 +216,7 @@ P\left( \theta \le t \bigg\rvert U \le \frac{q(\theta \mid y)}{M g(\theta) } \ri
 &= \frac{\int_{-\infty}^t \int_0^{ \frac{q(\theta \mid y)}{M g(\theta) } }g(\theta)1 \text{d}u \text{d}\theta }{ \int_{-\infty}^{\infty} \int_0^{ \frac{q(\theta \mid y)}{M g(\theta) } }g(\theta)1 \text{d}u \text{d}\theta } \\
 &= \frac{\int_{-\infty}^t g(\theta)\frac{q(\theta \mid y)}{M g(\theta) }  \text{d}\theta }{ \int_{-\infty}^{\infty} g(\theta)  \frac{q(\theta \mid y)}{M g(\theta) } \text{d}\theta } \\
 &= \frac{\int_{-\infty}^t q(\theta \mid y)  \text{d}\theta }{ \int_{-\infty}^{\infty}  q(\theta \mid y)\text{d}\theta } \\
-&= \pi(\theta \le t \mid y).
+&= p(\theta \le t \mid y).
 \end{align*}
 \end{frame}
 
@@ -224,14 +225,14 @@ P\left( \theta \le t \bigg\rvert U \le \frac{q(\theta \mid y)}{M g(\theta) } \ri
 \begin{frame}[fragile]
 \frametitle{Example 1}
 
-Assume $y \sim \text{Normal}(\theta,1)$, and $p(\theta) = \frac{1}{\pi(1+\theta^2)}$. Draw from 
+Assume $y \sim \text{Normal}(\theta,1)$, and $p(\theta) = \frac{1}{\pi(1+\theta^2)}$. 
+Our goal is to draw from
 \begin{align*}
 p(\theta \mid y) &\propto q(\theta\mid y) \\
 &= p(y \mid \theta) p(\theta) \\
 &= \frac{1}{\sqrt{2\pi}} \exp\left[-\frac{1}{2} (y-\theta)^2 \right] \frac{1}{\pi(1+\theta^2)} \\
 &\propto \exp\left[-\frac{(\theta - y)^2}{2} - \log(1 + \theta^2) \right],
 \end{align*}
-\pause
 
 
 \end{frame}
@@ -279,7 +280,10 @@ hist(theta_proposals[accepts]) # only the accepted draws
 \begin{frame}[fragile]
 \frametitle{Importance Sampling}
 
-{\bf importance sampling} also involves ratios like the previous algorithm. However, instead of using those ratios to either accept or discard samples, it uses the ratios to weight samples. It also doesn't require us to calculate an $M$. Actually, it's just straightforward Monte-Carlo!
+{\bf importance sampling} also involves ratios like the previous algorithm. However, instead of using those ratios to either accept or discard samples, it uses the ratios to weight samples. 
+\newline
+
+Pros: it runs in a nonrandom amount of time, and it doesn't require us to calculate an $M$. 
 \newline
 \pause
 
@@ -288,7 +292,7 @@ Setup
 \item $p(\theta \mid y)$ the target, posterior
 \item $q(\theta \mid y) = p(y \mid \theta) p(\theta)$ the unnormalized target
 \item $g(\theta)$ the ``instrumental" or ``proposal" distribution
-\item $g \gg q$ the proposal ``dominates" your target
+\item $g \gg q$ the proposal dominates your target 
 \end{enumerate}
 We are free to choose our own $g(\theta)$. For the time being, we assume that $\int g(\theta) \text{d}\theta = 1$.
 
@@ -301,9 +305,9 @@ We are free to choose our own $g(\theta)$. For the time being, we assume that $\
 Algorithm:
 \begin{enumerate}
 \item for all $s$, draw $\theta^s \sim g(\theta)$
-\item for all $s$, calculate unnormalized weight $\tilde{w}_s(\theta^{s}) = \frac{q(\theta^s \mid y)}{g(\theta^s)}$
-\item for all $s$, calculate normalized weights $w_s(\theta^{1:S}) = \tilde{w}_s(\theta^s)/\sum_r \tilde{w}_r(\theta^r)$
-\item $E[h(\theta) \mid y] \approx \sum_s w_s(\theta^{1:S}) h(\theta^s)$
+\item for all $s$, calculate unnormalized weight $\tilde{w}(\theta^s) = \frac{q(\theta^s \mid y)}{g(\theta^s)}$
+\item for all $s$, calculate normalized weights $w(\theta^s) = \tilde{w}(\theta^s)/\sum_r \tilde{w}(\theta^r)$
+\item $E_q[h(\theta) \mid y] \approx \sum_s w(\theta^s) h(\theta^s)$
 \end{enumerate}
 
 \end{frame}
@@ -314,7 +318,7 @@ Algorithm:
 
 Motivation:
 \begin{align*}
-E[h(\theta) \mid y] &= \int h(\theta) p(\theta \mid y) \text{d}\theta \\
+E_q[h(\theta) \mid y] &= \int h(\theta) p(\theta \mid y) \text{d}\theta \\
 &= \frac{\int h(\theta) q(\theta \mid y) \text{d}\theta }{\int q(\theta \mid y) \text{d}\theta } \\
 &= \frac{\int h(\theta) \frac{q(\theta \mid y)}{g(\theta)}g(\theta) \text{d}\theta }{\int \frac{q(\theta \mid y)}{g(\theta)}g(\theta) \text{d}\theta } 
 \end{align*}
@@ -333,7 +337,7 @@ So first:
 \frametitle{Importance Sampling}
 
 \begin{enumerate}
-\item $E[h(\theta) \mid y] = \frac{\int h(\theta) q(\theta \mid y) \text{d}\theta }{\int q(\theta \mid y) \text{d}\theta } $
+\item $E_q[h(\theta) \mid y] = \frac{\int h(\theta) q(\theta \mid y) \text{d}\theta }{\int q(\theta \mid y) \text{d}\theta } $
 \item $\frac{1}{S}\sum_{s=1}^S \frac{q(\theta^s \mid y)}{g(\theta^s)} \to \int q(\theta \mid y) \text{d}\theta$ ( for the denominator)
 \end{enumerate}
 And second:
@@ -349,14 +353,14 @@ which converges to the numerator
 \frametitle{Importance Sampling}
 
 \begin{enumerate}
-\item $E[h(\theta) \mid y] = \frac{\int h(\theta) q(\theta \mid y) \text{d}\theta }{\int q(\theta \mid y) \text{d}\theta } $
+\item $E_q[h(\theta) \mid y] = \frac{\int h(\theta) q(\theta \mid y) \text{d}\theta }{\int q(\theta \mid y) \text{d}\theta } $
 \item $\frac{1}{S}\sum_{s=1}^S \frac{q(\theta^s \mid y)}{g(\theta^s)} \to \int q(\theta \mid y) \text{d}\theta$ 
 \item $\frac{1}{S}\sum_{s=1}^S h(\theta^s) \frac{q(\theta^s \mid y)}{g(\theta^s)} \to \int h(\theta)q(\theta \mid y) \text{d}\theta$
 \end{enumerate}
 
 So finally
 \[
-\sum_{i=1}^S w_s(\theta^{1:S})h(\theta^s)
+\sum_{i=1}^S w(\theta^s) h(\theta^s)
 =
 \frac{
 \sum_{s=1}^S h(\theta^s) \frac{q(\theta^s \mid y)}{g(\theta^s)}}{
@@ -369,7 +373,7 @@ So finally
 }
 \to E[h(\theta) \mid y]
 \]
-where $w_s(\theta^{1:S}) = \frac{q(\theta^s \mid y)}{g(\theta^s)} \bigg/ \sum_{r=1}^S \frac{q(\theta^{r} \mid y)}{g(\theta^{r})}  $ are the self-normalized weights
+where $w(\theta^s) = \frac{q(\theta^s \mid y)}{g(\theta^s)} \bigg/ \sum_{r=1}^S \frac{q(\theta^{r} \mid y)}{g(\theta^{r})}  $ are the self-normalized weights
 
 \end{frame}
 
@@ -378,13 +382,13 @@ where $w_s(\theta^{1:S}) = \frac{q(\theta^s \mid y)}{g(\theta^s)} \bigg/ \sum_{r
 \begin{frame}[fragile]
 \frametitle{Example 2}
 
-Assume $y \sim \text{Normal}(\theta,1)$, and $p(\theta) = \frac{1}{\pi(1+\theta^2)}$. Approximate $E[\theta \mid y]$ using proposal $g(\theta) = p(\theta)$.
+Assume $y \sim \text{Normal}(\theta,1)$, and $p(\theta) = \frac{1}{\pi(1+\theta^2)}$. Approximate $E_q[\theta \mid y]$ using proposal $g(\theta) = p(\theta)$.
 \newline
 \pause
 
 If we sample from $g(\theta) = p(\theta) = \frac{1}{\pi(1+\theta^2)}$ then the unnormalized weights are
 \begin{align*}
-\tilde{w}_s(\theta^{s}) &= \frac{ q(\theta^s \mid y)}{g(\theta^s)}  \\
+\tilde{w}(\theta^s) &= \frac{ q(\theta^s \mid y)}{g(\theta^s)}  \\
 &= p(y \mid \theta^s )  \\
 &= \frac{1}{\sqrt{2\pi}} \exp\left[-\frac{1}{2} (y-\theta^s)^2 \right] 
 \end{align*}
@@ -410,21 +414,12 @@ log_unnorm_weight <- function(theta){
 lunws <- log_unnorm_weight(theta_draws)
 norm_weights <- exp(lunws)/sum(exp(lunws))
 mean(norm_weights * theta_draws)
-hist(norm_weights)
+#hist(norm_weights)
 \end{verbatim}
 
 
 \end{frame}
 
-%----------------------------------------------------------------------------------------
-\begin{frame}[fragile]
-\frametitle{Example 2}
-
-\begin{center}
-\includegraphics[width=100mm]{is_weights.png}
-\end{center}
-
-\end{frame}
 
 % %----------------------------------------------------------------------------------------
 % \begin{frame}[fragile]
@@ -464,12 +459,71 @@ hist(norm_weights)
 \frametitle{Example 2}
 
 Beware of bad proposal distributions!
+\newline
+
+We can estimate the standard error using the Delta method:
 \begin{align*}
-var\left( \sum_{i=1}^S w_s(\theta^{1:S})h(\theta^s) \right)
+\operatorname{Var}_g \left( \sum_{i=1}^S w(\theta^s) h(\theta^s) \right) &\approx \frac{1}{s} E_g\left[  \underbrace{ \tilde{w}^2(\theta) }_{\text{!!!} } (h(\theta) - E_q[h(\theta) ] )^2 \right] \bigg/ (E_g[\tilde{w}(\theta)])^2  \\
 \end{align*}
+
+Details: \url{https://stats.stackexchange.com/questions/250934/var-self-normalised-sampling-estimator/250972#250972}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Example 2}
+
+\begin{center}
+\includegraphics[width=100mm]{is_weights.png}
+\end{center}
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Example 2}
+
+Beware of bad proposal distributions!
+\newline
+
+A sample estimator of this approximate variance is
+\[
+\sum_{s=1}^s w(\theta^s) \left( h(\theta^s) - \hat{E}[h(\theta)]  \right)^2
+\]
+where $\hat{E}[h(\theta)] = \sum_s w(\theta^s)h(\theta^s)$. 
+\newline
+
+Note the weights aren't uniform like a ``standard" estimation of the sample variance.
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Example 2}
+
+\begin{verbatim}
+y <- 2 # fake data
+log_unnorm_weight <- function(theta){ 
+  # sqrt(2pi) because it will cancel out 
+  -.5*(y - theta)^2 }
+getISEstimator <- function(num_samples){
+  theta_draws <- rt(num_samples , 1)
+  lunws <- log_unnorm_weight(theta_draws)
+  norm_weights <- exp(lunws)/sum(exp(lunws))
+  estimator <- sum(norm_weights * theta_draws)
+  list("estimate" = estimator, 
+       "approx_var" = sum( norm_weights*(theta_draws - estimator)^2) ) }
+# two ways to calculate standard errors
+num_samps_per_estimate <- 10
+sqrt(getISEstimator(num_samps_per_estimate)$approx_var)  
+sd(replicate(1000, 
+    getISEstimator(num_samps_per_estimate)$estimate)) 
+\end{verbatim}
 
 
 \end{frame}
+
 
 
 \end{document} 

@@ -505,8 +505,8 @@ If $p(\mu \mid \tau) \propto 1$, then
 \[
 p( \mu \mid \tau, y) = \text{Normal}(\hat{\mu}, V_{\mu})
 \]
-where $V_{\mu}^{-1} = \sum_{j} \left( \frac{1}{\sigma^2_j + \tau^2}\right)$  and $\hat{\mu} = V_{\mu} \left[ \sum_{j} \bar{y}_{\cdot,j}\left( \frac{1}{\sigma^2_j} + \frac{1}{\tau^2} \right) \right]$
-\end{block}
+where $V_{\mu}^{-1} = \sum_{j} \left( \frac{1}{\sigma^2_j + \tau^2}\right)$  and $\hat{\mu} = V_{\mu} \left[ \sum_{j} \bar{y}_{\cdot,j}\left( \frac{1}{\sigma^2_j + \tau^2 }  \right) \right]$
+\end{block}  
 
 Proof: homework question! Start by showing that $p(y \mid \mu, \tau) = \prod_j \text{Normal}(\mu, \sigma^2_j + \tau^2)$ (which we use again, later)
 
