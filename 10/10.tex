@@ -433,7 +433,7 @@ log_unnorm_weight <- function(theta){
 }
 lunws <- log_unnorm_weight(theta_draws)
 norm_weights <- exp(lunws)/sum(exp(lunws))
-mean(norm_weights * theta_draws)
+sum(norm_weights * theta_draws)
 #hist(norm_weights)
 \end{verbatim}
 
