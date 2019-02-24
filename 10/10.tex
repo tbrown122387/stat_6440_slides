@@ -60,6 +60,10 @@
 \usepackage{mathtools} % gather
 \usepackage[export]{adjustbox} % right-aligned graphics
 
+\usepackage[style=authortitle,backend=bibtex]{biblatex}
+%\usepackage[backend=biber,style=numeric-comp,sorting=none]{biblatex}
+\addbibresource{references.bib}
+
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
@@ -276,6 +280,7 @@ hist(theta_proposals[accepts]) # only the accepted draws
 \end{verbatim}
 
 \end{frame}
+
 %----------------------------------------------------------------------------------------
 \begin{frame}[fragile]
 \frametitle{Importance Sampling}
@@ -283,9 +288,22 @@ hist(theta_proposals[accepts]) # only the accepted draws
 {\bf importance sampling} also involves ratios like the previous algorithm. However, instead of using those ratios to either accept or discard samples, it uses the ratios to weight samples. 
 \newline
 
-Pros: it runs in a nonrandom amount of time, and it doesn't require us to calculate an $M$. 
-\newline
-\pause
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Importance Sampling}
+
+\begin{center}
+\includegraphics[width=90mm]{is.jpg}
+\end{center}
+Original, unedited image is from \url{https://www.springer.com/us/book/9780387402642}
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Importance Sampling}
 
 Setup
 \begin{enumerate}
@@ -298,6 +316,8 @@ We are free to choose our own $g(\theta)$. For the time being, we assume that $\
 
 
 \end{frame}
+
+
 %----------------------------------------------------------------------------------------
 \begin{frame}[fragile]
 \frametitle{Importance Sampling}
@@ -458,12 +478,12 @@ mean(norm_weights * theta_draws)
 \begin{frame}[fragile]
 \frametitle{Example 2}
 
-Beware of bad proposal distributions!
+The choice of proposal is very important:
 \newline
 
-We can estimate the standard error using the Delta method:
+Using the Delta method:
 \begin{align*}
-\operatorname{Var}_g \left( \sum_{i=1}^S w(\theta^s) h(\theta^s) \right) &\approx \frac{1}{s} E_g\left[  \underbrace{ \tilde{w}^2(\theta) }_{\text{!!!} } (h(\theta) - E_q[h(\theta) ] )^2 \right] \bigg/ (E_g[\tilde{w}(\theta)])^2  \\
+\operatorname{Var}_g \left( \sum_{s=1}^S w(\theta^s) h(\theta^s) \right) &\approx \frac{1}{S} E_g\left[  \underbrace{ \left(\frac{\tilde{w}(\theta)}{ E_g[\tilde{w}(\theta)] }\right)^2 }_{\text{!} } (h(\theta) - E_q[h(\theta) ] )^2 \right]    \\
 \end{align*}
 
 Details: \url{https://stats.stackexchange.com/questions/250934/var-self-normalised-sampling-estimator/250972#250972}
@@ -489,7 +509,7 @@ Beware of bad proposal distributions!
 
 A sample estimator of this approximate variance is
 \[
-\sum_{s=1}^s w(\theta^s) \left( h(\theta^s) - \hat{E}[h(\theta)]  \right)^2
+\sum_{s=1}^S w(\theta^s) \left( h(\theta^s) - \hat{E}[h(\theta)]  \right)^2
 \]
 where $\hat{E}[h(\theta)] = \sum_s w(\theta^s)h(\theta^s)$. 
 \newline
@@ -524,8 +544,219 @@ sd(replicate(1000,
 
 \end{frame}
 
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Effective Sample Size}
 
+
+\[
+\sum_{s=1}^S w(\theta^s) \left( h(\theta^s) - \hat{E}[h(\theta)]  \right)^2 \overset{\text{set}}{=}  \frac{1}{S_{\text{eff}}} \operatorname{Var}\left[ h(\theta^i) \right]
+\]
+Solving for $S_{\text{eff}}$ yields
+
+TODO
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Adding Resampling}
+
+Importance Sampling gives you weighted draws $(\theta^1, w(\theta^1) ), (\theta^2, w(\theta^2) ), \ldots$
+\newline
+
+You can draw from these, with replacement. At the expense of more variance, it will give you unweighted draws from your target distribution:
+$\tilde{\theta}^1, \tilde{\theta}^2, \ldots $
+\newline
+
+This is known as {\bf factored sampling} or {\bf importance sampling with resampling}.
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Adding Resampling}
+
+\begin{center}
+\includegraphics[width=50mm]{isr.jpg}
+\end{center}
+Original, unedited image is from \url{https://www.springer.com/us/book/9780387402642}
+
+\end{frame}
+
+
+
+
+% homework question: https://stats.stackexchange.com/questions/359977/conditional-expectation-on-an-estimator-for-defensive-sampling
+
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Example 2}
+
+\begin{verbatim}
+y <- 2 # fake data
+log_unnorm_weight <- function(theta){ 
+  # sqrt(2pi) because it will cancel out 
+  -.5*(y - theta)^2 }
+num_samples <- 10000
+theta_draws <- rt(num_samples , 1)
+lunws <- log_unnorm_weight(theta_draws)
+random_indexes <- sample(x = num_samples, 
+                         size = num_samples, 
+                         replace = T, 
+                         prob = exp(lunws)) # automatically normalizes
+sort(random_indexes) # repeats!
+resampled_draws <- theta_draws[random_indexes]
+hist(resampled_draws) # can't do this unless we resample
+\end{verbatim}
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Going sequential}
+
+Resampling adds variance, so why do it?
+\newline
+
+It throws away bad samples, and duplicates promising ones. When you're looking at a sequence of distribution targets, this can have a good effect on future samples.
+
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Going sequential}
+
+{\bf Data annealing} \footcite{Chopin}
+\[
+p(\theta), p(\theta \mid y_1), p(\theta \mid y_{1:2}), \ldots, p(\theta \mid y_{1:n}),
+\]
+
+{\bf Temperature annealing} \footcite{Neal}
+\[
+p(y \mid \theta)^{a_0} p(\theta), p(y \mid \theta)^{a_1} p(\theta),  \ldots p(y \mid \theta)^{a_n} p(\theta)
+\]
+with $0 = a_0 < a_1 < \cdots < a_n = 1$. 
+\newline
+
+
+{\bf filtering and smoothing} in state space models
+\[
+p(x_1 \mid y_1, \theta), p(x_{2} \mid y_{1:2}, \theta), p(x_{3} \mid y_{1:3}, \theta)
+\]
+
+{\bf sequential monte carlo} methods are able to handle these situations.
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Going sequential}
+
+\begin{center}
+\includegraphics[width=80mm]{pfilt_anim_1.png}
+\end{center}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Going sequential}
+
+\begin{center}
+\includegraphics[width=80mm]{pfilt_anim_2.png}
+\end{center}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Going sequential}
+
+\begin{center}
+\includegraphics[width=80mm]{pfilt_anim_3.png}
+\end{center}
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Going sequential}
+
+\begin{center}
+\includegraphics[width=80mm]{pfilt_anim_4.png}
+\end{center}
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Going sequential}
+
+\begin{center}
+\includegraphics[width=80mm]{pfilt_anim_5.png}
+\end{center}
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Going sequential}
+
+\begin{center}
+\includegraphics[width=80mm]{pfilt_anim_6.png}
+\end{center}
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Going sequential}
+
+\begin{center}
+\includegraphics[width=80mm]{pfilt_anim_7.png}
+\end{center}
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Going sequential}
+
+\begin{center}
+\includegraphics[width=80mm]{pfilt_anim_8.png}
+\end{center}
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Going sequential}
+
+\begin{center}
+\includegraphics[width=80mm]{pfilt_anim_9.png}
+\end{center}
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Going sequential}
+
+\begin{center}
+\includegraphics[width=80mm]{pfilt_anim_10.png}
+\end{center}
+
+\end{frame}
+
+
+
+%----------------------------------------------------------------------------------------
+
+\begin{frame}
+\printbibliography
+\end{frame}
 
 \end{document} 
+
 
 

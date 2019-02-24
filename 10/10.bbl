@@ -1,0 +1,78 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.9 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{nty/global//global/global}
+  \entry{Chopin}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=CN}{%
+         family={Chopin},
+         familyi={C\bibinitperiod},
+         given={Nicolas},
+         giveni={N\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{CN1}
+    \strng{fullhash}{CN1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{title}{A Sequential Particle Filter Method for Static Models}
+    \field{year}{2000}
+  \endentry
+
+  \entry{Neal}{article}{}
+    \name{author}{1}{}{%
+      {{hash=NRM}{%
+         family={Neal},
+         familyi={N\bibinitperiod},
+         given={Radford\bibnamedelima M.},
+         giveni={R\bibinitperiod\bibinitdelim M\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Kluwer Academic Publishers}%
+    }
+    \keyw{estimation of normalizing constants, free energy computation,
+  sequential importance sampling, tempered transitions}
+    \strng{namehash}{NRM1}
+    \strng{fullhash}{NRM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{N}
+    \field{sortinithash}{N}
+    \verb{doi}
+    \verb 10.1023/A:1008923215028
+    \endverb
+    \field{issn}{0960-3174}
+    \field{number}{2}
+    \field{pages}{125\bibrangedash 139}
+    \field{title}{Annealed Importance Sampling}
+    \verb{url}
+    \verb https://doi.org/10.1023/A:1008923215028
+    \endverb
+    \field{volume}{11}
+    \list{location}{1}{%
+      {Hingham, MA, USA}%
+    }
+    \field{journaltitle}{Statistics and Computing}
+    \field{month}{04}
+    \field{year}{2001}
+  \endentry
+\enddatalist
+\endinput
