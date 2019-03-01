@@ -12,14 +12,14 @@
 %\usetheme{CambridgeUS}
 %\usetheme{Copenhagen}
 %\usetheme{Darmstadt}
-%\usetheme{Dresden}
+% \usetheme{Dresden}
 %\usetheme{Frankfurt}
-%\usetheme{Goettingen}
+\usetheme{Goettingen}
 %\usetheme{Hannover}
 %\usetheme{Ilmenau}
 %\usetheme{JuanLesPins}
 %\usetheme{Luebeck}
-\usetheme{Madrid}
+% \usetheme{Madrid}
 %\usetheme{Malmoe}
 %\usetheme{Marburg}
 %\usetheme{Montpellier}
@@ -60,6 +60,11 @@
 \usepackage{mathtools} % gather
 \usepackage[export]{adjustbox} % right-aligned graphics
 
+% tikz?
+\usepackage{tikz}
+\usetikzlibrary{arrows, shapes}
+
+
 \usepackage[style=authortitle,backend=bibtex]{biblatex}
 %\usepackage[backend=biber,style=numeric-comp,sorting=none]{biblatex}
 \addbibresource{references.bib}
@@ -78,7 +83,7 @@ University of Virginia \\
 \textit{} 
 }
 \date{} 
-
+    
 \begin{document}
 %----------------------------------------------------------------------------------------
 
@@ -87,6 +92,15 @@ University of Virginia \\
 \end{frame}
 
 %----------------------------------------------------------------------------------------
+
+
+\begin{frame}
+\tableofcontents
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\section{Introduction}
+
 \begin{frame}
 \frametitle{Introduction}
 
@@ -147,7 +161,7 @@ Drawing $\tilde{y}$ samples can be done in a two-stage way:
 \end{enumerate}
 \pause
 
-If it's available, you should probably use a Rao-Blackwellized procedure, though:
+If you can derive $E\left( h(\tilde{y}) \mid \theta \right)$, you should probably use a Rao-Blackwellized procedure:
 \[
 E[h(\tilde{y}) \mid y] = E[E\left( h(\tilde{y}) \mid \theta \right) \mid y] \approx \frac{1}{S} \sum_{s=1}^S E\left( h(\tilde{y}) \mid \theta^s \right)
 \]
@@ -166,13 +180,13 @@ Given that we can evaluate the unnormalized target $p(\theta, y) = p(y \mid \the
 \[
 \tilde{p}(\theta_j \mid y) = \frac{p(y \mid \theta_j)p(\theta_j)}{\sum_{s=1}^S p(y \mid \theta_s)p(\theta_s) }
 \]
-for any $\theta_j \in \{\theta_1, \ldots, \theta_s\}$
+for any $\theta_j \in \{\theta_1, \ldots, \theta_S\}$
 
 \end{frame}
 
 %----------------------------------------------------------------------------------------
 \begin{frame}[fragile]
-\frametitle{Approximating the posterior on a grid}
+\frametitle{The general setup}
 
 From now on we will write the posterior in terms of an unnormalized density $q(\theta \mid y)$. In other words:
 \[
@@ -182,7 +196,11 @@ p(\theta \mid y) = \frac{q(\theta \mid y)}{ \int q(\theta \mid y) \text{d}\theta
 Most (maybe all) of the sampling techniques will assume that we can't evaluate $p(\theta \mid y)$, but that we can evaluate $q(\theta \mid y)$
 
 \end{frame}
+
+
 %----------------------------------------------------------------------------------------
+\section{Accept-Reject Sampling}
+
 \begin{frame}[fragile]
 \frametitle{Rejection Sampling aka Accept-Reject sampling}
 
@@ -192,7 +210,7 @@ Setup
 \item $q(\theta \mid y) = p(y \mid \theta) p(\theta)$ the unnormalized target
 \item $g(\theta)$ the ``instrumental" or ``proposal" distribution
 \item need $q(\theta \mid y) / g(\theta) \le M$ uniformly
-\item $g \gg q$ the proposal ``dominates" your target (won't divide by $0$)
+\item need $g \gg q$ i.e. the proposal ``dominates" your target (won't divide by $0$)
 \end{enumerate}
 We are free to choose our own $g(\theta)$. For the time being, we assume that $\int g(\theta) \text{d}\theta = 1$.
 
@@ -205,22 +223,30 @@ We are free to choose our own $g(\theta)$. For the time being, we assume that $\
 To (potentially) produce one draw:
 \begin{enumerate}
 \item propose the draw $\theta^s \sim g(\theta)$
+\item accept $\theta^s$ with probability $\frac{q(\theta^s \mid y) }{ g(\theta^s)  M }$
+\end{enumerate}
+\pause
+
+Note this is the same as
+\begin{enumerate}
+\item propose the draw $\theta^s \sim g(\theta)$
 \item draw $U \sim \text{Uniform}(0,1]$
-\item accept $\theta^s$ if $U < q(\theta^s \mid y) / \{ q(\theta^s)  M\}$
+\item accept $\theta^s$ if $U < q(\theta^s \mid y) / \{ g(\theta^s)  M\}$
 \end{enumerate}
 
 
 \end{frame}
 %----------------------------------------------------------------------------------------
 \begin{frame}[fragile]
-\frametitle{Rejection Sampling aka Accept-Reject sampling}
+\frametitle{Proof }
+
 \begin{align*}
 P\left( \theta \le t \bigg\rvert U \le \frac{q(\theta \mid y)}{M g(\theta) } \right) 
 &= \frac{P\left( \theta \le t , U \le \frac{q(\theta \mid y)}{M g(\theta) } \right)}{P\left(U \le \frac{q(\theta \mid y)}{M g(\theta) } \right)} \\
 &= \frac{\int_{-\infty}^t \int_0^{ \frac{q(\theta \mid y)}{M g(\theta) } }g(\theta)1 \text{d}u \text{d}\theta }{ \int_{-\infty}^{\infty} \int_0^{ \frac{q(\theta \mid y)}{M g(\theta) } }g(\theta)1 \text{d}u \text{d}\theta } \\
 &= \frac{\int_{-\infty}^t g(\theta)\frac{q(\theta \mid y)}{M g(\theta) }  \text{d}\theta }{ \int_{-\infty}^{\infty} g(\theta)  \frac{q(\theta \mid y)}{M g(\theta) } \text{d}\theta } \\
 &= \frac{\int_{-\infty}^t q(\theta \mid y)  \text{d}\theta }{ \int_{-\infty}^{\infty}  q(\theta \mid y)\text{d}\theta } \\
-&= p(\theta \le t \mid y).
+&= P(\theta \le t \mid y).
 \end{align*}
 \end{frame}
 
@@ -255,7 +281,7 @@ Let's assume that we want to use our prior distribution as a proposal: $g(\theta
 
 Our acceptance probability for draw $\theta^s$ is then
 \[
-q(\theta^s \mid y) / \{ q(\theta^s)  M\} = p(y \mid \theta^s) / M = \exp\left[-\frac{1}{2} (y-\theta^s)^2 \right]
+q(\theta^s \mid y) / \{ g(\theta^s)  M\} = p(y \mid \theta^s) / M = \exp\left[-\frac{1}{2} (y-\theta^s)^2 \right]
 \]
 
 
@@ -282,6 +308,7 @@ hist(theta_proposals[accepts]) # only the accepted draws
 \end{frame}
 
 %----------------------------------------------------------------------------------------
+\section{Importance Sampling}
 \begin{frame}[fragile]
 \frametitle{Importance Sampling}
 
@@ -310,7 +337,7 @@ Setup
 \item $p(\theta \mid y)$ the target, posterior
 \item $q(\theta \mid y) = p(y \mid \theta) p(\theta)$ the unnormalized target
 \item $g(\theta)$ the ``instrumental" or ``proposal" distribution
-\item $g \gg q$ the proposal dominates your target 
+\item $g \gg q$ i.e. the proposal dominates your target 
 \end{enumerate}
 We are free to choose our own $g(\theta)$. For the time being, we assume that $\int g(\theta) \text{d}\theta = 1$.
 
@@ -322,14 +349,16 @@ We are free to choose our own $g(\theta)$. For the time being, we assume that $\
 \begin{frame}[fragile]
 \frametitle{Importance Sampling}
 
-Algorithm:
+Algorithm: for each iteration $s$
 \begin{enumerate}
-\item for all $s$, draw $\theta^s \sim g(\theta)$
-\item for all $s$, calculate unnormalized weight $\tilde{w}(\theta^s) = \frac{q(\theta^s \mid y)}{g(\theta^s)}$
-\item for all $s$, calculate normalized weights $w(\theta^s) = \tilde{w}(\theta^s)/\sum_r \tilde{w}(\theta^r)$
-\item $E_q[h(\theta) \mid y] \approx \sum_s w(\theta^s) h(\theta^s)$
+\item draw $\theta^s \sim g(\theta)$
+\item calculate unnormalized weight $\tilde{w}(\theta^s) = \frac{q(\theta^s \mid y)}{g(\theta^s)}$
+\item calculate normalized weights $w(\theta^s) = \tilde{w}(\theta^s)/\sum_r \tilde{w}(\theta^r)$
 \end{enumerate}
-
+Final calculation: 
+$$
+E_q[h(\theta) \mid y] \approx \sum_s w(\theta^s) h(\theta^s)
+$$
 \end{frame}
 
 %----------------------------------------------------------------------------------------
@@ -434,11 +463,12 @@ log_unnorm_weight <- function(theta){
 lunws <- log_unnorm_weight(theta_draws)
 norm_weights <- exp(lunws)/sum(exp(lunws))
 sum(norm_weights * theta_draws)
-#hist(norm_weights)
+hist(norm_weights)
 \end{verbatim}
 
 
 \end{frame}
+
 
 
 % %----------------------------------------------------------------------------------------
@@ -544,6 +574,24 @@ sd(replicate(1000,
 
 \end{frame}
 
+% %----------------------------------------------------------------------------------------
+% \begin{frame}[fragile]
+% \frametitle{Example 2}
+% 
+% \begin{verbatim}
+% hist(
+%   replicate(1000, 
+%             getISEstimator(num_samps_per_estimate)$estimate),
+%   xlab = "IS estimate",
+%   main = "distribution of IS estimate") 
+% \end{verbatim}
+% 
+% \includegraphics[width=70mm]{is1_hist.png}
+% 
+% 
+% \end{frame}
+
+
 %----------------------------------------------------------------------------------------
 \begin{frame}[fragile]
 \frametitle{Effective Sample Size}
@@ -559,6 +607,7 @@ TODO
 \end{frame}
 
 %----------------------------------------------------------------------------------------
+\section{Importance Sampling with Resampling}
 \begin{frame}[fragile]
 \frametitle{Adding Resampling}
 
@@ -569,7 +618,7 @@ You can draw from these, with replacement. At the expense of more variance, it w
 $\tilde{\theta}^1, \tilde{\theta}^2, \ldots $
 \newline
 
-This is known as {\bf factored sampling} or {\bf importance sampling with resampling}.
+This is known as {\bf factored sampling} or {\bf importance sampling with resampling} or {\bf sampling importance resampling} (SIR).
 
 
 \end{frame}
@@ -590,11 +639,46 @@ Original, unedited image is from \url{https://www.springer.com/us/book/978038740
 
 % homework question: https://stats.stackexchange.com/questions/359977/conditional-expectation-on-an-estimator-for-defensive-sampling
 
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{SIR}
+
+
+Stage 1: do importance sampling to get $\{ \theta^i, w(\theta^i) \}_{i=1}^S$.
+\newline
+
+Stage 2: for $i = 1, \ldots, S$, select 
+$$
+P[ \tilde{\theta}^i = \theta^j \mid \theta^1, w(\theta^1), \ldots, \theta^S, w(\theta^S) ] = \frac{w(\theta^j)}{ \sum_k w(\theta^k) }.
+$$
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{SIR}
+
+Another way to write it:
+\newline
+
+Stage 1: do importance sampling to get $\{ \theta^i, w(\theta^i) \}_{i=1}^S$.
+\newline
+
+Stage 2: for $i = 1, \ldots, S$, select indexes
+$$
+P[ I^i = j \mid \theta^1, w(\theta^1), \ldots, \theta^S, w(\theta^S) ] = \frac{w(\theta^j)}{ \sum_k w(\theta^k) }
+$$
+and then set 
+$$
+\tilde{\theta}^i = \theta^{I^i}.
+$$
+
+\end{frame}
 
 
 %----------------------------------------------------------------------------------------
 \begin{frame}[fragile]
-\frametitle{Example 2}
+\frametitle{Example 2 revisited}
 
 \begin{verbatim}
 y <- 2 # fake data
@@ -604,10 +688,11 @@ log_unnorm_weight <- function(theta){
 num_samples <- 10000
 theta_draws <- rt(num_samples , 1)
 lunws <- log_unnorm_weight(theta_draws)
+# note: prob arg automatically normalizes
 random_indexes <- sample(x = num_samples, 
                          size = num_samples, 
                          replace = T, 
-                         prob = exp(lunws)) # automatically normalizes
+                         prob = exp(lunws)) 
 sort(random_indexes) # repeats!
 resampled_draws <- theta_draws[random_indexes]
 hist(resampled_draws) # can't do this unless we resample
@@ -617,6 +702,7 @@ hist(resampled_draws) # can't do this unless we resample
 
 
 %----------------------------------------------------------------------------------------
+\section{Sequential Monte Carlo}
 \begin{frame}[fragile]
 \frametitle{Going sequential}
 
@@ -624,14 +710,16 @@ Resampling adds variance, so why do it?
 \newline
 
 It throws away bad samples, and duplicates promising ones. When you're looking at a sequence of distribution targets, this can have a good effect on future samples.
+\pause
+\newline
 
+{\bf sequential monte carlo} or {\bf particle filtering} methods are basically doing SIR over and over again.
 
 \end{frame}
 
-
 %----------------------------------------------------------------------------------------
 \begin{frame}[fragile]
-\frametitle{Going sequential}
+\frametitle{Examples of sequences of distributions}
 
 {\bf Data annealing} \footcite{Chopin}
 \[
@@ -648,16 +736,77 @@ with $0 = a_0 < a_1 < \cdots < a_n = 1$.
 
 {\bf filtering and smoothing} in state space models
 \[
-p(x_1 \mid y_1, \theta), p(x_{2} \mid y_{1:2}, \theta), p(x_{3} \mid y_{1:3}, \theta)
+p(x_1 \mid y_1, \theta), \ldots , p(x_{n} \mid y_{1:n}, \theta)
 \]
 
-{\bf sequential monte carlo} methods are able to handle these situations.
 \end{frame}
-
 
 %----------------------------------------------------------------------------------------
 \begin{frame}[fragile]
-\frametitle{Going sequential}
+\frametitle{state space models}
+
+\tikzstyle{format} = [draw, thin, fill=blue!20]
+\tikzstyle{medium} = [ellipse, draw, thin, fill=green!20, minimum height=2.5em]
+
+\begin{figure}
+\begin{tikzpicture}[node distance=3cm, auto,>=latex', thick]
+    % We need to set at bounding box first. Otherwise the diagram
+    % will change position for each frame.
+    \path[use as bounding box] (-1,0) rectangle (10,-2);
+    \path[->] node (past) { $\cdots$ };
+    \path[->] node[format, right of=past] (xtm1) {$x_{t-1}$}
+                  (past) edge node {$f_{t-1}$} (xtm1);
+    \path[->] node[format, right of=xtm1] (xt) {$x_t$}
+                  node[medium, below of=xtm1] (ytm1) { $Y_{t-1}$ }
+                  (xtm1) edge node { $f_{t}$ } (xt)
+                        edge node[swap] { $g_{t-1}$ } (ytm1);
+    \path[->] node[right of=xt] (future) {$\cdots$}
+                  node[medium, below of=xt] (yt) {$y_t$}
+                  (xt) edge node {$f_{t+1}$} (future)
+                       edge node[swap] {$g_{t}$} (yt);
+\end{tikzpicture}
+\end{figure}
+% \vspace*{\baselineskip}
+% \vspace*{\baselineskip}
+
+
+\begin{align*}
+&p(x_{1:T}, y_{1:T} \mid \theta) \\
+&= g(y_1 \mid x_1, \theta) f(x_1 \mid \theta) \prod_{t=2}^T g(y_t \mid x_t, \theta) f(x_t \mid x_{t-1}, \theta)
+\end{align*}
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Example: filtering in state space models}
+
+Here's an example of a state space model. $y_t$ is a univariate time series, and $x_t$ is a hidden/unobserved/latent time series.
+\newline
+
+\begin{gather}
+y_t = \exp(x_t / 2) \epsilon_t \\
+x_t = c + \phi x_{t-1} + v_t
+\end{gather}
+
+We sometimes refer to (1) as $g(y_t \mid x_t)$ or the observation equation, and (2) as the state transition equation or $f(x_t \mid x_{t-1})$.
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Example: filtering in state space models}
+
+$y_{1:t}$ observed, $x_{1:t}$ hidden. Goal: $p(x_t \mid y_{1:t})$ in real-time.
+\newline
+
+\begin{center}
+\includegraphics[width=103mm]{univ_svol_sim.png}
+\end{center}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Example: filtering in state space models}
 
 \begin{center}
 \includegraphics[width=80mm]{pfilt_anim_1.png}
@@ -748,6 +897,31 @@ p(x_1 \mid y_1, \theta), p(x_{2} \mid y_{1:2}, \theta), p(x_{3} \mid y_{1:3}, \t
 
 \end{frame}
 
+
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Filtering recursions}
+
+\begin{align*}
+p(x_{1:t}|y_{1:t}) &=C_{t}^{-1} p(x_{t} , y_t  \mid x_{t-1})p(x_{1:t-1} \mid y_{1:t-1}) \\
+&= C_{t}^{-1} \frac{p(x_t, y_t \mid x_{t-1})}{q_{t}(x_{t} \mid y_{t},x_{t-1})} \times \\
+& \hspace{20mm} q_{t}(x_{t} \mid y_{t},x_{t-1})p(x_{1:t-1} \mid y_{1:t-1}) \\
+&= C_{t}^{-1} \begingroup\color{red} \frac{g(y_t|x_t)f(x_t|x_{t-1})}{q_t(x_t|x_{t-1},y_t) } \endgroup \times \\
+& \hspace{19mm} \begingroup\color{blue} q_t(x_t \mid x_{t-1},y_t) p(x_{1:t-1} \mid y_{1:t-1}) \endgroup\\
+\end{align*}
+
+Repeat through time:
+\begin{enumerate}
+\item start with samples from $p(x_{1:t-1} \mid y_{1:t-1})$
+\item mutate/propogate/extend using $q_t(x_t \mid x_{t-1},y_t)$
+\item adjust weights by multiplying by $ \begingroup\color{red} \frac{g(y_t|x_t)f(x_t|x_{t-1})}{q_t(x_t|x_{t-1},y_t) } \endgroup $
+\item resample, giving you particles distributed as $p(x_{1:t} \mid y_{1:t})$
+\end{enumerate}
+
+
+\end{frame}
 
 
 %----------------------------------------------------------------------------------------

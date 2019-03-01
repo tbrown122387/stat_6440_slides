@@ -1,1 +1,11 @@
 \boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\beamer@sectionintoc {1}{Introduction}{3}{0}{1}
+\defcounter {refsection}{0}\relax 
+\beamer@sectionintoc {2}{Accept-Reject Sampling}{11}{0}{2}
+\defcounter {refsection}{0}\relax 
+\beamer@sectionintoc {3}{Importance Sampling}{18}{0}{3}
+\defcounter {refsection}{0}\relax 
+\beamer@sectionintoc {4}{Importance Sampling with Resampling}{35}{0}{4}
+\defcounter {refsection}{0}\relax 
+\beamer@sectionintoc {5}{Sequential Monte Carlo}{40}{0}{5}

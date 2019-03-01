@@ -1,6 +1,19 @@
-\frametitle{Going sequential}
+\frametitle{Filtering recursions}
 
-\begin{center}
-\includegraphics[width=80mm]{pfilt_anim_10.png}
-\end{center}
+\begin{align*}
+p(x_{1:t}|y_{1:t}) &=C_{t}^{-1} p(x_{t} , y_t  \mid x_{t-1})p(x_{1:t-1} \mid y_{1:t-1}) \\
+&= C_{t}^{-1} \frac{p(x_t, y_t \mid x_{t-1})}{q_{t}(x_{t} \mid y_{t},x_{t-1})} \times \\
+& \hspace{20mm} q_{t}(x_{t} \mid y_{t},x_{t-1})p(x_{1:t-1} \mid y_{1:t-1}) \\
+&= C_{t}^{-1} \begingroup\color{red} \frac{g(y_t|x_t)f(x_t|x_{t-1})}{q_t(x_t|x_{t-1},y_t) } \endgroup \times \\
+& \hspace{19mm} \begingroup\color{blue} q_t(x_t \mid x_{t-1},y_t) p(x_{1:t-1} \mid y_{1:t-1}) \endgroup\\
+\end{align*}
+
+Repeat through time:
+\begin{enumerate}
+\item start with samples from $p(x_{1:t-1} \mid y_{1:t-1})$
+\item mutate/propogate/extend using $q_t(x_t \mid x_{t-1},y_t)$
+\item adjust weights by multiplying by $ \begingroup\color{red} \frac{g(y_t|x_t)f(x_t|x_{t-1})}{q_t(x_t|x_{t-1},y_t) } \endgroup $
+\item resample, giving you particles distributed as $p(x_{1:t} \mid y_{1:t})$
+\end{enumerate}
+
 
