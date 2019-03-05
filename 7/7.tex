@@ -249,7 +249,7 @@ The ``computed lppd" again uses $y$ for $\tilde{y}$, but it also uses Monte-Carl
 \]
 \end{block}
 
-
+-Biased and probably high variance, though.
 
 \end{frame}
 
@@ -257,12 +257,12 @@ The ``computed lppd" again uses $y$ for $\tilde{y}$, but it also uses Monte-Carl
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
-\frametitle{A third problem}
+\frametitle{Three problems}
 
 Don't know $f$, don't want to wait for $\tilde{y}$...
 \newline
 
-and unfortunately, plugging the same data that we used for estimation into the predictive distribution might lead us to overfit because this strategy overestimates the average predictive score. 
+and unfortunately, plugging the same data that we used for estimation into the predictive distribution might lead us to overfit because this strategy overestimates the average predictive score. What do we do?
 \newline
 \pause
 
@@ -390,7 +390,7 @@ Motivation for $p_{\text{WAIC}}$:
 &E_{\tilde{y}}\left[ -2  \log  E_{\theta \mid y} ( p(\tilde{y} \mid \theta) ) \right] \\
 &= - 2\log p(y \mid y) + 2\left( \log p(y \mid y) - E_{\tilde{y}}\left[  \log  E_{\theta \mid y} ( p(\tilde{y} \mid \theta) ) \right] \right) \\
 &\approx - 2\log p(y \mid y) + 2\left( \log p(y \mid y) - E_{\tilde{y}}\left[   E_{\theta \mid y} ( \log  p(\tilde{y} \mid \theta) ) \right] \right) \\
-&\approx - 2\log p(y \mid y) + 2\left( \log p(y \mid y) - E_{\theta \mid y}\left[   E_{\tilde{y}} (\log  p(\tilde{y} \mid \theta) ) \right] \right) \\
+&= - 2\log p(y \mid y) + 2\left( \log p(y \mid y) - E_{\theta \mid y}\left[   E_{\tilde{y}} (\log  p(\tilde{y} \mid \theta) ) \right] \right) \\
 &\approx - 2\log p(y \mid y) + 2\left( \log p(y \mid y) - E_{\theta \mid y}\left[  \log   p(y \mid \theta)  \right] \right) \\
 &= - 2\log p(y \mid y) + 2\left( \log \prod_i p(y_i \mid y) - E_{\theta \mid y}\left[  \log   \prod_i p(y_i \mid \theta)  \right] \right) \\
 &= - 2\log p(y \mid y) + 2 \sum_i \left(  \log p(y_i \mid y) - E_{\theta \mid y}\left[ \log p(y_i \mid \theta)  \right] \right) \\
