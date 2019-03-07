@@ -479,7 +479,7 @@ There are also bias-corrected versions as well.
 \begin{frame}
 \frametitle{Bayes Factors}
 
-{\bf Bayes factors} are another way to compare models, two at a time. You compare each model's prior predictive distribution
+{\bf Bayes factors} are another way to compare models, two at a time. You compare each model's prior predictive distribution/marginal likelihood/integrated likelihood/evidence:
 \begin{block}{Bayes Factors}
 
 \begin{align*}
@@ -490,7 +490,8 @@ B_{2,1} &= \frac{p(y \mid H_2)}{p(y \mid H_1)}\\
 assuming $0 < p(y \mid H_i) < \infty$
 \end{block}
 
-NB: models do not have to be nested, and the parameters can be of varying dimension
+NB1: models do not have to be nested, and the parameters can be of varying dimension. \\
+NB2: Unlike frequentist hypothesis testing, it measures the *strength* of one hypothesis over another.
 
 \end{frame}
 
@@ -555,24 +556,15 @@ Even noninformative proper priors can be ``biased" towards one of the hypotheses
 
 Consider the following example of the {\bf Jeffreys-Lindley's paradox}: 
 \begin{enumerate}
-\item $p(\bar{y} \mid \theta, H_1)  = (2\pi)^{-n/2}n^{n/2} \exp\left[-\frac{n}{2}\bar{y}^2 \right]$
 \item under $H_1$: $\theta = 0$ with prior probability $1$
+\item $p(\bar{y} \mid H_1)  = (2\pi)^{-n/2}n^{n/2} \exp\left[-\frac{n}{2}\bar{y}^2 \right]$
 \item under $H_2$: $p(\theta) = N(0,\tau^2)$
-\item $p(\bar{y} \mid H_2) = [2\pi(\tau^2 + n^{-1})]^{-n/2} \exp\left[-\frac{1}{2(\tau^2 + n^{-1})}\bar{y}^2 \right]$
+\item $p(\bar{y} \mid H_2) = \int p(\bar{y} \mid \theta, H_2)p(\theta \mid H_2)\text{d}\theta = [2\pi(\tau^2 + n^{-1})]^{-n/2} \exp\left[-\frac{1}{2(\tau^2 + n^{-1})}\bar{y}^2 \right]$
 \end{enumerate}
 so
 \[
 B_{1,2} = (n\tau^2 + 1)^{1/2} \exp\left[-\frac{\bar{y}^2}{2}\left(n - \frac{1}{(\tau^2 + n^{-1})}\right) \right]
 \]
-
-% Setup:
-% \begin{enumerate}
-% \item $y_j \mid \theta_j \sim \text{Normal}(\theta_j, \sigma^2_j)$
-% \item $\sigma_1^2, \ldots, \sigma^2_J$ are known
-% \item under $H_1$: $p(\theta_1, \ldots, \theta_J \mid H_1) = (2 \pi A^2)^{-J/2} \exp\left[-\frac{1}{2A^2}\sum_j \theta_j^2 \right]$
-% \item under $H_2$: $\theta_1 = \cdots = \theta_J = \theta$
-% \item under $H_2$: $p(\theta_1, \ldots, \theta_J \mid H_1) = (2 \pi )^{-J/2}(A^2)^{-1/2} \exp\left[-\frac{1}{2A^2} \theta^2 \right]$
-% \end{enumerate}
 
 \end{frame}
 
@@ -607,10 +599,7 @@ Different decisions based on whether we are frequentist or Bayesian?!
 \begin{frame}
 \frametitle{Bayes Factors}
 
-If you can't derive $p(y \mid H_i)$, then you can resort to simulation. Notice that the joint $p(y \mid \theta_i, H_i)p(\theta_i \mid H_i)$ is an unnormalized target!
-\newline
-
-For instance, here is the justification behind importance sampling:
+If you can't derive $p(y \mid H_i)$, then it must be approximated. Noticing that the joint $p(y \mid \theta_i, H_i)p(\theta_i \mid H_i)$ is an unnormalized target, here is the justification behind importance sampling:
 
 \begin{align*}
 p(y \mid H_i) &= \int p(y \mid \theta_i, H_i)p(\theta_i \mid H_i) \text{d}\theta_i \\
@@ -618,7 +607,10 @@ p(y \mid H_i) &= \int p(y \mid \theta_i, H_i)p(\theta_i \mid H_i) \text{d}\theta
 &\leftarrow \sum_{s=1}^n \frac{p(y \mid \theta^s_i, H_i)p(\theta^s_i \mid H_i)}{q(\theta^s_i)}
 \end{align*}
 
-where $\theta^s_i \sim q(\theta_i)$
+where $\theta^s_i \sim q(\theta_i)$.
+\newline
+
+Importance sampling will be discussed further in chapter 10.
 \end{frame}
 
 %----------------------------------------------------------------------------------------
@@ -638,17 +630,23 @@ p(y \mid H_i)
 where $\theta^s_i \sim p(\theta_i\mid y,  H_i)$ are samples from the posterior. 
 \newline
 
-However, this estimator often has infinite variance, and so it shouldn't be used. 
+However, this estimator often has infinite variance. There are a number of adjustments to this approach. 
 \end{frame}
 
 %----------------------------------------------------------------------------------------
-% \begin{frame}
-% \frametitle{Bayes Factors}
-% 
-% $p(y \mid H_i)$ goes by many names: marginal likelihood, evidence, prior predictive distribution...
-% \newline
-% 
-% \end{frame}
+\begin{frame}
+\frametitle{Bayes Factors}
+
+Under certain conditions, the {\bf Bayesian Information Criterion} or {\bf Schwarz Information Criterion} approximates the log of integrated likelihood. 
+\[
+BIC(H_i) = \log p(y \mid \hat{\theta}, H_i) - k \log(n)
+\]
+where $n$ is the number of data points, and $k$ is the dimension of $\theta$.
+\newline
+
+NB: you don't even need to specify a prior.
+
+\end{frame}
 
 
 \end{document} 
