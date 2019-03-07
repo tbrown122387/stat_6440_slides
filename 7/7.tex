@@ -505,7 +505,7 @@ $B_{2,1} = \frac{p(y \mid H_2)}{p(y \mid H_1)}$
 \includegraphics[width=80mm]{bf_scale.png}
 \end{center}
 
-From \url{http://www.andrew.cmu.edu/user/kk3n/simplicity/KassRaftery1995.pdf}
+From \href{http://www.andrew.cmu.edu/user/kk3n/simplicity/KassRaftery1995.pdf}{http://www.andrew.cmu.edu/user/kk3n/simplicity/KassRaftery1995.pdf}
 
 \end{frame}
 
@@ -554,12 +554,12 @@ Even noninformative proper priors can be ``biased" towards one of the hypotheses
 % Consider HW question on page 194. 
 % \newline
 
-Consider the following example of the {\bf Jeffreys-Lindley's paradox}: 
+Consider the following example of the {\bf Jeffreys-Lindley's paradox}:
 \begin{enumerate}
 \item under $H_1$: $\theta = 0$ with prior probability $1$
-\item $p(\bar{y} \mid H_1)  = (2\pi)^{-n/2}n^{n/2} \exp\left[-\frac{n}{2}\bar{y}^2 \right]$
-\item under $H_2$: $p(\theta) = N(0,\tau^2)$
-\item $p(\bar{y} \mid H_2) = \int p(\bar{y} \mid \theta, H_2)p(\theta \mid H_2)\text{d}\theta = [2\pi(\tau^2 + n^{-1})]^{-n/2} \exp\left[-\frac{1}{2(\tau^2 + n^{-1})}\bar{y}^2 \right]$
+\item $p(\bar{y} \mid H_1)  = (2\pi)^{-1/2}n^{1/2} \exp\left[-\frac{n}{2}\bar{y}^2 \right]$
+\item $p(\theta \mid H_2 ) = N(0,\tau^2)$
+\item $p(\bar{y} \mid H_2) = \int p(\bar{y} \mid \theta, H_2)p(\theta \mid H_2)\text{d}\theta = [2\pi(\tau^2 + n^{-1})]^{-1/2} \exp\left[-\frac{1}{2(\tau^2 + n^{-1})}\bar{y}^2 \right]$
 \end{enumerate}
 so
 \[
@@ -604,7 +604,7 @@ If you can't derive $p(y \mid H_i)$, then it must be approximated. Noticing that
 \begin{align*}
 p(y \mid H_i) &= \int p(y \mid \theta_i, H_i)p(\theta_i \mid H_i) \text{d}\theta_i \\
 &= \int \frac{p(y \mid \theta_i, H_i)p(\theta_i \mid H_i)}{q(\theta_i)}q(\theta_i) \text{d}\theta_i \\
-&\leftarrow \sum_{s=1}^n \frac{p(y \mid \theta^s_i, H_i)p(\theta^s_i \mid H_i)}{q(\theta^s_i)}
+&\leftarrow \frac{1}{S}\sum_{s=1}^S \frac{p(y \mid \theta^s_i, H_i)p(\theta^s_i \mid H_i)}{q(\theta^s_i)}
 \end{align*}
 
 where $\theta^s_i \sim q(\theta_i)$.
@@ -621,9 +621,8 @@ One might tempted to use the posterior samples, too:
 
 \begin{align*}
 p(y \mid H_i)
-&= \left[ \frac{1}{p(y \mid H_i)} \int p(\theta_i \mid  H_i) \text{d}\theta_i \right]^{-1} \\
 &= \left[  \int \frac{p(y \mid \theta_i,  H_i)p(\theta_i \mid H_i)}{p(y \mid H_i) p(y \mid \theta_i, H_i) } \text{d}\theta_i \right]^{-1}\\
-&= \left[  \int \frac{p(\theta_i\mid y,  H_i) }{p(y \mid \theta_i, H_i) } \text{d}\theta_i \right]^{-1} \\
+&= \left[  \int \frac{p(\theta_i\mid y,  H_i) }{p(y \mid \theta_i, H_i) } \text{d}\theta_i \right]^{-1} \tag{Bayes' theorem}\\
 & \leftarrow  \left[  \frac{1}{S}\sum_{s=1}^S\frac{1 }{p(y \mid \theta_i^s, H_i) } \right]^{-1}
 \end{align*}
 
