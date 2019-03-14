@@ -87,6 +87,9 @@ University of Virginia \\
 \frametitle{Introduction}
 
 In this section, we discuss {\bf Markov chain Monte Carlo} techniques, which all produce \underline{correlated} draws from the posterior of interest.
+\newline
+
+Compared with chapter 12, this chapter mostly seeks to build intuition and mention key ideas.
 
 
 \end{frame}
@@ -101,9 +104,9 @@ $$
 $$
 Even though these draws are correlated, they are all {\bf marginally} distributed according to the posterior 
 $$
-p(\theta \mid y).
+p(\theta \mid y),
 $$
-We estimate expectations with sample means:
+and it is still legitimate to estimate expectations with sample means:
 $$
 E[h(\theta) \mid y] \approx  \frac{1}{N}\sum_{i=1}^N h(\theta^i).
 $$
@@ -154,12 +157,12 @@ A 6-parameter model from: \url{https://academic.oup.com/jfec/article/14/2/278/17
 \begin{frame}
 \frametitle{Variance of our Estimator}
 
-Let $\sigma^2 = \operatorname{Var}[h(\theta^i)]$, $\rho(h) = \operatorname{Corr}\left(  h(\theta^i), h(\theta^{h+i}) \right)$
+Let $\sigma^2 = \operatorname{Var}[h(\theta^i)]$, $\rho(h) = \operatorname{Corr}\left(  h(\theta^i), h(\theta^{h+i}) \right)$. If all of these variances are finite, then
 \begin{align*}
-N \operatorname{Var}\left[ \frac{1}{N}\sum_{i=1}^N h(\theta^i) \right] &= N\operatorname{Cov}\left( \frac{1}{N}\sum_{i=1}^N h(\theta^i),\frac{1}{N}\sum_{j=1}^N h(\theta^j) \right) \\
+N \operatorname{Var}\left[ \frac{1}{N}\sum_{i=1}^N h(\theta^i) \right] &= N\operatorname{Cov}\left( \frac{1}{N}\sum_{i=1}^N h(\theta^i),\frac{1}{N}\sum_{j=1}^N h(\theta^j) \right) \tag{defn.} \\
 &= \frac{1}{N} \sum_{i=1}^N\sum_{j=1}^N\operatorname{Cov}\left(  h(\theta^i), h(\theta^i) \right) \tag{bilinearity} \\
 &= \sigma^2 \left\{ 1 + 2\sum_{h=1}^N \frac{N - h}{N} \rho(h)\right\}  \tag{count diagonally} \\
-&\to \sigma^2 \underbrace{\left\{ 1 + 2\sum_{h=1}^{\infty}  \rho(h)\right\}}_{\text{correlation is bad}} 
+&\to \sigma^2 \underbrace{\left\{ 1 + 2\sum_{h=1}^{\infty}  \rho(h)\right\}}_{\text{correlation is bad!}} 
 \end{align*}
 
 
@@ -184,10 +187,10 @@ bad, bad, less bad, good.
 \begin{frame}
 \frametitle{Another issue}
 
-The previous problem assumes each draw is distributed according to the posterior. 
+The previous expression assumes each draw is distributed according to the posterior. 
 \newline
 
-If we start the chain far away from the mode, how long until it converges? How can we be sure it has converged?
+If we start the chain far away from the mode, how long until it converges? How can we be sure it has converged? If you don't run your algorithm for long enough, your answer will be very wrong.
 \newline
 \pause
 
@@ -207,12 +210,13 @@ At iteration $t-1$ you have $\theta^{t-1}$. Propose $\theta^* \sim q(\theta \mid
 $$
 a(\theta^{t-1}, \theta^*) = \min\left\{1, \frac{p(\theta^* \mid y)q(\theta^{t-1} \mid \theta^*) }{p(\theta^{t-1} \mid y) q(\theta^* \mid \theta^{t-1}) }\right\}.
 $$
-If you accept, $\theta^t = \theta^*$. Otherwise, $\theta^t = \theta^{t-1}$. 
+If you accept, $\theta^t \overset{\text{set}}{=} \theta^*$. Otherwise, $\theta^t \overset{\text{set}}{=} \theta^{t-1}$. 
 \newline
 
 {\it Many} algorithms are a special case of this one.
 
 \end{frame}
+
 %----------------------------------------------------------------------------------------
 \begin{frame}
 \frametitle{Metropolis-Hastings algorithm}
@@ -235,8 +239,8 @@ a(\theta^{t-1}, \theta^*) = \min\left\{1, \frac{p(\theta^* \mid y)q(\theta^{t-1}
 $$
 
 \begin{enumerate}
-\item When is $a(\theta^{t-1}, \theta^*)$ big?
-\item When is $a(\theta^{t-1}, \theta^*)$ small?
+\item When is $a(\theta^{t-1}, \theta^*)$ nearly $1$?
+\item When is $a(\theta^{t-1}, \theta^*)$ nearly $0$?
 \item How should we pick $q(\theta^* \mid \theta^{t-1})$?
 \item What is the ideal $q(\theta^* \mid \theta^{t-1})$?
 \item What if $q(\theta^* \mid \theta^{t-1})$ is too peaked?
@@ -327,6 +331,112 @@ Example on page 277:
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
+\frametitle{Metropolis-Hastings algorithm}
+
+Often $\theta^* \sim q(\theta \mid \theta^{t-1})$ is a density (continuous random variable), but the Markov chain it produces is not. 
+\newline
+
+In this case, the probability of staying put is: 
+$$
+r(\theta^{t-1}) = 1 - \int a(\theta^{t-1}, \theta^*)q(\theta^* \mid \theta^{t-1}) \text{d}\theta^* 
+$$
+
+
+
+\end{frame}
+
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Metropolis-Hastings algorithm}
+
+The transition dynamics for a MH chain is usually written down as a {\bf kernel} 
+\begin{align*}
+P(\theta^t \in A \mid \theta^{t-1}) &= P(\theta^{t-1}, A) \\
+&= r(\theta^{t-1})I(\theta^{t-1}, A) + \int_A a(\theta^{t-1}, \theta^*)q(\theta^* \mid \theta^{t-1}) \text{d}\theta^*
+\end{align*}
+
+\begin{enumerate}
+\item it's more common for things to be written in a left-to-right format instead of a right-to-left
+\item it's also more common for elements of the state space to be written with letters (e.g. $x$, $y$)
+\end{enumerate}
+We switch to left-to-right, x and y notation, and then we switch back later.
+
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Metropolis-Hastings algorithm}
+
+Call the target distribution $\pi$ (i.e. the posterior), and call our Markov transition kernel $P(x, A)$.
+\newline
+
+$\pi$ is the {\bf stationary distribution} for $P$ if
+$$
+\int \pi(x) P(x, A) \text{d}x = \pi(A).
+$$
+Sometimes this is written as $\pi P = \pi$
+
+
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Metropolis-Hastings algorithm}
+
+Call the target distribution $\pi$ (i.e. the posterior), and call our Markov transition kernel $P(x, A)$.
+\newline
+
+The Markov chain is {\bf reversible} if
+$$
+\int_A\int_B \pi(x) P(x, dy) \text{d}x = \int_B\int_A \pi(x) P(x, dy) \text{d}x.
+$$
+Being in $B$ and then $A$ has the same chances as being in $A$ and then $B$. 
+\newline
+
+This is the same thing as exchangeability! Think about when something like this wouldn't be true.
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Metropolis-Hastings algorithm}
+
+Call the target distribution $\pi$ (i.e. the posterior), and call our Markov transition kernel $P(x, A)$.
+\newline
+
+Reversibility implies stationarity. Just take $B = \mathsf{X}$ (the entire space):
+$$
+\int_A\int_B \pi(x) P(x, dy) \text{d}x = \int_B\int_A \pi(x) P(x, dy) \text{d}x.
+$$
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Why Everything ``Works"}
+
+Virtually every MCMC we discuss has a "law of large numbers." This is because every Markov chain we talk about is {\bf ergodic}, which means 
+$$
+\Vert P^n(x,A)- \pi(A) \Vert_{TV} \to 0 \hspace{10mm} \text{as } n \to \infty.
+$$
+This is convergence in total variation, which is stronger than convergence in distribution.
+\newline
+
+To calculate confidence intervals, you will need central limit theorems, which require stronger forms of ergodicity. These are more technical, and are outside the scope of this class.
+
+
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
 \frametitle{Back to  Assessing convergence for scalars $\psi_{i,j}$}
 
 Run $m$ chains for $n$ iterations, $i=1,\ldots,n$ and $j=1\ldots,m$.
@@ -339,7 +449,7 @@ B &= \frac{n}{m-1} \sum_{j=1}^m (\bar{\psi}_{\cdot j} - \bar{\psi}_{\cdot \cdot}
 \hat{\text{var}}^{+}(\psi \mid y) &=\frac{n-1}{n}W + \frac{1}{n}B.
 \end{align*}
 
-
-
 \end{frame}
+
+
 \end{document} 

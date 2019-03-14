@@ -596,13 +596,26 @@ sd(replicate(1000,
 \begin{frame}[fragile]
 \frametitle{Effective Sample Size}
 
+Effective sample size calculations use the delta method, too:
+\newline
+
+\[
+E[w(\theta^s)] = E\left[\frac{\tilde{w}(\theta^s)}{\sum_r \tilde{w}(\theta^r) } \right] \approx \frac{E[ \tilde{w}(\theta^s)]}{\sum_r E [\tilde{w}(\theta^r)] }  = 1/n
+\]
+
+\[
+\operatorname{Var}(\tilde{w}(\theta^s)) \approx \frac{1}{n}\sum_s (\tilde{w}(\theta^s) - 1/n)^2
+\]
 
 \[
 \sum_{s=1}^S w(\theta^s) \left( h(\theta^s) - \hat{E}[h(\theta)]  \right)^2 \overset{\text{set}}{=}  \frac{1}{S_{\text{eff}}} \operatorname{Var}\left[ h(\theta^i) \right]
 \]
 Solving for $S_{\text{eff}}$ yields
+\[
+S_{\text{eff}} = \frac{ \operatorname{Var}\left[ h(\theta^i) \right] }{\sum_{s=1}^S w(\theta^s) \left( h(\theta^s) - \hat{E}[h(\theta)]  \right)^2}
+\]
 
-TODO
+%http://www.nowozin.net/sebastian/blog/effective-sample-size-in-importance-sampling.html
 
 \end{frame}
 
