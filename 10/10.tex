@@ -121,8 +121,6 @@ These methods can be loosely categorized as either {\bf stochastic} or {\bf dete
 \end{frame}
 
 
-
-
 %----------------------------------------------------------------------------------------
 \begin{frame}
 \frametitle{Deterministic Methods}
@@ -133,12 +131,30 @@ E[h(\theta) \mid y] = \int h(\theta) p(\theta \mid y) \text{d}\theta \approx \fr
 \]
 
 \end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Approximating the posterior on a grid}
 
+We used this method earlier for the rat tumor example!
+\newline
+
+Given that we can evaluate the unnormalized target $p(\theta, y) = p(y \mid \theta)p(\theta)$, we choose a nonrandom grid of points (think \verb|seq|) $\theta_1, \ldots, \theta_S$, and then we approximate the the continuous posterior with a discrete random variable with pmf equal to
+\[
+\tilde{p}(\theta_j \mid y) = \frac{p(y \mid \theta_j)p(\theta_j)}{\sum_{s=1}^S p(y \mid \theta_s)p(\theta_s) }
+\]
+for any $\theta_j \in \{\theta_1, \ldots, \theta_S\}$. Then
+\newline
+
+$$
+E[h(\theta) \mid y] \approx \sum_{j=1}^S h(\theta_j)\tilde{p}(\theta_j \mid y) .
+$$
+
+\end{frame}
 %----------------------------------------------------------------------------------------
 \begin{frame}
 \frametitle{Stochastic Methods}
 
-{\bf Stochastic methods} involve sample averages of simulated draws from some distribution. There are many ways to do this, but generally
+{\bf Stochastic methods} involve sample averages of simulated draws from some distribution. There are {\bf many} ways to do this, but here are a couple examples that we've seen:
 \[
 E[h(\theta) \mid y] = \int h(\theta) p(\theta \mid y) \text{d}\theta \approx \frac{1}{S} \sum_{s=1}^S h(\theta^s)
 \]
@@ -169,20 +185,7 @@ with $\theta^s \sim p(\theta \mid y)$
 
 
 \end{frame}
-%----------------------------------------------------------------------------------------
-\begin{frame}[fragile]
-\frametitle{Approximating the posterior on a grid}
 
-We used this method earlier for the rat tumor example!
-\newline
-
-Given that we can evaluate the unnormalized target $p(\theta, y) = p(y \mid \theta)p(\theta)$, we choose a nonrandom grid of points (think \verb|seq|) $\theta_1, \ldots, \theta_S$, and then we approximate the the continuous posterior with a discrete random variable with pmf equal to
-\[
-\tilde{p}(\theta_j \mid y) = \frac{p(y \mid \theta_j)p(\theta_j)}{\sum_{s=1}^S p(y \mid \theta_s)p(\theta_s) }
-\]
-for any $\theta_j \in \{\theta_1, \ldots, \theta_S\}$
-
-\end{frame}
 
 %----------------------------------------------------------------------------------------
 \begin{frame}[fragile]
@@ -516,7 +519,7 @@ Using the Delta method:
 \operatorname{Var}_g \left( \sum_{s=1}^S w(\theta^s) h(\theta^s) \right) &\approx \frac{1}{S} E_g\left[  \underbrace{ \left(\frac{\tilde{w}(\theta)}{ E_g[\tilde{w}(\theta)] }\right)^2 }_{\text{!} } (h(\theta) - E_q[h(\theta) ] )^2 \right]    \\
 \end{align*}
 
-Details: \url{https://stats.stackexchange.com/questions/250934/var-self-normalised-sampling-estimator/250972#250972}
+% Details: \url{https://stats.stackexchange.com/questions/250934/var-self-normalised-sampling-estimator/250972#250972}
 \end{frame}
 
 %----------------------------------------------------------------------------------------
@@ -544,7 +547,7 @@ A sample estimator of this approximate variance is
 where $\hat{E}[h(\theta)] = \sum_s w(\theta^s)h(\theta^s)$. 
 \newline
 
-Note the weights aren't uniform like a ``standard" estimation of the sample variance.
+Note the weights aren't the same for each sample, like a ``standard" estimation of the sample variance.
 
 \end{frame}
 
@@ -563,7 +566,8 @@ getISEstimator <- function(num_samples){
   norm_weights <- exp(lunws)/sum(exp(lunws))
   estimator <- sum(norm_weights * theta_draws)
   list("estimate" = estimator, 
-       "approx_var" = sum( norm_weights*(theta_draws - estimator)^2) ) }
+       "approx_var" = 
+       sum( norm_weights*(theta_draws - estimator)^2) ) }
 # two ways to calculate standard errors
 num_samps_per_estimate <- 10
 sqrt(getISEstimator(num_samps_per_estimate)$approx_var)  
@@ -596,24 +600,19 @@ sd(replicate(1000,
 \begin{frame}[fragile]
 \frametitle{Effective Sample Size}
 
-Effective sample size calculations use the delta method, too:
+Effective sample size calculations use the delta method, too. 
 \newline
 
-\[
-E[w(\theta^s)] = E\left[\frac{\tilde{w}(\theta^s)}{\sum_r \tilde{w}(\theta^r) } \right] \approx \frac{E[ \tilde{w}(\theta^s)]}{\sum_r E [\tilde{w}(\theta^r)] }  = 1/n
-\]
+One form is 
+$$
+\textrm{ESS} = \frac{S}{1 + \textrm{Var}_g(W)}.
+$$
+and the other form is 
+$$
+\textrm{ESS} = \frac{1}{\sum_{i=1}^S w_i^2}.
+$$
 
-\[
-\operatorname{Var}(\tilde{w}(\theta^s)) \approx \frac{1}{n}\sum_s (\tilde{w}(\theta^s) - 1/n)^2
-\]
-
-\[
-\sum_{s=1}^S w(\theta^s) \left( h(\theta^s) - \hat{E}[h(\theta)]  \right)^2 \overset{\text{set}}{=}  \frac{1}{S_{\text{eff}}} \operatorname{Var}\left[ h(\theta^i) \right]
-\]
-Solving for $S_{\text{eff}}$ yields
-\[
-S_{\text{eff}} = \frac{ \operatorname{Var}\left[ h(\theta^i) \right] }{\sum_{s=1}^S w(\theta^s) \left( h(\theta^s) - \hat{E}[h(\theta)]  \right)^2}
-\]
+You will derive these in a homework problem using the multivariate delta method.
 
 %http://www.nowozin.net/sebastian/blog/effective-sample-size-in-importance-sampling.html
 
@@ -801,7 +800,7 @@ y_t = \exp(x_t / 2) \epsilon_t \\
 x_t = c + \phi x_{t-1} + v_t
 \end{gather}
 
-We sometimes refer to (1) as $g(y_t \mid x_t)$ or the observation equation, and (2) as the state transition equation or $f(x_t \mid x_{t-1})$.
+We sometimes refer to (1) as $g(y_t \mid x_t, \theta)$ or the observation equation, and (2) as the state transition equation or $f(x_t \mid x_{t-1}, \theta)$.
 \end{frame}
 
 %----------------------------------------------------------------------------------------
@@ -917,6 +916,7 @@ $y_{1:t}$ observed, $x_{1:t}$ hidden. Goal: $p(x_t \mid y_{1:t})$ in real-time.
 \begin{frame}[fragile]
 \frametitle{Filtering recursions}
 
+Drop dependence on $\theta$ from the notation...
 \begin{align*}
 p(x_{1:t}|y_{1:t}) &=C_{t}^{-1} p(x_{t} , y_t  \mid x_{t-1})p(x_{1:t-1} \mid y_{1:t-1}) \\
 &= C_{t}^{-1} \frac{p(x_t, y_t \mid x_{t-1})}{q_{t}(x_{t} \mid y_{t},x_{t-1})} \times \\

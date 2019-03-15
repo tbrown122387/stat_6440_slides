@@ -1,5 +1,6 @@
 \frametitle{Filtering recursions}
 
+Drop dependence on $\theta$ from the notation...
 \begin{align*}
 p(x_{1:t}|y_{1:t}) &=C_{t}^{-1} p(x_{t} , y_t  \mid x_{t-1})p(x_{1:t-1} \mid y_{1:t-1}) \\
 &= C_{t}^{-1} \frac{p(x_t, y_t \mid x_{t-1})}{q_{t}(x_{t} \mid y_{t},x_{t-1})} \times \\
