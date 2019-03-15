@@ -511,15 +511,15 @@ hist(norm_weights)
 \begin{frame}[fragile]
 \frametitle{Example 2}
 
-The choice of proposal is very important:
+The choice of proposal is very important. In a HW problem, you will derive the following using the delta method:
 \newline
 
-Using the Delta method:
 \begin{align*}
 \operatorname{Var}_g \left( \sum_{s=1}^S w(\theta^s) h(\theta^s) \right) &\approx \frac{1}{S} E_g\left[  \underbrace{ \left(\frac{\tilde{w}(\theta)}{ E_g[\tilde{w}(\theta)] }\right)^2 }_{\text{!} } (h(\theta) - E_q[h(\theta) ] )^2 \right]    \\
 \end{align*}
 
-% Details: \url{https://stats.stackexchange.com/questions/250934/var-self-normalised-sampling-estimator/250972#250972}
+Beware of proposals that have tails that are thin relative to the target!
+
 \end{frame}
 
 %----------------------------------------------------------------------------------------
@@ -600,7 +600,7 @@ sd(replicate(1000,
 \begin{frame}[fragile]
 \frametitle{Effective Sample Size}
 
-Effective sample size calculations use the delta method, too. 
+Effective sample size calculations use a second order delta method. 
 \newline
 
 One form is 
@@ -611,8 +611,6 @@ and the other form is
 $$
 \textrm{ESS} = \frac{1}{\sum_{i=1}^S w_i^2}.
 $$
-
-You will derive these in a homework problem using the multivariate delta method.
 
 %http://www.nowozin.net/sebastian/blog/effective-sample-size-in-importance-sampling.html
 
