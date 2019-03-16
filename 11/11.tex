@@ -185,7 +185,7 @@ bad, bad, less bad, good.
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
-\frametitle{Another issue}
+\frametitle{Another issue: has there been convergence?}
 
 The previous expression assumes each draw is distributed according to the posterior. 
 \newline
@@ -194,12 +194,31 @@ If we start the chain far away from the mode, how long until it converges? How c
 \newline
 \pause
 
-Trace plots help. We also have convergence diagnostics (more on this later).
+Trace plots help. We also have convergence diagnostics.
 \newline
 
 \includegraphics[width=40mm]{convergence.png} You could throw away $6000$ iterations as a {\bf burn in} or {\bf warm-up}.
 
 \end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Assessing convergence for scalars $\psi_{i,j}$}
+
+Run $m$ chains for $n$ iterations, $i=1,\ldots,n$ and $j=1\ldots,m$.
+\begin{align*}
+\bar{\psi}_{\cdot \cdot} &= \frac{1}{mn}\sum_{i=1}^n\sum_{j=1}^m \psi_{ij} \tag{overall average} \\
+\bar{\psi}_{\cdot j} &= \frac{1}{n}\sum_{i=1}^n \psi_{ij} \tag{chain average} \\
+s^2_j &= \frac{1}{n-1}\sum_{i=1}^n (\psi_{ij}-\bar{\psi}_{\cdot j})^2 \tag{chain sd} \\
+W &= \frac{1}{m} s^2_j \tag{within-sequence variance} \\
+B &= \frac{n}{m-1} \sum_{j=1}^m (\bar{\psi}_{\cdot j} - \bar{\psi}_{\cdot \cdot})^2\\
+\hat{\text{var}}^{+}(\psi \mid y) &=\frac{n-1}{n}W + \frac{1}{n}B.
+\end{align*}
+
+Split each chain into two, after discarding a burn-in/warm-up.
+%On page 284
+\end{frame}
+
 
 
 %----------------------------------------------------------------------------------------
@@ -421,7 +440,7 @@ $$
 \begin{frame}
 \frametitle{Why Everything ``Works"}
 
-Virtually every MCMC we discuss has a "law of large numbers." This is because every Markov chain we talk about is {\bf ergodic}, which means 
+Virtually every MCMC we discuss has a ``law of large numbers." This is because every Markov chain we talk about is {\bf ergodic}, which means 
 $$
 \Vert P^n(x,A)- \pi(A) \Vert_{TV} \to 0 \hspace{10mm} \text{as } n \to \infty.
 $$
@@ -435,20 +454,69 @@ To calculate confidence intervals, you will need central limit theorems, which r
 
 \end{frame}
 
+
 %----------------------------------------------------------------------------------------
 \begin{frame}
-\frametitle{Back to  Assessing convergence for scalars $\psi_{i,j}$}
+\frametitle{Example: Hierarchical Normal Model}
 
-Run $m$ chains for $n$ iterations, $i=1,\ldots,n$ and $j=1\ldots,m$.
-\begin{align*}
-\bar{\psi}_{\cdot \cdot} &= \frac{1}{mn}\sum_{i=1}^n\sum_{j=1}^m \psi_{ij} \tag{overall average} \\
-\bar{\psi}_{\cdot j} &= \frac{1}{n}\sum_{i=1}^n \psi_{ij} \tag{chain average} \\
-s^2_j &= \frac{1}{n-1}\sum_{i=1}^n (\psi_{ij}-\bar{\psi}_{\cdot j})^2 \tag{chain sd} \\
-W &= \frac{1}{m} s^2_j \tag{within-sequence variance} \\
-B &= \frac{n}{m-1} \sum_{j=1}^m (\bar{\psi}_{\cdot j} - \bar{\psi}_{\cdot \cdot})^2\\
-\hat{\text{var}}^{+}(\psi \mid y) &=\frac{n-1}{n}W + \frac{1}{n}B.
-\end{align*}
+\begin{enumerate}
+\item $y_{ij} \sim \text{Normal}(\theta_j, \sigma^2)$
+\item $\theta_j \sim \text{Normal}(\mu, \tau^2)$
+\item $p(\mu) \sim \text{Normal}(60, 100)$
+\item $p(\tau^2) = \text{Inverse-Gamma}(.001, .001)$
+\item $p(\sigma^2) = \text{Inverse-Gamma}(.001, .001)$
+\end{enumerate}
 
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Example: Hierarchical Normal Model (MH)}
+
+We either need to worry about constraints, or we can sample on a transformed space.
+\newline
+
+Let's sample on the transformed space. Be careful of the Jacobians. If $p(\sigma^2) \propto (\sigma^2)^{-.0001-1}\exp\left[- .0001 \sigma^{-2} \right]$, then
+$$
+p(\log \sigma) \propto (\sigma^2)^{-.0001}\exp\left[- .0001 \sigma^{-2} \right] .
+$$
+Also
+$$
+p(\log \tau) \propto (\tau^2)^{-.0001}\exp\left[- .0001 \tau^{-2} \right]
+$$
+%\item $\log p(\log \sigma) = c -.0002\log \sigma - .0001 \sigma^{-2} $
+% $\item $\log p(\tau^2) = c -.0002\log \tau - .0001 \tau^{-2}$
+Nearly uniform, but they are proper, so they guarantee a proper posterior. 
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Example: Hierarchical Normal Model (MH)}
+
+See \verb|hierarhical_normal_examples.R|
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Example: Hierarchical Normal Model (Gibbs)}
+
+There are no tuning parameters required for Gibbs sampling, but you must derive the conditional posteriors. 
+\newline
+
+\begin{enumerate}
+\item $\theta_j \mid y, \mu, \tau^2, \sigma^2  \sim \text{Normal}\left(\frac{\bar{y}_{\cdot,j} (n_j/\sigma^2) + \mu(1/\tau^2) }{n_j/\sigma^2 + 1/\tau^2} ,[n_j/\sigma^2 + 1/\tau^2]^{-1} \right)$
+\item $\mu \mid \theta_{1:J}, \tau^2 \sim \text{Normal}\left(\frac{\bar{\theta} (J/\tau^2) + 60*(1/100) }{J/\tau^2 + 1/100} ,[J/\tau^2 + 1/100]^{-1} \right)$
+\item $p(\tau^2 \mid \theta_{1:J}, \mu) = \text{Inverse-Gamma}(.0001 + J/2, .0001  +  \frac{\sum_j (\theta_j - \mu)^2}{2})$
+\item  $p(\sigma^2 \mid y, \theta_{1:J}) =  \text{Inverse-Gamma}(.0001 + N/2 ,.0001 + \sum_j \sum_i \frac{(y_{ij} - \theta_j)^2}{2 })$
+\end{enumerate}
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Example: Hierarchical Normal Model (MH)}
+
+See \verb|hierarhical_normal_examples.R|
 \end{frame}
 
 
