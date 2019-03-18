@@ -303,7 +303,7 @@ log_accept_prob <- function(theta){
   -.5*(y - theta)^2
 }
 probs <- exp(log_accept_prob(theta_proposals))
-accepts <- ifelse(us < probs, TRUE, FALSE)
+accepts <- us < probs
 hist(theta_proposals[accepts]) # only the accepted draws
 #hist(theta_proposals) # all draws!
 \end{verbatim}
@@ -460,7 +460,7 @@ y <- 2 # fake data
 num_samples <- 1000000
 theta_draws <- rt(num_samples , 1)
 log_unnorm_weight <- function(theta){ 
-  # sqrt(2pi) because it will cancel out 
+  # can ignore sqrt(2pi) because it will cancel out 
   -.5*(y - theta)^2
 }
 lunws <- log_unnorm_weight(theta_draws)
@@ -558,10 +558,10 @@ Note the weights aren't the same for each sample, like a ``standard" estimation 
 \begin{verbatim}
 y <- 2 # fake data
 log_unnorm_weight <- function(theta){ 
-  # sqrt(2pi) because it will cancel out 
+  # can ignore sqrt(2pi) because it will cancel out 
   -.5*(y - theta)^2 }
 getISEstimator <- function(num_samples){
-  theta_draws <- rt(num_samples , 1)
+  theta_draws <- rt(num_samples, 1)
   lunws <- log_unnorm_weight(theta_draws)
   norm_weights <- exp(lunws)/sum(exp(lunws))
   estimator <- sum(norm_weights * theta_draws)
@@ -603,14 +603,11 @@ sd(replicate(1000,
 Effective sample size calculations use a second order delta method. 
 \newline
 
-One form is 
+Calculating
 $$
-\textrm{ESS} = \frac{S}{1 + \textrm{Var}_g(W)}.
+\textrm{ESS} = \frac{1}{\sum_{i=1}^S w_i^2}
 $$
-and the other form is 
-$$
-\textrm{ESS} = \frac{1}{\sum_{i=1}^S w_i^2}.
-$$
+will tell you, effectively, how many iid samples you have. 
 
 %http://www.nowozin.net/sebastian/blog/effective-sample-size-in-importance-sampling.html
 
@@ -693,7 +690,7 @@ $$
 \begin{verbatim}
 y <- 2 # fake data
 log_unnorm_weight <- function(theta){ 
-  # sqrt(2pi) because it will cancel out 
+  # can ignore sqrt(2pi) because it will cancel out
   -.5*(y - theta)^2 }
 num_samples <- 10000
 theta_draws <- rt(num_samples , 1)
@@ -703,7 +700,7 @@ random_indexes <- sample(x = num_samples,
                          size = num_samples, 
                          replace = T, 
                          prob = exp(lunws)) 
-sort(random_indexes) # repeats!
+sort(random_indexes) # see there are repeats!
 resampled_draws <- theta_draws[random_indexes]
 hist(resampled_draws) # can't do this unless we resample
 \end{verbatim}
@@ -719,11 +716,20 @@ hist(resampled_draws) # can't do this unless we resample
 Resampling adds variance, so why do it?
 \newline
 
-It throws away bad samples, and duplicates promising ones. When you're looking at a sequence of distribution targets, this can have a good effect on future samples.
+It throws away bad samples, and duplicates promising ones. 
+\newline
+
+When you're looking at a sequence of distribution targets, this can have a good effect on future samples.
 \pause
 \newline
 
-{\bf sequential monte carlo} or {\bf particle filtering} methods are basically doing SIR over and over again.
+{\bf sequential monte carlo} or {\bf particle filtering} methods are basically doing SIR over and over again. 
+\newline
+
+At ``time" $t-1$ you just resampled, so you have draws $\tilde{\theta}^1_{t-1}, \tilde{\theta}^2_{t-1}, \ldots, \tilde{\theta}^S_{t-1}$, and you want to turn them into draws for the next ``time" period:
+$$
+\tilde{\theta}^1_{t}, \tilde{\theta}^2_{t}, \ldots, \tilde{\theta}^S_{t}.
+$$
 
 \end{frame}
 
