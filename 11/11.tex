@@ -60,6 +60,28 @@
 \usepackage{mathtools} % gather
 \usepackage[export]{adjustbox} % right-aligned graphics
 
+
+% sectioning stuff
+% Add support for \subsubsectionpage
+\def\subsubsectionname{\translate{Subsubsection}}
+\def\insertsubsubsectionnumber{\arabic{subsubsection}}
+\setbeamertemplate{subsubsection page}
+{
+  \begin{centering}
+    {\usebeamerfont{subsubsection name}\usebeamercolor[fg]{subsubsection name}\subsubsectionname~\insertsubsubsectionnumber}
+    \vskip1em\par
+    \begin{beamercolorbox}[sep=4pt,center]{part title}
+      \usebeamerfont{subsubsection title}\insertsubsubsection\par
+    \end{beamercolorbox}
+  \end{centering}
+}
+\def\subsubsectionpage{\usebeamertemplate*{subsubsection page}}
+
+\AtBeginSection{\frame{\sectionpage}}
+\AtBeginSubsection{\frame{\subsectionpage}}
+\AtBeginSubsubsection{\frame{\subsubsectionpage}}
+
+
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
@@ -83,6 +105,7 @@ University of Virginia \\
 \end{frame}
 
 %----------------------------------------------------------------------------------------
+\section{General Ideas}
 \begin{frame}
 \frametitle{Introduction}
 
@@ -203,7 +226,7 @@ Trace plots help. We also have convergence diagnostics.
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
-\frametitle{Assessing convergence for scalars $\psi_{i,j}$}
+\frametitle{Assessing convergence for scalars $\psi_{i,j}$ using $\hat{R}$}
 
 Run $m$ chains for $n$ iterations, $i=1,\ldots,n$ and $j=1\ldots,m$.
 \begin{align*}
@@ -212,7 +235,7 @@ Run $m$ chains for $n$ iterations, $i=1,\ldots,n$ and $j=1\ldots,m$.
 s^2_j &= \frac{1}{n-1}\sum_{i=1}^n (\psi_{ij}-\bar{\psi}_{\cdot j})^2 \tag{chain sd} \\
 W &= \frac{1}{m} s^2_j \tag{within-sequence variance} \\
 B &= \frac{n}{m-1} \sum_{j=1}^m (\bar{\psi}_{\cdot j} - \bar{\psi}_{\cdot \cdot})^2\\
-\hat{\text{var}}^{+}(\psi \mid y) &=\frac{n-1}{n}W + \frac{1}{n}B.
+\widehat{\text{var}}^{+}(\psi \mid y) =\frac{n-1}{n}W &+ \frac{1}{n}B \hspace{10mm} \hat{R} = \sqrt{\widehat{\text{var}}^{+}(\psi \mid y) / W}.
 \end{align*}
 
 Split each chain into two, after discarding a burn-in/warm-up.
@@ -220,8 +243,8 @@ Split each chain into two, after discarding a burn-in/warm-up.
 \end{frame}
 
 
-
 %----------------------------------------------------------------------------------------
+\section{Description of Algorithms}
 \begin{frame}
 \frametitle{Metropolis-Hastings algorithm}
 
@@ -349,13 +372,14 @@ Example on page 277:
 \end{frame}
 
 %----------------------------------------------------------------------------------------
+\section{A Closer Look}
 \begin{frame}
 \frametitle{Metropolis-Hastings algorithm}
 
-Often $\theta^* \sim q(\theta \mid \theta^{t-1})$ is a density (continuous random variable), but the Markov chain it produces is not. 
+Often $\theta^* \sim q(\theta \mid \theta^{t-1})$ is a density (continuous random variable), but the actual transition is not. 
 \newline
 
-In this case, the probability of staying put is: 
+We call the probability of rejecting/staying put: 
 $$
 r(\theta^{t-1}) = 1 - \int a(\theta^{t-1}, \theta^*)q(\theta^* \mid \theta^{t-1}) \text{d}\theta^* 
 $$
