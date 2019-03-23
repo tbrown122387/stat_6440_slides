@@ -1,0 +1,540 @@
+\documentclass{beamer}
+
+\mode<presentation> {
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{amsfonts}
+\usepackage{mathrsfs, bbold}
+\usepackage{amsmath,amssymb,graphicx}
+\usepackage{mathtools} % gather
+\usepackage[export]{adjustbox} % right-aligned graphics
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title["12"]{12: Computationally Efficient Markov chain Simulation}
+
+\author{Taylor} 
+\institute[UVA] 
+{
+University of Virginia \\
+\medskip
+\textit{} 
+}
+\date{} 
+
+\begin{document}
+%----------------------------------------------------------------------------------------
+
+\begin{frame}
+\titlepage 
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Introduction}
+
+We mention a few tricks for MCMC simulations, as well as describe Hamiltonian Monte Carlo.
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Trick 1}
+
+Last section, when we were using the Metropolis-Hastings algorithm, we struggled with tuning our proposal's covariance matrix:
+
+$$
+q(\theta^* \mid \theta^{t-1}) = \text{Normal}(\theta^{t-1}, \Sigma).
+$$
+
+The book recommends setting 
+$$
+\Sigma \approx \frac{2.4^2}{d} \operatorname{Var}(\theta \mid y)
+$$
+after transforming $\theta$ be roughly normal. Here $d$ is the dimension of $\theta$. A rough approximation of the posterior covariance matrix is required.
+
+
+
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Trick 1}
+
+The book also recommends aiming for an acceptance rate of about $22\%$ for problems where $d > 5$. 
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{MALA}
+
+TODO
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{HMC}
+
+Hamiltonian Monte Carlo can be quite effective at sampling from a high-dimensional posterior. It makes use of the derivative of the log-likelihood as well. 
+\newline
+
+We will describe it in three steps: 
+\begin{enumerate}
+\item Describing Hamiltonian dynamics in continuous time
+\item Describing how to discretize Hamiltonian dynamics
+\item Describing how to use these in a proposal distribution in the Metropolis-Hastings algorithm.
+\end{enumerate}
+
+\pause
+Video time! 
+\begin{enumerate}
+\item \url{https://www.youtube.com/watch?v=mzjErXqBXw4}
+\item \url{https://www.youtube.com/watch?v=87E0DKs5bok}
+\end{enumerate}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{HMC}
+
+Say you have $\theta_1, \ldots, \theta_d$. You add $d$ auxiliary variables: $\phi_1, \ldots, \phi_d$.
+\newline
+
+It's customary to use the notation $q_1, \ldots, q_d$ (the positions), and $p_1, \ldots, p_d$ (the momenta).
+\newline
+\pause
+
+A HMC proposal follows a two-step procedure:
+\begin{enumerate}
+\item sample a random momentum vector
+\item transform the momentum and position nonrandomly using Hamilton's equations
+\end{enumerate}
+Both steps are transition kernels that preserve the stationary distribution.
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{HMC: a 1-d example}
+
+Start with one-dimensional $q$ (position) and one-dimensional $p$ (momentum). Also, $m$ is mass (a tuning parameter).
+\newline
+
+\begin{enumerate}
+\item potential energy: $U(q)$ is negative the logarithm of the unnormalized posterior.
+\item kinetic energy: $K(p) = \frac{p^2}{2m}$ 
+\end{enumerate}
+$p =  m \times \text{velocity}$
+\newline
+
+Two good resources:
+\begin{enumerate}
+\item \url{https://arxiv.org/pdf/1206.1901.pdf} (primary reference), 
+\item \url{https://arxiv.org/pdf/1701.02434.pdf}
+\end{enumerate}
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{HMC}
+
+When the particle goes up the hill, it loses kinetic energy, and gains potential energy. 
+\newline
+
+Define the {\bf Hamiltonian} as
+$$
+H(q,p) = U(q) + K(p).
+$$ 
+
+and define {\bf Hamilton's Equations} as
+
+\begin{gather}
+\frac{dq}{dt} = \frac{\partial H(q,p)}{\partial p} \\
+\frac{dp}{dt} = -\frac{\partial H(q,p)}{\partial q}
+\end{gather}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{HMC: a first example}
+
+
+Assume the posterior is a Gaussian with mean $y=0$ and variance $1$. Negative log of the posterior is proportional to 
+$$
+U(q) = \frac{q^2}{2}.
+$$
+
+Also, assume kinetic energy is of the form
+$$
+K(p) = \frac{p^2}{2m}.
+$$
+\pause
+% where $p =  m \times \text{velocity}$, and 
+
+
+so
+\begin{gather}
+\frac{dq}{dt} = \frac{\partial H(q,p)}{\partial p} =  \frac{d K(p) }{d p} = p(t)/m \\
+\frac{dp}{dt} = -\frac{\partial H(q,p)}{\partial q} = -\frac{d U(q)}{d q} = -q(t)
+\end{gather}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{HMC: a first example}
+
+If $m=1$ integrating 
+\begin{gather}
+\frac{dq}{dt} = \frac{\partial H(q,p)}{\partial p} =  \frac{d K(p) }{d p} = p(t) \\
+\frac{dp}{dt} = -\frac{\partial H(q,p)}{\partial q} = -\frac{d U(q)}{d q} = -q(t)
+\end{gather}
+
+with respect to time yields
+
+
+\begin{gather}
+q(t) = r \cos(a + t)\\
+p(t) = -r \sin(a + t)
+\end{gather}
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{HMC: a first example}
+
+For this particular model, $(q,p)'$ rotates clockwise in phase-space.
+\begin{gather}
+q(t) = r \cos(a + t)\\
+p(t) = -r \sin(a + t)
+\end{gather}
+Can be written as 
+
+$$
+\left[\begin{array}{c}
+r \cos(a + t) \\
+-r \sin(a + t) 
+\end{array}\right]
+=
+\underbrace{
+\left[\begin{array}{cc}
+\cos([t-s]) & \sin([t-s]) \\
+\sin([t-s])  & \cos([t-s])
+\end{array}\right]}
+_{T_{t-s}}
+\left[\begin{array}{c}
+r \cos(a + s) \\
+-r \sin(a + t) 
+\end{array}\right]
+$$
+(use Angle-Sum trig identity)
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{HMC: a first example}
+
+When $m \neq 1$, $T_s$ might look like this. 
+\begin{center}
+\includegraphics[width=90mm]{level_sets.png}
+\end{center}
+image source: \url{https://arxiv.org/pdf/1701.02434.pdf}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{HMC}
+
+Now assume $d$-dimensional posterior $\mathbf{q} = (q_1, \ldots, q_d)$ and $\mathbf{p} = (p_1, \ldots, p_d)$.
+\newline
+
+When
+$$
+K(\mathbf{p}) = \frac{\mathbf{p}'M^{-1}\mathbf{p}}{2} 
+$$
+
+Hamilton's equations become
+
+\begin{gather}
+\frac{dq_i}{dt} = \frac{\partial H(\mathbf{q},\mathbf{p})}{\partial p_i} =  \frac{d K(\mathbf{p}) }{d p_i} = [M^{-1}\mathbf{p}]_i  \\
+\frac{dp_i}{dt} = -\frac{\partial H(\mathbf{q},\mathbf{p})}{\partial q_i} = -\frac{d U(\mathbf{q})}{d q_i} 
+\end{gather}
+
+Recall that $U(\mathbf{q})$ is the negative log of the posterior you're interested in.
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{HMC Property 1: Reversibility of $T_s$}
+
+Recall  $T_s: [\mathbf{q}(0), \mathbf{p}(0)] \mapsto [\mathbf{q}(s), \mathbf{p}(s)]$. It is always has an easy-to-find inverse.
+\newline
+
+Proof: just take the negative of the derivatives.
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{HMC Property 2: Conservation of the Hamiltonian}
+
+Using the chain rule:
+
+\begin{align*}
+\frac{d H}{dt} &= \sum_{i=1}^d \frac{\partial H}{\partial p_i}\frac{dp_i}{dt} + \sum_{i=1}^d \frac{\partial H}{\partial q_i}\frac{dq_i}{dt} \\
+&= \sum_{i=1}^d \frac{dK}{dp_i}\frac{dp_i}{dt} + \sum_{i=1}^d \frac{dU}{dq_i}\frac{dq_i}{dt} \\
+&= \sum_{i=1}^d \frac{dK}{dp_i}\left( - \frac{d U}{dq_i}\right) + \sum_{i=1}^d \frac{dU}{dq_i}\frac{dK}{dp_i} \\
+&= 0
+\end{align*}
+
+Moving through time keeps you on the same contour or level-set in the phase space.
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{HMC}
+
+$T_s$ keeps you on a level-set/contour: 
+\begin{center}
+\includegraphics[width=100mm]{level_sets.png}
+\end{center}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{HMC Property 3 and 4: Volume Preservation and Symplecticness}
+
+TODO
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{HMC: looking back at the big picture}
+
+Again, HMC will work as follows: given that we are currently at position $\mathbf{q}(t)$, we are going to sample a momentum vector (which puts us on one of the level-sets), and then we are going to follow $T_s$ for a deterministic amount of time.
+\newline
+
+\begin{center}
+\includegraphics[width=100mm]{1d_algo_vis.png}
+\end{center}
+\pause
+
+Following a contour line is impossible in continuous time though...
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Discretizing Hamilton's Equations: Version 1.0}
+
+We need to be able to approximate $T_s$ using the derivatives. To do that, we pick a small change in time called $\epsilon$. Then we take $L$ steps of size $\epsilon$.
+\newline
+
+Two procedures are described. The last one is the one that is most commonly used. 
+\newline
+
+For simplicity, assume the mass matrix is diagonal, making
+$$
+K(\mathbf{p}) = \mathbf{p}'M^{-1}\mathbf{p}  = \sum_{i=1}^d \frac{p_i^2}{2m_i}.
+$$
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Discretizing Hamilton's Equations: Version 1.0}
+
+When $K(\mathbf{p})= \sum_{i=1}^d \frac{p_i^2}{2m_i}$, {\bf Euler's method} approximates
+
+\begin{gather}
+\frac{dq_i}{dt} = \frac{\partial H(\mathbf{q},\mathbf{p})}{\partial p_i} =  \frac{d K(\mathbf{p}) }{d p_i} = p_i/m_i  \\
+\frac{dp_i}{dt} = -\frac{\partial H(\mathbf{q},\mathbf{p})}{\partial q_i} = -\frac{d U(\mathbf{q})}{d q_i} 
+\end{gather}
+
+with
+\begin{gather}
+q_i(t + \epsilon) =  q_i(t ) + \epsilon p_i(t)/m_i \\
+p_i(t + \epsilon) =  p_i(t) - \epsilon \frac{d U}{d q_i}(\mathbf{q}(t))  
+\end{gather}
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Discretizing Hamilton's Equations: Version 1.0}
+
+\begin{center}
+\includegraphics[width=60mm]{eulers_method.png}
+\end{center}
+
+Twenty steps when $H(q,p) = p^2/2 + q^2/2$, the initial state is $(q,p) = (0,1)$. Leap-frog is better because it preserves the volume!
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Discretizing Hamilton's Equations: Version 2.0}
+
+When $K(\mathbf{p})= \sum_{i=1}^d \frac{p_i^2}{2m_i}$, {\bf the leap-frog method} approximates
+
+\begin{gather}
+\frac{dq_i}{dt} = \frac{\partial H(\mathbf{q},\mathbf{p})}{\partial p_i} =  \frac{d K(\mathbf{p}) }{d p_i} = p_i/m_i  \\
+\frac{dp_i}{dt} = -\frac{\partial H(\mathbf{q},\mathbf{p})}{\partial q_i} = -\frac{d U(\mathbf{q})}{d q_i} 
+\end{gather}
+
+with
+\begin{gather}
+p_i(t + \epsilon/2) =  p_i(t) - (\epsilon/2) \frac{d U}{d q_i}(\mathbf{q}(t)) \\
+q_i(t + \epsilon) = q_i(t ) + \epsilon \frac{p_i(t+\epsilon/2)}{m_i} \\
+p_i(t + \epsilon) =  p_i(t + \epsilon/2) - (\epsilon/2) \frac{d U}{d q_i}(\mathbf{q}(t+\epsilon)) 
+\end{gather}
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Discretizing Hamilton's Equations: Version 2.0}
+
+\begin{center}
+\includegraphics[width=120mm]{leapfrog_method.png}
+\end{center}
+
+Twenty steps when $H(q,p) = p^2/2 + q^2/2$, the initial state is $(q,p) = (0,1)$.
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Describing the HMC algorithm}
+
+The algorithm targets the distribution for $(\mathbf{q}, \mathbf{p})$:
+\begin{align*}
+\frac{1}{Z}\exp\left[-\frac{H(\mathbf{q}, \mathbf{p})}{T} \right] &= \frac{1}{Z}\exp\left[-\frac{K(\mathbf{p}) + U(\mathbf{q})}{T} \right] \\
+&= \frac{1}{Z}\exp\left[-\frac{K(\mathbf{p})}{T} \right]\exp\left[-\frac{U(\mathbf{q})}{T}\right] \\
+&= \frac{1}{Z}\exp\left[-\frac{K(\mathbf{p})}{T} \right] \times \\
+&\hspace{10mm} \exp\left[-\frac{-\log\{\text{prior}(\mathbf{q}) \times \text{likelihood}(\mathbf{q}) \}  }{T}\right] 
+\end{align*}
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Describing the HMC algorithm}
+
+Step 1: 
+\newline
+
+Sample $p$ from the conditional target distribution
+$$
+\frac{1}{Z}\exp\left[-\frac{K(\mathbf{p})}{T} \right].
+$$
+In our case, this is the same as the marginal, due to independence.
+\newline
+
+Notice how this is a Gibbs-like step! It preserves the stationary distribution, and it has $100$\% chance of being accepted.
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Describing the HMC algorithm}
+
+Step 2: 
+\newline
+
+If we could integrate Hamilton's equations exactly, then our proposal would be deterministic, and we would accept with probability $1$. However, because we are using numerical leap-frog integration, there will be some deviation from the ideal point you end up at. We think of the $L$ leap-frog steps as a proposal distribution. This is a deterministic proposal, and it's symmetrical. So what we end up with is a Metropolis-like acceptance probability:
+$$
+\min\left[1, \frac{\exp\left[ -H(\mathbf{q}^*,\mathbf{p}^*) \right]}{\exp\left[ -H(\mathbf{q},\mathbf{p}) \right] } \right]
+$$
+
+Recall that the proposal distributions cancel in this expression because the proposals are symmetric. Also, if we were integrating exactly, the Hamiltonian wouldn't change, and this would simplify to $1$.
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Describing the HMC algorithm}
+
+Code from \url{https://arxiv.org/pdf/1206.1901.pdf} that performs one iteration of HMC can be found in the file \verb|hmc.r|.
+\newline
+
+Here's a visualization:\\
+\url{https://chi-feng.github.io/mcmc-demo/}
+
+
+\end{frame}
+
+
+\end{document} 

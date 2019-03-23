@@ -1,0 +1,9 @@
+\frametitle{Describing the HMC algorithm}
+
+Code from \url{https://arxiv.org/pdf/1206.1901.pdf} that performs one iteration of HMC can be found in the file \verb|hmc.r|.
+\newline
+
+Here's a visualization:\\
+\url{https://chi-feng.github.io/mcmc-demo/}
+
+
