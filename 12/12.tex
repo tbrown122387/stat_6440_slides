@@ -86,14 +86,20 @@ University of Virginia \\
 \begin{frame}
 \frametitle{Introduction}
 
-We mention a few tricks for MCMC simulations, as well as describe Hamiltonian Monte Carlo.
+We mention:
+\begin{enumerate}
+\item a few tuning tips for Random-Walk Metropolis-Hastings
+\item Metropolis-adjusted Langevin Algorithm (MALA)
+\item Hamiltonian Monte Carlo (HMC)
+\item Pseudo-Marginal Metropolis-Hastings (PMMH).
+\end{enumerate}
 
 
 \end{frame}
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
-\frametitle{Trick 1}
+\frametitle{Random Walk M-H: Some Tricks}
 
 Last section, when we were using the Metropolis-Hastings algorithm, we struggled with tuning our proposal's covariance matrix:
 
@@ -106,18 +112,10 @@ $$
 \Sigma \approx \frac{2.4^2}{d} \operatorname{Var}(\theta \mid y)
 $$
 after transforming $\theta$ be roughly normal. Here $d$ is the dimension of $\theta$. A rough approximation of the posterior covariance matrix is required.
-
-
-
-
-
-\end{frame}
-
-%----------------------------------------------------------------------------------------
-\begin{frame}
-\frametitle{Trick 1}
+\newline
 
 The book also recommends aiming for an acceptance rate of about $22\%$ for problems where $d > 5$. 
+
 
 \end{frame}
 
@@ -125,7 +123,15 @@ The book also recommends aiming for an acceptance rate of about $22\%$ for probl
 \begin{frame}
 \frametitle{MALA}
 
-TODO
+The {\bf Metropolis-adjusted Langevin Algorithm} is a Metropolis-Hastings algorithm with a special proposal distribution:
+$$
+q(\theta^* \mid \theta^{t-1}) = \text{Normal}(\theta^{t-1} + \frac{\sigma_1^2}{2} \nabla \log p(\theta \mid y) , \sigma_1^2 D).
+$$
+It jumps more often in the direction of the mode, and is usually more efficient than regular Random Walk Metropolis-Hastings.
+\newline
+
+Tune $\sigma_1^2 >0, D$, hopefully have an acceptance rate around ($.574$) (\href{https://pdfs.semanticscholar.org/b410/3e9b1d7e1699dd0d606b08c34394e2aff72d.pdf}{source})
+
 
 \end{frame}
 
@@ -535,6 +541,80 @@ Here's a visualization:\\
 
 
 \end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Pseudo-Marginal Metropolis-Hastings}
+
+Sometimes you are not able to evaluate the likelihood at all! For example, with models with a lot of hidden data, the likelihood is a high-dimensional integral or sum that may be either impossible or computationally difficult to evaluate.
+\newline
+\pause
+
+The marginal Metropolis-Hastings' acceptance ratio is
+\begin{align*}
+\frac{  p(y_{1:T} \mid \theta') p(\theta')}{  p(y_{1:T} \mid \theta) p(\theta) }
+\frac{ q(\theta \mid \theta') }{  q(\theta' \mid \theta) },
+\end{align*}
+
+and the {\bf pseudo-marginal Metropolis-Hastings} acceptance ratio is 
+
+\begin{align*}
+\frac{ \hat{p}(y_{1:T} \mid \theta') p(\theta') }{  \hat{p}(y_{1:T} \mid \theta) p(\theta) }
+\frac{ q(\theta \mid \theta') }{  q(\theta' \mid \theta) }.
+\end{align*}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Pseudo-Marginal Metropolis-Hastings}
+
+Sometimes you are not able to evaluate the likelihood at all.
+\newline
+
+The marginal Metropolis-Hastings' acceptance ratio is
+\begin{align*}
+\frac{  p(y_{1:T} \mid \theta') p(\theta')}{  p(y_{1:T} \mid \theta) p(\theta) }
+\frac{ q(\theta \mid \theta') }{  q(\theta' \mid \theta) },
+\end{align*}
+
+and the {\bf pseudo-marginal Metropolis-Hastings} acceptance ratio is 
+
+\begin{align*}
+\frac{ \hat{p}(y_{1:T} \mid \theta') p(\theta') }{  \hat{p}(y_{1:T} \mid \theta) p(\theta) }
+\frac{ q(\theta \mid \theta') }{  q(\theta' \mid \theta) }.
+\end{align*}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Pseudo-Marginal Metropolis-Hastings}
+
+
+Rewrite it a little differently:
+
+\begin{align*}
+\frac{ \overbrace{ \hat{p}(y_{1:T} \mid u', \theta')p(\theta') \begingroup\color{red} \psi(u' | y_{1:T},\theta')\endgroup }^{\text{unnormalized target} }}{  \hat{p}(y_{1:T}| u, \theta) p(\theta)\begingroup\color{red}\psi(u|y_{1:T},\theta)\endgroup }
+\frac{ \begingroup\color{red} \psi(u|y_{1:T},\theta)\endgroup q(\theta| \theta') }{ \underbrace{ \begingroup\color{red} \psi(u'|y_{1:T},\theta')\endgroup q(\theta'| \theta)}_{\text{proposal distribution} } }
+\end{align*}
+
+
+
+
+\begin{itemize}
+\item The full normalized target is $p(\theta,u\mid y_{1:T}) =  \frac{\hat{p}(y_{1:T}\mid u, \theta)\psi(u \mid y_{1:T},\theta)p(\theta \mid y_{1:T}) }{p(y_{1:T}\mid \theta) }$
+\item When likelihood is unbiased, the marginal is $p(\theta \mid y_{1:T})$
+\item $u$ is the collection of all auxiliary random variables (e.g. importance sampling output, a particle filter's samples and ancestor indices, etc.)
+\end{itemize}
+
+% special case not retaining the state samples
+% -$k$ is the index of the chosen particle path.
+
+
+\end{frame}
+
 
 
 \end{document} 

@@ -1,0 +1,353 @@
+\documentclass{beamer}
+
+\mode<presentation> {
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{amsfonts}
+\usepackage{mathrsfs, bbold}
+\usepackage{amsmath,amssymb,graphicx}
+\usepackage{mathtools} % gather
+\usepackage[export]{adjustbox} % right-aligned graphics
+
+% argmax
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title["13"]{13: Modal And Distributional Approximations}
+
+\author{Taylor} 
+\institute[UVA] 
+{
+University of Virginia \\
+\medskip
+\textit{} 
+}
+\date{} 
+
+\begin{document}
+%----------------------------------------------------------------------------------------
+
+\begin{frame}
+\titlepage 
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Introduction}
+
+We mention:
+\begin{enumerate}
+\item a few ways to find the posterior mode
+\item how to approximate a posterior using a mode 
+\item slightly more involved ways to approximate your posterior
+\end{enumerate}
+
+For various reasons, we also frequently split up our parameters into two groups: $\theta = (\gamma, \phi)$.
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Newton's Method aka the Newton-Raphson algorithm}
+
+Based on a first-order approximation of the first derivative of the log-likelihood.
+\newline
+
+Approximate $L'(\theta) = (\log p(\theta \mid y))'$ as
+$$
+\mathbf{0} \overset{\text{set}}{=}  L'(\theta + \delta \theta) \approx L'(\theta ) + L''(\theta)(\delta \theta) 
+$$
+rearranges to 
+$$
+\delta \theta  =  - [L''(\theta)]^{-1} L'(\theta ) 
+$$
+
+\begin{block}{Newton's Method}
+Repeat the following iteration until convergence:
+\[
+\theta^{t} = \theta^{t-1} - [L''(\theta^{t-1})]^{-1} L'(\theta^{t-1} ) 
+\]
+\end{block}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Newton's Method aka the Newton-Raphson algorithm}
+
+
+\begin{block}{Newton's Method}
+Repeat the following iteration until convergence:
+\[
+\theta^{t} = \theta^{t-1} - [L''(\theta^{t-1})]^{-1} L'(\theta^{t-1} ) 
+\]
+\end{block}
+
+Notes:
+\begin{enumerate}
+\item easily handles unnormalized densities
+\item starting value is important because it is not guaranteed to converge from everywhere
+\item The derivatives can be determined analytically or numerically
+\end{enumerate}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Quasi-Newton and conjugate gradient methods}
+
+Notes:
+\begin{enumerate}
+\item Quasi-Newton methods are available when second derivatives are too costly or unavailable
+\item "Broyden-Fletcher-Goldfarb-Shanno" is a common example of a Quasi-Newton method
+\item in \verb|R|: \verb|optim(2.9,F,method="BFGS")|
+\item conjugate-gradient methods only use gradient information, but they are for models of the form $\Vert A \theta - b \Vert_2$ (also handled by \verb|optim()| )
+\end{enumerate}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Quasi-Newton and conjugate gradient methods}
+
+In \verb|optim|, if you don't provide a function to calculate the gradient, then it uses a finite-difference approximation:
+
+$$
+L_i'(\theta) = \frac{dL}{d\theta_i } \approx \frac{L(\theta + \delta_i e_i ) - L(\theta - \delta_i e_i )}{2 \delta_i }
+$$
+and
+\begin{align*}
+L_{ij}''(\theta) &= \frac{d^2L}{d\theta_i d\theta_j } \\
+&\approx \frac{ L_i'(\theta + \delta_j e_j ) - L_i'(\theta - \delta_j e_j )}{2 \delta_j } \\
+\end{align*}
+where $e_j$ is the vector of all zeros except for a $1$ in the $j$th spot, and $\delta_j$ is a small number (\verb|optim|'s default is $1e-3$)
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Gaussian approximations}
+
+Once the mode or modes have been found (perhaps after including a boundary-avoiding prior distribution as discussed in section 13.2, or after transforming the parameters appropriately), we can construct an approximation based on the (multivariate) normal distribution. 
+\newline
+
+Let $\hat{\theta}$ be the mode, then 
+$$
+p(\theta \mid y) \approx N(\hat{\theta}, V_{\theta})
+$$
+where 
+$$
+V_{\theta}) = \left[- \frac{d^2 \log p(\theta \mid y) }{d\theta^2}\bigg\rvert_{\theta = \hat{\theta}} \right]^{-1}
+$$
+is calculated exactly or approximated using the formula from a few slides ago.
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Gaussian approximations: Laplace's Method}
+
+If you want approximations to posterior *expectations* (say $E[h(\theta) \mid y]$), then you might consider Laplace's method, which is based on a Taylor approximation of the function $u(\theta) = \log[h(\theta)p(\theta \mid y)]$ centered at its maximizing value $\theta_0$:
+\newline
+
+\begin{align*}
+u(\theta) &\approx u(\theta_0) + (\theta - \theta_0)^Tu'(\theta_0) + \frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0) \\
+&= u(\theta_0) + \frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0)
+\end{align*}
+
+It assumes $h$ is twice continuously differentiable.
+
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Gaussian approximations: Laplace's Method}
+
+
+\begin{align*}
+u(\theta) &\approx u(\theta_0) + (\theta - \theta_0)^Tu'(\theta_0) + \frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0) \\
+&= u(\theta_0) + \frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0)
+\end{align*}
+
+So, if $d$ is the dimension of $\theta$,
+\begin{align*}
+E[h(\theta) \mid y] &= \int \exp\left[ u(\theta)\right] \text{d}\theta \\
+&\approx \exp\left[ u(\theta_0)\right] \int\exp\left[ \frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0)\right] \text{d}\theta \\
+&= h(\theta_0)p(\theta_0 \mid y) \int\exp\left[ - \frac{1}{2}(\theta - \theta_0)^T\left[- u''(\theta_0)\right](\theta - \theta_0)\right] \text{d}\theta \\
+&= h(\theta_0)p(\theta_0 \mid y) (2 \pi)^{-d/2} \det\left(\left[- u''(\theta_0)\right]^{-1}\right)^{-1/2}
+\end{align*}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Gaussian approximations}
+
+The book has a few more generalizations that we don't address:
+
+\begin{enumerate}
+\item using only the unnormalized posterior density
+\item approximating multimodal distributions with normal mixtures
+\item approximating multimodal distributions with t mixtures
+\end{enumerate}
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{The EM Algorithm}
+
+The {\bf expectation-maximization algorithm} finds the argument that maximizes the marginal posterior. It's useful in situations where there is missing data in a model (e.g. factor models, hidden markov models, state space models, etc.). 
+\newline
+
+It folows the following steps
+\begin{enumerate}
+\item replace missing values by their expectations given the guessed parameters, 
+\item estimate parameters assuming the missing data are equal to their estimated values, 
+\item re-estimate the missing values assuming the new parameter estimates are correct,
+\item re-estimate parameters, 
+\end{enumerate}
+and so forth, iterating until convergence.
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{The EM Algorithm}
+
+Call $\theta = (\gamma, \phi)$. You're interested in the mode of $p(\phi \mid y)$.
+\newline
+
+$$
+\log p(\phi \mid y) = \log \frac{p(\gamma, \phi \mid y)}{p(\gamma \mid \phi, y)} = \log \underbrace{p(\gamma, \phi \mid y)}_{ \text{joint posterior} } - \log \underbrace{p(\gamma \mid \phi, y)}_{\text{conditional posterior }}
+$$
+\pause
+
+taking expectations on both sides with respect to $p(\gamma \mid \phi^{\text{old}}, y)$ yields:
+$$
+\log p(\phi \mid y) =  E\left[ \log p(\gamma, \phi \mid y) \mid \phi^{\text{old}}, y \right] - E\left[\log p(\gamma \mid \phi, y) \mid \phi^{\text{old}}, y \right]
+$$
+
+% exercise 13.6 !
+
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{The EM Algorithm}
+
+We iteratively use the middle term in
+$\log p(\phi \mid y) =  E\left[ \log p(\gamma, \phi \mid y) \mid \phi^{\text{old}}, y \right] - E\left[\log p(\gamma \mid \phi, y) \mid \phi^{\text{old}}, y \right]$.
+
+\begin{block}{The Q quantity in the "E" step}
+
+$$
+Q(\phi \mid \phi^{\text{old}}) = E\left[ \log p(\gamma, \phi \mid y) \mid \phi^{\text{old}}, y \right]
+$$
+\end{block}
+\pause
+
+\begin{block}{The EM algorithm}
+
+Repeat the following until convergence:
+\begin{enumerate}
+\item E-step: calculate $Q(\phi \mid \phi^{\text{old}})$
+\item M-step: replace $\phi^{\text{old}}$ with $\argmax Q(\phi \mid \phi^{\text{old}})$
+\end{enumerate}
+\end{block}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{The EM Algorithm}
+
+Clearly $\log p(\phi \mid y)$ increases at every iteration:
+\begin{align*}
+\log p(\phi \mid y) &=  E\left[ \log p(\gamma, \phi \mid y) \mid \phi^{\text{old}}, y \right] - E\left[\log p(\gamma \mid \phi, y) \mid \phi^{\text{old}}, y \right]\\
+&= Q(\phi \mid \phi^{\text{old}}) - \underbrace{E\left[\log p(\gamma \mid \phi, y) \mid \phi^{\text{old}}, y \right]}_{\text{don't change } \phi} \\
+&= Q(\phi \mid \phi^{\text{old}}) + \text{constant}
+\end{align*}
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{The EM Algorithm}
+
+Notes:
+\begin{enumerate}
+\item The EM algo isn't inherently Bayesian. It can also be used to accomplish maximum likelihood estimation.
+\item The expectation of $\log p(\gamma, \phi \mid y)$ is usually easy to compute because it is a sum, and might only depend on sufficient statistics
+\item The EM algorithm implicitly deals with parameter constraints in the M-step
+\item The EM algorithm is parmeterization independent
+\item The *Generalized* EM (GEM) just increases $Q$ instead of maximizing it.
+\item The book describes many generalizations in addition to this one
+\item You can find multiple modes if you start from multiple starting points (using mixture approximations afterwards)
+\item Debug by printing $\log p(\phi^i \mid y)$ at every iteration and make sure it increases monotonically
+\end{enumerate}
+
+\end{frame}
+
+\end{document} 
