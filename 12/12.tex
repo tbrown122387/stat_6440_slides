@@ -88,6 +88,7 @@ University of Virginia \\
 
 We mention:
 \begin{enumerate}
+\item an example where adding auxiliary variables increases computational efficiency
 \item a few tuning tips for Random-Walk Metropolis-Hastings
 \item Metropolis-adjusted Langevin Algorithm (MALA)
 \item Hamiltonian Monte Carlo (HMC)
@@ -96,6 +97,120 @@ We mention:
 
 
 \end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Example: Data Augmentation}
+
+\begin{itemize}
+\item $y_1, \ldots, y_n \mid \mu, \sigma^2 \overset{\text{iid}}{\sim} t_{\nu}(\mu, \sigma^2)$
+\item $\nu$ is assumed known
+\item $p(y_i \mid \mu, \sigma^2) \propto \left(1 + \frac{1}{\nu}\left(\frac{y_i - \mu}{\sigma} \right)^2 \right)^{-(\nu+1)/2}$
+\item $p(\mu) \propto 1$
+\item $p(\sigma^2) \propto (\sigma^2)^{-1}$ (uniform for $\log \sigma$)
+\end{itemize}
+\pause
+
+Normally we would do
+$$
+p(\mu, \sigma \mid y) \propto p(y \mid \mu, \sigma^2)p(\mu)p(\sigma^2)
+$$
+\newline
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Example: Data Augmentation}
+
+Gibbs sampler not available :( 
+
+\begin{center}
+\includegraphics[width=100mm]{surf1}
+\end{center}
+see \verb|t_visualization.r|
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Data Augmentation: Option 1}
+
+Instead, we introduce $V_i$ (hidden/latent/unobserved data):
+\begin{itemize}
+\item $\nu$ is assumed known still
+\item $p(\mu) \propto 1$ still
+\item $p(\sigma^2) \propto (\sigma^2)^{-1}$ (uniform for $\log \sigma$) still
+\end{itemize}
+
+\begin{gather}
+p(y_i \mid V_i, \mu, \sigma^2) = (2\pi V_i)^{-1/2} \exp\left[- \frac{1}{2 V_i}\left(y_i - \mu \right)^2 \right] \\
+p( V_i \mid \sigma^2) = \frac{(\nu/2)^{\nu/2}}{\Gamma(\nu/2) }\sigma^{\nu} V_i^{-(\nu/2 + 1)}\exp\left[- \nu \sigma^2/(2 V_i) \right]
+\end{gather}
+
+
+Homework: show $p(y_i \mid \mu, \sigma^2)$ is the same as before.
+\end{frame}
+
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Data Augmentation: Option 1}
+
+Homework question: verify all of these:
+\begin{enumerate}
+\item $V_i \mid \mu, \sigma^2, y \sim \text{Inv-}\chi^2\left(\nu + 1, \frac{ \nu \sigma^2 + (y_i - \mu)^2 }{\nu+1 } \right)$
+\item $\mu \mid \sigma^2, V_{1:n}, y \sim \text{Normal}\left(\frac{\sum_i \frac{1}{V_i}y_i }{\sum_i \frac{1}{V_i} }, \frac{1}{ \sum_i \frac{1}{V_i} }\right)$ 
+\item $\sigma^2 \mid \mu, V_{1:n}, y) \sim \text{Gamma}\left(\frac{n \nu}{2}, \frac{\nu}{2}\sum_i \frac{1}{V_i} \right)$
+\end{enumerate}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Data Augmentation: Option 1}
+
+Note:
+\begin{align*}
+V_i \mid \mu, \sigma^2, y &\sim \text{Inv-}\chi^2\left(\nu + 1, \frac{ \nu \sigma^2 + (y_i - \mu)^2 }{\nu+1 } \right) \\
+&= \text{Inv-Gamma}\left(\frac{\nu+1}{2}, \frac{ \nu \sigma^2 + (y_i - \mu)^2 }{2 }\right)
+\end{align*}
+
+\begin{center}
+\includegraphics[width=40mm]{cond_dens_vi}
+\end{center}
+(see \verb|t_visualization.r|)
+\newline
+
+Near-zero values of $V_i$s lead to $\sigma^2$ being near zero, too.
+
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Data Augmentation: Option 2}
+
+Add another parameter: $\alpha > 0$
+\newline
+
+Rename a few things:
+\begin{gather}
+\tau^2 = \sigma^2/\alpha^2 \\
+U_i = V_i/\alpha^2 
+\end{gather}
+
+Assume a noninformative prior for $\alpha$: 
+$$
+p(\alpha^2) \propto (\alpha^2)^{-1}
+$$
+
+Page 295 has the full algorithm. Homework question: prove that the model is not identifiable in the full parameter space!
+
+\end{frame}
+
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
@@ -136,6 +251,69 @@ Tune $\sigma_1^2 >0, D$, hopefully have an acceptance rate around ($.574$) (\hre
 \end{frame}
 
 %----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Pseudo-Marginal Metropolis-Hastings}
+
+Sometimes you are not able to evaluate the likelihood at all! 
+\newline
+
+Example 1: consider a model with a lot of hidden/missing data. Here the likelihood is a high-dimensional integral or sum that may be either impossible or computationally difficult to evaluate. Examples include state space models, factors models, ``regular models" with missing data.
+\newline
+\pause
+
+Example 2: you have a simple model, but too much data. Evaluating the density either takes too long to iterate through all of your observations, or the observations can't be read into memory. So, you can't do it several thousand times to run an MCMC sampler. 
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Pseudo-Marginal Metropolis-Hastings}
+
+The marginal Metropolis-Hastings' acceptance ratio is
+\begin{align*}
+\frac{  p(y_{1:T} \mid \theta') p(\theta')}{  p(y_{1:T} \mid \theta) p(\theta) }
+\frac{ q(\theta \mid \theta') }{  q(\theta' \mid \theta) },
+\end{align*}
+
+and the {\bf pseudo-marginal Metropolis-Hastings} acceptance ratio is 
+
+\begin{align*}
+\frac{ \hat{p}(y_{1:T} \mid \theta') p(\theta') }{  \hat{p}(y_{1:T} \mid \theta) p(\theta) }
+\frac{ q(\theta \mid \theta') }{  q(\theta' \mid \theta) }.
+\end{align*}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Pseudo-Marginal Metropolis-Hastings}
+
+
+Rewrite it a little differently:
+
+\begin{align*}
+\frac{ \overbrace{ \hat{p}(y_{1:T} \mid u', \theta')p(\theta') \begingroup\color{red} \psi(u' | y_{1:T},\theta')\endgroup }^{\text{unnormalized target} }}{  \hat{p}(y_{1:T}| u, \theta) p(\theta)\begingroup\color{red}\psi(u|y_{1:T},\theta)\endgroup }
+\frac{ \begingroup\color{red} \psi(u|y_{1:T},\theta)\endgroup q(\theta| \theta') }{ \underbrace{ \begingroup\color{red} \psi(u'|y_{1:T},\theta')\endgroup q(\theta'| \theta)}_{\text{proposal distribution} } }
+\end{align*}
+
+
+
+
+\begin{itemize}
+\item The full normalized target is $p(\theta,u\mid y_{1:T}) =  \frac{\hat{p}(y_{1:T}\mid u, \theta)\psi(u \mid y_{1:T},\theta)p(\theta \mid y_{1:T}) }{p(y_{1:T}\mid \theta) }$
+\item When likelihood is unbiased, the marginal is $p(\theta \mid y_{1:T})$
+\item $u$ is the collection of all auxiliary random variables (e.g. importance sampling output, a particle filter's samples and ancestor indices, etc.)
+\end{itemize}
+
+% special case not retaining the state samples
+% -$k$ is the index of the chosen particle path.
+
+
+\end{frame}
+
+
+
+%----------------------------------------------------------------------------------------
 \begin{frame}
 \frametitle{HMC}
 
@@ -172,7 +350,7 @@ It's customary to use the notation $q_1, \ldots, q_d$ (the positions), and $p_1,
 A HMC proposal follows a two-step procedure:
 \begin{enumerate}
 \item sample a random momentum vector
-\item transform the momentum and position nonrandomly using Hamilton's equations
+\item transform the momentum and position {\bf nonrandomly} using Hamilton's equations
 \end{enumerate}
 Both steps are transition kernels that preserve the stationary distribution.
 
@@ -253,13 +431,13 @@ so
 \begin{frame}
 \frametitle{HMC: a first example}
 
-If $m=1$ integrating 
+If $m=1$, a solution to
 \begin{gather}
 \frac{dq}{dt} = \frac{\partial H(q,p)}{\partial p} =  \frac{d K(p) }{d p} = p(t) \\
 \frac{dp}{dt} = -\frac{\partial H(q,p)}{\partial q} = -\frac{d U(q)}{d q} = -q(t)
 \end{gather}
 
-with respect to time yields
+is
 
 
 \begin{gather}
@@ -338,7 +516,7 @@ Recall that $U(\mathbf{q})$ is the negative log of the posterior you're interest
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
-\frametitle{HMC Property 1: Reversibility of $T_s$}
+\frametitle{Property 1: Reversibility of $T_s$}
 
 Recall  $T_s: [\mathbf{q}(0), \mathbf{p}(0)] \mapsto [\mathbf{q}(s), \mathbf{p}(s)]$. It is always has an easy-to-find inverse.
 \newline
@@ -350,7 +528,7 @@ Proof: just take the negative of the derivatives.
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
-\frametitle{HMC Property 2: Conservation of the Hamiltonian}
+\frametitle{Property 2: Conservation of the Hamiltonian}
 
 Using the chain rule:
 
@@ -378,7 +556,15 @@ $T_s$ keeps you on a level-set/contour:
 \begin{frame}
 \frametitle{HMC Property 3 and 4: Volume Preservation and Symplecticness}
 
-TODO
+Volume preservation: $(q,p)$ and $T_s(q,p)$ have the same volume.
+\newline
+
+Symplecticness: a nice property of the Jacobian (matrix of time derivatives) of $T_s$.
+\newline
+
+Another thing: when we approximate these dynamics in our proposal distribution, these properties are preserved!
+
+
 
 
 \end{frame}
@@ -387,7 +573,7 @@ TODO
 \begin{frame}
 \frametitle{HMC: looking back at the big picture}
 
-Again, HMC will work as follows: given that we are currently at position $\mathbf{q}(t)$, we are going to sample a momentum vector (which puts us on one of the level-sets), and then we are going to follow $T_s$ for a deterministic amount of time.
+HMC will work as follows: given that we are currently at position $\mathbf{q}(t)$, we are going to sample a momentum vector (which puts us on one of the level-sets), and then we are going to follow $T_s$ for a deterministic amount of time (how much time is a tuning parameter we decide on).
 \newline
 
 \begin{center}
@@ -419,14 +605,14 @@ $$
 \begin{frame}
 \frametitle{Discretizing Hamilton's Equations: Version 1.0}
 
-When $K(\mathbf{p})= \sum_{i=1}^d \frac{p_i^2}{2m_i}$, {\bf Euler's method} approximates
+When $K(\mathbf{p})= \sum_{i=1}^d \frac{p_i^2}{2m_i}$, {\bf Euler's method} approximates the solution of
 
 \begin{gather}
 \frac{dq_i}{dt} = \frac{\partial H(\mathbf{q},\mathbf{p})}{\partial p_i} =  \frac{d K(\mathbf{p}) }{d p_i} = p_i/m_i  \\
 \frac{dp_i}{dt} = -\frac{\partial H(\mathbf{q},\mathbf{p})}{\partial q_i} = -\frac{d U(\mathbf{q})}{d q_i} 
 \end{gather}
 
-with
+as 
 \begin{gather}
 q_i(t + \epsilon) =  q_i(t ) + \epsilon p_i(t)/m_i \\
 p_i(t + \epsilon) =  p_i(t) - \epsilon \frac{d U}{d q_i}(\mathbf{q}(t))  
@@ -443,7 +629,7 @@ p_i(t + \epsilon) =  p_i(t) - \epsilon \frac{d U}{d q_i}(\mathbf{q}(t))
 \includegraphics[width=60mm]{eulers_method.png}
 \end{center}
 
-Twenty steps when $H(q,p) = p^2/2 + q^2/2$, the initial state is $(q,p) = (0,1)$. Leap-frog is better because it preserves the volume!
+Twenty steps when $H(q,p) = p^2/2 + q^2/2$, the initial state is $(q,p) = (0,1)$. 
 
 \end{frame}
 %----------------------------------------------------------------------------------------
@@ -519,12 +705,14 @@ Notice how this is a Gibbs-like step! It preserves the stationary distribution, 
 Step 2: 
 \newline
 
-If we could integrate Hamilton's equations exactly, then our proposal would be deterministic, and we would accept with probability $1$. However, because we are using numerical leap-frog integration, there will be some deviation from the ideal point you end up at. We think of the $L$ leap-frog steps as a proposal distribution. This is a deterministic proposal, and it's symmetrical. So what we end up with is a Metropolis-like acceptance probability:
+If we could integrate Hamilton's equations exactly, then our proposal would be deterministic, and we would accept with probability $1$, because the Hamiltonian is preserved (property 2). 
+\newline
+
+However, because we are using numerical leap-frog integration, there will be some change in the Hamiltonian. We think of the $L$ leap-frog steps as a proposal distribution. This is a deterministic proposal, and it's symmetrical (we don't prove this). So what we end up with is a Metropolis-like acceptance probability:
 $$
 \min\left[1, \frac{\exp\left[ -H(\mathbf{q}^*,\mathbf{p}^*) \right]}{\exp\left[ -H(\mathbf{q},\mathbf{p}) \right] } \right]
 $$
 
-Recall that the proposal distributions cancel in this expression because the proposals are symmetric. Also, if we were integrating exactly, the Hamiltonian wouldn't change, and this would simplify to $1$.
 
 
 \end{frame}
@@ -543,77 +731,6 @@ Here's a visualization:\\
 \end{frame}
 
 
-%----------------------------------------------------------------------------------------
-\begin{frame}[fragile]
-\frametitle{Pseudo-Marginal Metropolis-Hastings}
-
-Sometimes you are not able to evaluate the likelihood at all! For example, with models with a lot of hidden data, the likelihood is a high-dimensional integral or sum that may be either impossible or computationally difficult to evaluate.
-\newline
-\pause
-
-The marginal Metropolis-Hastings' acceptance ratio is
-\begin{align*}
-\frac{  p(y_{1:T} \mid \theta') p(\theta')}{  p(y_{1:T} \mid \theta) p(\theta) }
-\frac{ q(\theta \mid \theta') }{  q(\theta' \mid \theta) },
-\end{align*}
-
-and the {\bf pseudo-marginal Metropolis-Hastings} acceptance ratio is 
-
-\begin{align*}
-\frac{ \hat{p}(y_{1:T} \mid \theta') p(\theta') }{  \hat{p}(y_{1:T} \mid \theta) p(\theta) }
-\frac{ q(\theta \mid \theta') }{  q(\theta' \mid \theta) }.
-\end{align*}
-
-\end{frame}
-
-%----------------------------------------------------------------------------------------
-\begin{frame}[fragile]
-\frametitle{Pseudo-Marginal Metropolis-Hastings}
-
-Sometimes you are not able to evaluate the likelihood at all.
-\newline
-
-The marginal Metropolis-Hastings' acceptance ratio is
-\begin{align*}
-\frac{  p(y_{1:T} \mid \theta') p(\theta')}{  p(y_{1:T} \mid \theta) p(\theta) }
-\frac{ q(\theta \mid \theta') }{  q(\theta' \mid \theta) },
-\end{align*}
-
-and the {\bf pseudo-marginal Metropolis-Hastings} acceptance ratio is 
-
-\begin{align*}
-\frac{ \hat{p}(y_{1:T} \mid \theta') p(\theta') }{  \hat{p}(y_{1:T} \mid \theta) p(\theta) }
-\frac{ q(\theta \mid \theta') }{  q(\theta' \mid \theta) }.
-\end{align*}
-
-\end{frame}
-
-%----------------------------------------------------------------------------------------
-\begin{frame}[fragile]
-\frametitle{Pseudo-Marginal Metropolis-Hastings}
-
-
-Rewrite it a little differently:
-
-\begin{align*}
-\frac{ \overbrace{ \hat{p}(y_{1:T} \mid u', \theta')p(\theta') \begingroup\color{red} \psi(u' | y_{1:T},\theta')\endgroup }^{\text{unnormalized target} }}{  \hat{p}(y_{1:T}| u, \theta) p(\theta)\begingroup\color{red}\psi(u|y_{1:T},\theta)\endgroup }
-\frac{ \begingroup\color{red} \psi(u|y_{1:T},\theta)\endgroup q(\theta| \theta') }{ \underbrace{ \begingroup\color{red} \psi(u'|y_{1:T},\theta')\endgroup q(\theta'| \theta)}_{\text{proposal distribution} } }
-\end{align*}
-
-
-
-
-\begin{itemize}
-\item The full normalized target is $p(\theta,u\mid y_{1:T}) =  \frac{\hat{p}(y_{1:T}\mid u, \theta)\psi(u \mid y_{1:T},\theta)p(\theta \mid y_{1:T}) }{p(y_{1:T}\mid \theta) }$
-\item When likelihood is unbiased, the marginal is $p(\theta \mid y_{1:T})$
-\item $u$ is the collection of all auxiliary random variables (e.g. importance sampling output, a particle filter's samples and ancestor indices, etc.)
-\end{itemize}
-
-% special case not retaining the state samples
-% -$k$ is the index of the chosen particle path.
-
-
-\end{frame}
 
 
 

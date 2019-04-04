@@ -1,23 +1,9 @@
-\frametitle{Pseudo-Marginal Metropolis-Hastings}
+\frametitle{Describing the HMC algorithm}
 
+Code from \url{https://arxiv.org/pdf/1206.1901.pdf} that performs one iteration of HMC can be found in the file \verb|hmc.r|.
+\newline
 
-Rewrite it a little differently:
-
-\begin{align*}
-\frac{ \overbrace{ \hat{p}(y_{1:T} \mid u', \theta')p(\theta') \begingroup\color{red} \psi(u' | y_{1:T},\theta')\endgroup }^{\text{unnormalized target} }}{  \hat{p}(y_{1:T}| u, \theta) p(\theta)\begingroup\color{red}\psi(u|y_{1:T},\theta)\endgroup }
-\frac{ \begingroup\color{red} \psi(u|y_{1:T},\theta)\endgroup q(\theta| \theta') }{ \underbrace{ \begingroup\color{red} \psi(u'|y_{1:T},\theta')\endgroup q(\theta'| \theta)}_{\text{proposal distribution} } }
-\end{align*}
-
-
-
-
-\begin{itemize}
-\item The full normalized target is $p(\theta,u\mid y_{1:T}) =  \frac{\hat{p}(y_{1:T}\mid u, \theta)\psi(u \mid y_{1:T},\theta)p(\theta \mid y_{1:T}) }{p(y_{1:T}\mid \theta) }$
-\item When likelihood is unbiased, the marginal is $p(\theta \mid y_{1:T})$
-\item $u$ is the collection of all auxiliary random variables (e.g. importance sampling output, a particle filter's samples and ancestor indices, etc.)
-\end{itemize}
-
-% special case not retaining the state samples
-% -$k$ is the index of the chosen particle path.
+Here's a visualization:\\
+\url{https://chi-feng.github.io/mcmc-demo/}
 
 

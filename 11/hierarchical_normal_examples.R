@@ -31,7 +31,7 @@ log_unnorm_post <- function(paramPack, yDat){
 # we won't hardcode tuning parameters
 
 # try 1 first
-qSigmaCovDiagSqrt <- .5  ## PRIMARY TUNING PARAMETER
+qSigmaCovDiagSqrt <- 5  ## PRIMARY TUNING PARAMETER
 
 sampleQ <- function(oldParams){
   newLogTau <- rnorm(n = 1, mean = oldParams$logTau, sd = qSigmaCovDiagSqrt)
@@ -147,10 +147,10 @@ sampleSigma <- function(paramPack, y){
 
 # commence sampling
 currentParam <- list()
-currentParam$thetas <- c(60, 60, 60, 60)
-currentParam$mu <- 60
-currentParam$sigma <- 1
-currentParam$tau <- 1
+currentParam$thetas <- c(600, 600, 600, 600)
+currentParam$mu <- -60
+currentParam$sigma <- 1e3
+currentParam$tau <- 1e3
 loggedParams <- vector(mode = "list", length = numIters)
 
 for(i in 1:numIters){
@@ -176,16 +176,22 @@ for(i in 1:numIters){
   
 }
 
-
 # plots
 thetaSamples <- t(sapply(loggedParams, "[[", 1))
-plot.ts(thetaSamples)
+head(thetaSamples)
+plot.ts(thetaSamples[10:1000,])
+acf(thetaSamples[10:1000,1])
 
 muSamples <- sapply(loggedParams, "[[", 2)
-plot.ts(muSamples)
+plot.ts(muSamples[10:1000])
+acf(muSamples[10:1000])
 
 sigmaSquaredSamples <- sapply(loggedParams, "[[", 3)^2
 plot.ts(sigmaSquaredSamples)
+hist(sigmaSquaredSamples)
+acf(sigmaSquaredSamples)
 
 tauSamples <- sapply(loggedParams, "[[", 4)
 plot.ts(tauSamples)
+acf(tauSamples)
+
