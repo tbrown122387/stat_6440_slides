@@ -233,7 +233,7 @@ Run $m$ chains for $n$ iterations, $i=1,\ldots,n$ and $j=1\ldots,m$.
 \bar{\psi}_{\cdot \cdot} &= \frac{1}{mn}\sum_{i=1}^n\sum_{j=1}^m \psi_{ij} \tag{overall average} \\
 \bar{\psi}_{\cdot j} &= \frac{1}{n}\sum_{i=1}^n \psi_{ij} \tag{chain average} \\
 s^2_j &= \frac{1}{n-1}\sum_{i=1}^n (\psi_{ij}-\bar{\psi}_{\cdot j})^2 \tag{chain sd} \\
-W &= \frac{1}{m} s^2_j \tag{within-sequence variance} \\
+W &= \frac{1}{m} \sum_{j=1}^m s^2_j \tag{within-sequence variance} \\
 B &= \frac{n}{m-1} \sum_{j=1}^m (\bar{\psi}_{\cdot j} - \bar{\psi}_{\cdot \cdot})^2\\
 \widehat{\text{var}}^{+}(\psi \mid y) =\frac{n-1}{n}W &+ \frac{1}{n}B \hspace{10mm} \hat{R} = \sqrt{\widehat{\text{var}}^{+}(\psi \mid y) / W}.
 \end{align*}

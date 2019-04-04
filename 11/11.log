@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  20 MAR 2019 12:20
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  4 APR 2019 11:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1025,7 +1025,7 @@ Package pdftex.def Info: convergence.png  used on input line 225.
  [11
 
 ]
-Overfull \vbox (7.34668pt too high) detected at line 243
+Overfull \vbox (19.56784pt too high) detected at line 243
  []
 
 [12
@@ -1126,7 +1126,7 @@ si8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pf
 b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/
 texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on 11.pdf (33 pages, 825082 bytes).
+Output written on 11.pdf (33 pages, 825098 bytes).
 PDF statistics:
  1016 PDF objects out of 1200 (max. 8388607)
  933 compressed objects within 10 object streams
