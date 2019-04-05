@@ -96,7 +96,7 @@ We mention:
 \item slightly more involved ways to approximate your posterior
 \end{enumerate}
 
-For various reasons, we also frequently split up our parameters into two groups: $\theta = (\gamma, \phi)$.
+% For various reasons, we also frequently split up our parameters into two groups: $\theta = (\gamma, \phi)$.
 
 
 \end{frame}
@@ -153,17 +153,18 @@ Notes:
 
 Notes:
 \begin{enumerate}
-\item Quasi-Newton methods are available when second derivatives are too costly or unavailable
+\item Quasi-Newton methods (approximate second derivatives) are available when second derivatives are too costly or unavailable
 \item "Broyden-Fletcher-Goldfarb-Shanno" is a common example of a Quasi-Newton method
 \item in \verb|R|: \verb|optim(2.9,F,method="BFGS")|
 \item conjugate-gradient methods only use gradient information, but they are for models of the form $\Vert A \theta - b \Vert_2$ (also handled by \verb|optim()| )
+\item compared with the two above, they generally require more iterations, but use less computation per iteration and less storage
 \end{enumerate}
 
 \end{frame}
 
 %----------------------------------------------------------------------------------------
 \begin{frame}[fragile]
-\frametitle{Quasi-Newton and conjugate gradient methods}
+\frametitle{Numerical computation of derivatives}
 
 In \verb|optim|, if you don't provide a function to calculate the gradient, then it uses a finite-difference approximation:
 
@@ -182,7 +183,7 @@ where $e_j$ is the vector of all zeros except for a $1$ in the $j$th spot, and $
 \begin{frame}[fragile]
 \frametitle{Gaussian approximations}
 
-Once the mode or modes have been found (perhaps after including a boundary-avoiding prior distribution as discussed in section 13.2, or after transforming the parameters appropriately), we can construct an approximation based on the (multivariate) normal distribution. 
+Once the mode or modes have been found (perhaps after including a boundary-avoiding prior distribution as discussed in section 13.2, or after transforming the parameters appropriately), we can construct an approximation based on the multivariate normal distribution. 
 \newline
 
 Let $\hat{\theta}$ be the mode, then 
@@ -191,7 +192,7 @@ p(\theta \mid y) \approx N(\hat{\theta}, V_{\theta})
 $$
 where 
 $$
-V_{\theta}) = \left[- \frac{d^2 \log p(\theta \mid y) }{d\theta^2}\bigg\rvert_{\theta = \hat{\theta}} \right]^{-1}
+V_{\theta} = \left[- \frac{d^2 \log p(\theta \mid y) }{d\theta^2}\bigg\rvert_{\theta = \hat{\theta}} \right]^{-1}
 $$
 is calculated exactly or approximated using the formula from a few slides ago.
 
@@ -200,17 +201,111 @@ is calculated exactly or approximated using the formula from a few slides ago.
 
 %----------------------------------------------------------------------------------------
 \begin{frame}[fragile]
+\frametitle{Example}
+
+From chapter 3:
+\begin{enumerate}
+\item $p(y_i \mid \mu, \sigma^2) = \text{Normal}(\mu, \sigma^2)$
+\item $p(\mu, \sigma^2) \propto 1/\sigma^2$
+\end{enumerate}
+\[
+p(\mu, \sigma^2 \mid y) \propto (\sigma^2)^{-(n+2)/2}\exp\left[ - \frac{1}{2\sigma^2}\left\{(n-1)  s^2 + n(\bar{y} - \mu)^2 \right\} \right]
+\]
+
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Example}
+
+\[
+p(\mu, \sigma^2 \mid y) \propto (\sigma^2)^{-(n+2)/2}\exp\left[ - \frac{1}{2\sigma^2}\left\{(n-1)  s^2 + n(\bar{y} - \mu)^2 \right\} \right]
+\]
+
+Letting $\theta = \log \sigma$, $p(\mu, \theta \mid y)$ is proportional to
+\[
+\exp[-n\theta]\exp\left[ - \frac{1}{2\exp[2\theta]}\left\{(n-1)  s^2 + n(\bar{y} - \mu)^2 \right\} \right] 
+\]
+
+So $\log p(\mu, \theta \mid y)$ is 
+$$
+constant -n\theta - .5\exp(-2\theta)\left[(n-1)  s^2 + n(\bar{y} - \mu)^2 \right]
+$$
+and $L'(\theta) = \left[\begin{array}{c}
+\exp(-2\theta)(\bar{y}-\mu)n \\ -n + \exp(-2\theta)\left[(n-1)  s^2 + n(\bar{y} - \mu)^2 \right]
+\end{array}\right]$
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Example}
+
+Warning: \verb|optim| *minimizes*, so we use $-\log p(\mu, \theta \mid y)$ 
+$$
+n\theta + .5\exp(-2\theta)\left[(n-1)  s^2 + n(\bar{y} - \mu)^2 \right]
+$$
+and 
+$$
+L'(\theta) = \left[\begin{array}{c}
+-\exp(-2\theta)(\bar{y}-\mu)n \\ 
+n - \exp(-2\theta)\left[(n-1)  s^2 + n(\bar{y} - \mu)^2 \right]
+\end{array}\right]
+$$
+
+\begin{verbatim}
+# if gr left blank, finite difference approx. used
+optim_results <- optim(par = c(5, 0), 
+                       fn = neg_log_unnorm_post, 
+                       gr = gradient, 
+                       method = "BFGS", 
+                       hessian = T)
+\end{verbatim}
+See \verb|mode_finding_examples.r|
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Example}
+
+\begin{center}
+\includegraphics[width=105mm]{unnorm_true}
+\end{center}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Example}
+
+\begin{center}
+\includegraphics[width=105mm]{norm_approx}
+\end{center}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
 \frametitle{Gaussian approximations: Laplace's Method}
 
-If you want approximations to posterior *expectations* (say $E[h(\theta) \mid y]$), then you might consider Laplace's method, which is based on a Taylor approximation of the function $u(\theta) = \log[h(\theta)p(\theta \mid y)]$ centered at its maximizing value $\theta_0$:
+If you want approximations to posterior *expectations* (say $E[h(\theta) \mid y]$), then you might consider Laplace's method, which is based on second-order Taylor approximations of the functions:
+\begin{enumerate}
+\item $u_1(\theta) = \log[h(\theta)q(\theta \mid y)]$
+\item $u_2(\theta) = \log q(\theta \mid y)$
+\end{enumerate}
+where $p(\theta \mid y) = q(\theta \mid y) / \int q(\theta \mid y)\text{d}\theta$. 
 \newline
 
-\begin{align*}
-u(\theta) &\approx u(\theta_0) + (\theta - \theta_0)^Tu'(\theta_0) + \frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0) \\
-&= u(\theta_0) + \frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0)
-\end{align*}
+Both are centered at maximizing values: $\theta_0^1, \theta_0^2$, and this assumes $h$s are twice continuously differentiable.
+\newline
 
-It assumes $h$ is twice continuously differentiable.
+Idea:
+$$
+\frac{\int h(\theta)q(\theta \mid y) \text{d}\theta}{\int q(\theta \mid y) \text{d}\theta } = \frac{\int \exp\left[ \log h(\theta) + \log q(\theta \mid y) \right] \text{d}\theta}{ \int \exp\left[ \log q(\theta \mid y) \right] \text{d}\theta }
+$$
 
 
 \end{frame}
@@ -220,21 +315,51 @@ It assumes $h$ is twice continuously differentiable.
 \begin{frame}[fragile]
 \frametitle{Gaussian approximations: Laplace's Method}
 
+Exponentiating and integrating
 
 \begin{align*}
 u(\theta) &\approx u(\theta_0) + (\theta - \theta_0)^Tu'(\theta_0) + \frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0) \\
 &= u(\theta_0) + \frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0)
 \end{align*}
 
-So, if $d$ is the dimension of $\theta$,
+gives us
+
 \begin{align*}
-E[h(\theta) \mid y] &= \int \exp\left[ u(\theta)\right] \text{d}\theta \\
-&\approx \exp\left[ u(\theta_0)\right] \int\exp\left[ \frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0)\right] \text{d}\theta \\
-&= h(\theta_0)p(\theta_0 \mid y) \int\exp\left[ - \frac{1}{2}(\theta - \theta_0)^T\left[- u''(\theta_0)\right](\theta - \theta_0)\right] \text{d}\theta \\
-&= h(\theta_0)p(\theta_0 \mid y) (2 \pi)^{-d/2} \det\left(\left[- u''(\theta_0)\right]^{-1}\right)^{-1/2}
+&\int \exp[ u(\theta) ] \text{d}\theta \\
+&\approx \int \exp[ u(\theta_0) + (\theta - \theta_0)^Tu'(\theta_0) + \frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0) ] \text{d}\theta \\
+&= \exp [u(\theta_0)] \int \exp\left[\frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0) \right] \text{d}\theta \\
+&= \exp [u(\theta_0)] \int \exp\left[-\frac{1}{2}(\theta - \theta_0)^T \{-u''(\theta_0)\}(\theta - \theta_0) \right] \text{d}\theta
 \end{align*}
 
+
 \end{frame}
+
+%----------------------------------------------------------------------------------------
+% \begin{frame}[fragile]
+% \frametitle{Gaussian approximations: Laplace's Method}
+% 
+% Looking at the numerator:
+% 
+% \begin{align*}
+% \int \exp\left[ \log h(\theta) + \log q(\theta \mid y) \right] \text{d}\theta &= 
+% \end{align*}
+
+% \begin{align*}
+% \exp[ u(\theta) ] &\approx \exp[ u(\theta_0) + (\theta - \theta_0)^Tu'(\theta_0) + \frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0) ] \\
+% &= \exp [u(\theta_0)]\exp\left[\frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0) \right] \\
+% &= \exp [u(\theta_0)]\exp\left[-\frac{1}{2}(\theta - \theta_0)^T \{-u''(\theta_0)\}(\theta - \theta_0) \right]
+% 
+% Looking at the numerator:
+% \begin{align*}
+% \int \exp\left[ u_1(\theta)\right] \text{d}\theta \\
+% &\approx \exp\left[ u(\theta_0)\right] \int\exp\left[ \frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0)\right] \text{d}\theta \\
+% &= h(\theta_0)p(\theta_0 \mid y) \int\exp\left[ - \frac{1}{2}(\theta - \theta_0)^T\left[- u''(\theta_0)\right](\theta - \theta_0)\right] \text{d}\theta \\
+% &= h(\theta_0)p(\theta_0 \mid y) (2 \pi)^{d/2} \det\left(\left[- u''(\theta_0)\right]^{-1}\right)^{1/2} \\
+% &= h(\theta_0)p(\theta_0 \mid y) (2 \pi)^{d/2} \det\left(\left[- u''(\theta_0)\right]\right)^{-1/2}
+% \end{align*}
+% 
+% \end{frame}
+
 
 %----------------------------------------------------------------------------------------
 \begin{frame}[fragile]

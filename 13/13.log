@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  2 APR 2019 10:29
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  4 APR 2019 21:34
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -939,31 +939,31 @@ ry-English.dict
 Dictionary: translator-theorem-dictionary, Language: English 
 ) (./13.nav) [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Try loading font information for U+msa on input line 102.
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2
+
+]
+LaTeX Font Info:    Try loading font information for U+msa on input line 127.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 102.
+LaTeX Font Info:    Try loading font information for U+msb on input line 127.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+rsfs on input line 102.
+LaTeX Font Info:    Try loading font information for U+rsfs on input line 127.
 
 (/usr/share/texlive/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 )
 LaTeX Font Info:    Try loading font information for OT1+mathkerncmss on input 
-line 102.
+line 127.
 
 (/usr/share/texlive/texmf-dist/tex/latex/sansmathaccent/ot1mathkerncmss.fd
 File: ot1mathkerncmss.fd 2013/03/27 Fontinst v1.933 font definitions for OT1/ma
 thkerncmss.
 )
-[2
-
-] [3
+[3
 
 ] [4
 
@@ -990,8 +990,8 @@ thkerncmss.
 ]
 \openout4 = `13.vrb'.
 
-
-(./13.vrb) [9
+ (./13.vrb)
+[9
 
 ]
 \openout4 = `13.vrb'.
@@ -1001,22 +1001,51 @@ thkerncmss.
 ]
 \openout4 = `13.vrb'.
 
- (./13.vrb) [11
+ (./13.vrb
+<unnorm_true.png, id=302, 282.30469pt x 226.59656pt>
+File: unnorm_true.png Graphic file (type png)
+<use unnorm_true.png>
+Package pdftex.def Info: unnorm_true.png  used on input line 4.
+(pdftex.def)             Requested size: 298.75394pt x 239.81778pt.
+)
+Overfull \vbox (22.7472pt too high) detected at line 278
+ []
+
+[11
+
+ <./unnorm_true.png>]
+\openout4 = `13.vrb'.
+
+ (./13.vrb
+<norm_approx.png, id=330, 282.30469pt x 226.59656pt>
+File: norm_approx.png Graphic file (type png)
+<use norm_approx.png>
+Package pdftex.def Info: norm_approx.png  used on input line 4.
+(pdftex.def)             Requested size: 298.75394pt x 239.81778pt.
+)
+Overfull \vbox (22.7472pt too high) detected at line 288
+ []
+
+[12
+
+ <./norm_approx.png>]
+\openout4 = `13.vrb'.
+
+ (./13.vrb) [13
 
 ]
 \openout4 = `13.vrb'.
 
- (./13.vrb) [12
+ (./13.vrb)
+Overfull \vbox (2.59062pt too high) detected at line 335
+ []
 
-] (./13.vrb)
-[13
+[14
 
 ]
 \openout4 = `13.vrb'.
 
- (./13.vrb) [14
-
-] (./13.vrb) [15
+ (./13.vrb) [15
 
 ]
 \openout4 = `13.vrb'.
@@ -1028,6 +1057,25 @@ thkerncmss.
 
  (./13.vrb) [17
 
+] (./13.vrb) [18
+
+]
+\openout4 = `13.vrb'.
+
+ (./13.vrb) [19
+
+] (./13.vrb) [20
+
+]
+\openout4 = `13.vrb'.
+
+ (./13.vrb) [21
+
+]
+\openout4 = `13.vrb'.
+
+ (./13.vrb) [22
+
 ]
 \tf@nav=\write6
 \openout6 = `13.nav'.
@@ -1038,19 +1086,19 @@ thkerncmss.
 \tf@snm=\write8
 \openout8 = `13.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 353.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 353.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 478.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 478.
  (./13.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 353.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 353.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 478.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 478.
 Package rerunfilecheck Info: File `13.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 18434 strings out of 492982
- 348547 string characters out of 6134895
+ 18475 strings out of 492982
+ 348984 string characters out of 6134895
  428697 words of memory out of 5000000
- 21490 multiletter control sequences out of 15000+600000
+ 21508 multiletter control sequences out of 15000+600000
  12592 words of font info for 47 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  56i,21n,61p,769b,949s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1066,10 +1114,10 @@ blic/amsfonts/cm/cmssi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
 s/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
 tt10.pfb>
-Output written on 13.pdf (17 pages, 158744 bytes).
+Output written on 13.pdf (22 pages, 199063 bytes).
 PDF statistics:
- 534 PDF objects out of 1000 (max. 8388607)
- 485 compressed objects within 5 object streams
- 35 named destinations out of 1000 (max. 500000)
- 79 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 675 PDF objects out of 1000 (max. 8388607)
+ 615 compressed objects within 7 object streams
+ 45 named destinations out of 1000 (max. 500000)
+ 89 words of extra memory for PDF output out of 10000 (max. 10000000)
 
