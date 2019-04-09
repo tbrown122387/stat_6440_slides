@@ -1,14 +1,12 @@
-\frametitle{The EM Algorithm}
+\frametitle{Variational Inference}
 
-Notes:
-\begin{enumerate}
-\item The EM algo isn't inherently Bayesian. It can also be used to accomplish maximum likelihood estimation.
-\item The expectation of $\log p(\gamma, \phi \mid y)$ is usually easy to compute because it is a sum, and might only depend on sufficient statistics
-\item The EM algorithm implicitly deals with parameter constraints in the M-step
-\item The EM algorithm is parmeterization independent
-\item The *Generalized* EM (GEM) just increases $Q$ instead of maximizing it.
-\item The book describes many generalizations in addition to this one
-\item You can find multiple modes if you start from multiple starting points (using mixture approximations afterwards)
-\item Debug by printing $\log p(\phi^i \mid y)$ at every iteration and make sure it increases monotonically
-\end{enumerate}
+\begin{block}{VI algorithm}
+For $j=1,\ldots,J$:
+
+Set $\phi_j$ so that $\log g_j(\theta_j \mid \phi_j)$ is equal to
+$$
+\log\tilde{p}(\theta_j) = \int\log p(\theta, y)g_{-j}(\theta_{-j} \mid \phi_{-j}) \text{d}\theta_{-j}
+$$
+\end{block}
+
 

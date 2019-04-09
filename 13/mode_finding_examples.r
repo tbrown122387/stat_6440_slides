@@ -74,9 +74,3 @@ title("Unnormalized true p(mu, theta | y)", font = 4)
 plotSurface(3,6,0,1.25,numGridPointsOnEachAxis = 50, f = norm_approx_dens, contour = T)
 title("Normal approx. p(mu, theta | y)", font = 4)
 
-
-# compare posteriors
-poss_mus <- seq(-2*abs(mu), 2*abs(mu), length.out = 100)
-real_posterior <- dnorm(x = poss_mus, mean = mean(y), sd = 1/sqrt(length(y)))
-bfgs_approx_mean <- optim_results$par
-bfgs_approx_var <- 

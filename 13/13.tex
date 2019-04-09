@@ -368,7 +368,6 @@ gives us
 The book has a few more generalizations that we don't address:
 
 \begin{enumerate}
-\item using only the unnormalized posterior density
 \item approximating multimodal distributions with normal mixtures
 \item approximating multimodal distributions with t mixtures
 \end{enumerate}
@@ -447,13 +446,22 @@ Repeat the following until convergence:
 \begin{frame}[fragile]
 \frametitle{The EM Algorithm}
 
-Clearly $\log p(\phi \mid y)$ increases at every iteration:
+If we follow this strategy, $\log p(\phi \mid y)$ increases at every iteration:
 \begin{align*}
 \log p(\phi \mid y) &=  E\left[ \log p(\gamma, \phi \mid y) \mid \phi^{\text{old}}, y \right] - E\left[\log p(\gamma \mid \phi, y) \mid \phi^{\text{old}}, y \right]\\
-&= Q(\phi \mid \phi^{\text{old}}) - \underbrace{E\left[\log p(\gamma \mid \phi, y) \mid \phi^{\text{old}}, y \right]}_{\text{don't change } \phi} \\
-&= Q(\phi \mid \phi^{\text{old}}) + \text{constant}
+&= Q(\phi \mid \phi^{\text{old}}) - E\left[\log p(\gamma \mid \phi, y) \mid \phi^{\text{old}}, y \right] \tag{defn. Q} \\
+&\ge Q(\phi \mid \phi^{\text{old}}) - E\left[\log p(\gamma \mid \phi^{\text{old}}, y) \mid \phi^{\text{old}}, y \right] \tag{HW}
 \end{align*}
+\pause
 
+So 
+\begin{align*}
+&\log p(\phi^{\text{new}} \mid y) - \log p(\phi^{\text{old}} \mid y) \\
+&= \log p(\phi^{\text{new}} \mid y) - \left\{Q(\phi^{\text{old}} \mid \phi^{\text{old}}) - E\left[\log p(\gamma \mid \phi^{\text{old}}, y) \mid \phi^{\text{old}}, y \right] \right\} \\
+&\ge Q(\phi \mid \phi^{\text{old}}) - E\left[\log p(\gamma \mid \phi^{\text{old}}, y) \mid \phi^{\text{old}}, y \right] \\
+&\hspace{10mm} - \left\{Q(\phi^{\text{old}} \mid \phi^{\text{old}}) - E\left[\log p(\gamma \mid \phi^{\text{old}}, y) \mid \phi^{\text{old}}, y \right] \right\} \\
+&= Q(\phi \mid \phi^{\text{old}}) - Q(\phi^{\text{old}} \mid \phi^{\text{old}})
+\end{align*}
 
 \end{frame}
 
@@ -472,6 +480,93 @@ Notes:
 \item You can find multiple modes if you start from multiple starting points (using mixture approximations afterwards)
 \item Debug by printing $\log p(\phi^i \mid y)$ at every iteration and make sure it increases monotonically
 \end{enumerate}
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Variational Inference}
+
+{\bf Variational inference} approximates an intractable posterior $p(\theta \mid y)$ with some chosen distribution $g(\theta \mid \phi)$ (e.g. multivariate normal).
+\newline
+\pause
+
+We will assume all $J$ parameters are independent a posteriori. In other words 
+$$
+g(\theta \mid \phi) = \prod_{j=1}^J g_j(\theta_j \mid \phi_j) = g_j(\theta_j \mid \phi_j)g_{-j}(\theta_{-j} \mid \phi_{-j}).
+$$
+
+
+We will find $\phi$ using an EM-like algorithm that minimizes Kullback-Leibler divergence.
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Variational Inference}
+
+Kullback-Leibler divergence is reversed this time:
+\begin{align*}
+KL(g || p) &= - \int \log \left( \frac{ p(\theta \mid y)}{g(\theta \mid \phi)} \right) g(\theta \mid \phi)\text{d}\theta  \\
+&= - \int \log \left( \frac{ p(\theta, y)}{g(\theta \mid \phi)} \right) g(\theta \mid \phi)\text{d}\theta
++ \int \log p(y)g(\theta \mid \phi) \text{d}\theta \\
+&= - \underbrace{\int \log \left( \frac{ p(\theta, y)}{g(\theta \mid \phi)} \right) g(\theta \mid \phi)\text{d}\theta}_{\text{variational lower bound}}
++  \log p(y) \\
+\end{align*}
+
+The term that we maximize (minimize the negative) is called the {\bf variational lower bound} aka the {\bf evidence lower bound} (ELBO).
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Variational Inference}
+
+Every iteration, we cycle through all the hyper-parameters $\phi_1, \ldots, \phi_J$, and change them until convergence is reached.
+\begin{align*}
+&\int \log \left( \frac{ p(\theta, y)}{g(\theta \mid \phi)} \right) g(\theta \mid \phi)\text{d}\theta \\
+&=  \iint \left[\log p(\theta, y) - \log g_j(\theta_j \mid \phi_j) - \log g_{-j}(\theta_{-j} \mid \phi_{-j})\right]  \\
+&\hspace{10mm} g_j(\theta_j \mid \phi_j)g_{-j}(\theta_{-j} \mid \phi_{-j})\text{d}\theta_{j}\text{d}\theta_{-j} \\
+&=  \int \left[\int\log p(\theta, y)g_{-j}(\theta_{-j} \mid \phi_{-j}) \text{d}\theta_{-j}\right] g_j(\theta_j \mid \phi_j)\text{d}\theta_{j} \\
+&- \int\log g_j(\theta_j \mid \phi_j)g_j(\theta_j \mid \phi_j)\text{d}\theta_j - \int \log g_{-j}(\theta_{-j} \mid \phi_{-j})g_{-j}(\theta_{-j} \mid \phi_{-j})\text{d}\theta_{-j} \\ 
+&=  \int  \log \left(\frac{\tilde{p}(\theta_j)}{g_j(\theta_j \mid \phi_j)}  \right) g_j(\theta_j \mid \phi_j)\text{d}\theta_{j} + \text{constant} \tag{*}
+\end{align*}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Variational Inference}
+
+We think of $\tilde{p}(\theta_j)$ as an unnormalized density 
+$$
+\log\tilde{p}(\theta_j) = \int\log p(\theta, y)g_{-j}(\theta_{-j} \mid \phi_{-j}) \text{d}\theta_{-j}
+$$
+if
+
+\begin{align*}
+\int \tilde{p}(\theta_j) \text{d}\theta_j &= \int \exp\left[ \int\log p(\theta, y)g_{-j}(\theta_{-j} \mid \phi_{-j}) \text{d}\theta_{-j}\right] \text{d}\theta_j \\
+&\le \int \exp\left[ \log \int p(\theta, y)g_{-j}(\theta_{-j} \mid \phi_{-j}) \text{d}\theta_{-j}\right] \text{d}\theta_j \tag{Jensen's}\\
+&= \iint  p(\theta, y)g_{-j}(\theta_{-j} \mid \phi_{-j}) \text{d}\theta_{-j} \text{d}\theta_j \\
+&< \infty
+\end{align*}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Variational Inference}
+
+\begin{block}{VI algorithm}
+For $j=1,\ldots,J$:
+
+Set $\phi_j$ so that $\log g_j(\theta_j \mid \phi_j)$ is equal to 
+$$
+\log\tilde{p}(\theta_j) = \int\log p(\theta, y)g_{-j}(\theta_{-j} \mid \phi_{-j}) \text{d}\theta_{-j}
+$$
+\end{block}
+
 
 \end{frame}
 

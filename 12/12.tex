@@ -518,7 +518,7 @@ Recall that $U(\mathbf{q})$ is the negative log of the posterior you're interest
 \begin{frame}
 \frametitle{Property 1: Reversibility of $T_s$}
 
-Recall  $T_s: [\mathbf{q}(0), \mathbf{p}(0)] \mapsto [\mathbf{q}(s), \mathbf{p}(s)]$. It is always has an easy-to-find inverse.
+$T_s: [\mathbf{q}(0), \mathbf{p}(0)] \mapsto [\mathbf{q}(s), \mathbf{p}(s)]$ always has an easy-to-find inverse.
 \newline
 
 Proof: just take the negative of the derivatives.
@@ -556,7 +556,7 @@ $T_s$ keeps you on a level-set/contour:
 \begin{frame}
 \frametitle{HMC Property 3 and 4: Volume Preservation and Symplecticness}
 
-Volume preservation: $(q,p)$ and $T_s(q,p)$ have the same volume.
+Volume preservation: $\{ (q,p) : (q,p) \in A\}$ and $\{ T_s(q,p) : (q,p) \in A\}$ have the same volume.
 \newline
 
 Symplecticness: a nice property of the Jacobian (matrix of time derivatives) of $T_s$.
@@ -608,14 +608,14 @@ $$
 When $K(\mathbf{p})= \sum_{i=1}^d \frac{p_i^2}{2m_i}$, {\bf Euler's method} approximates the solution of
 
 \begin{gather}
-\frac{dq_i}{dt} = \frac{\partial H(\mathbf{q},\mathbf{p})}{\partial p_i} =  \frac{d K(\mathbf{p}) }{d p_i} = p_i/m_i  \\
+\frac{dq_i}{dt} = \frac{\partial H(\mathbf{q},\mathbf{p})}{\partial p_i} =  \frac{d K(\mathbf{p}) }{d p_i} = \frac{p_i}{m_i}  \\
 \frac{dp_i}{dt} = -\frac{\partial H(\mathbf{q},\mathbf{p})}{\partial q_i} = -\frac{d U(\mathbf{q})}{d q_i} 
 \end{gather}
 
 as 
 \begin{gather}
-q_i(t + \epsilon) =  q_i(t ) + \epsilon p_i(t)/m_i \\
-p_i(t + \epsilon) =  p_i(t) - \epsilon \frac{d U}{d q_i}(\mathbf{q}(t))  
+q_i(t + \epsilon) =  q_i(t ) + \epsilon \frac{p_i(t)}{m_i} \\
+p_i(t + \epsilon) =  p_i(t) - \epsilon \frac{d U (\mathbf{q}(t))  }{d q_i} 
 \end{gather}
 
 
@@ -645,9 +645,9 @@ When $K(\mathbf{p})= \sum_{i=1}^d \frac{p_i^2}{2m_i}$, {\bf the leap-frog method
 
 with
 \begin{gather}
-p_i(t + \epsilon/2) =  p_i(t) - (\epsilon/2) \frac{d U}{d q_i}(\mathbf{q}(t)) \\
+p_i(t + \epsilon/2) =  p_i(t) - (\epsilon/2) \frac{d U(\mathbf{q}(t)) }{d q_i} \\
 q_i(t + \epsilon) = q_i(t ) + \epsilon \frac{p_i(t+\epsilon/2)}{m_i} \\
-p_i(t + \epsilon) =  p_i(t + \epsilon/2) - (\epsilon/2) \frac{d U}{d q_i}(\mathbf{q}(t+\epsilon)) 
+p_i(t + \epsilon) =  p_i(t + \epsilon/2) - (\epsilon/2) \frac{d U(\mathbf{q}(t+\epsilon)) }{d q_i} 
 \end{gather}
 
 
