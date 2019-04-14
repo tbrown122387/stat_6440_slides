@@ -315,7 +315,7 @@ $$
 \begin{frame}[fragile]
 \frametitle{Gaussian approximations: Laplace's Method}
 
-Exponentiating and integrating
+Exponentiating and integrating (typo on page 318?)
 
 \begin{align*}
 u(\theta) &\approx u(\theta_0) + (\theta - \theta_0)^Tu'(\theta_0) + \frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0) \\
@@ -325,10 +325,10 @@ u(\theta) &\approx u(\theta_0) + (\theta - \theta_0)^Tu'(\theta_0) + \frac{1}{2}
 gives us
 
 \begin{align*}
-&\int \exp[ u(\theta) ] \text{d}\theta \\
-&\approx \int \exp[ u(\theta_0) + (\theta - \theta_0)^Tu'(\theta_0) + \frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0) ] \text{d}\theta \\
+\int \exp[ u(\theta) ] \text{d}\theta &\approx \int \exp[ u(\theta_0)  + \frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0) ] \text{d}\theta \\
 &= \exp [u(\theta_0)] \int \exp\left[\frac{1}{2}(\theta - \theta_0)^T u''(\theta_0)(\theta - \theta_0) \right] \text{d}\theta \\
-&= \exp [u(\theta_0)] \int \exp\left[-\frac{1}{2}(\theta - \theta_0)^T \{-u''(\theta_0)\}(\theta - \theta_0) \right] \text{d}\theta
+&= \exp [u(\theta_0)] \int \exp\left[-\frac{1}{2}(\theta - \theta_0)^T \{-u''(\theta_0)\}(\theta - \theta_0) \right] \text{d}\theta \\
+&= \exp [u(\theta_0)] (2\pi)^{d/2} \det[-u''(\theta_0)]^{-1/2}
 \end{align*}
 
 
@@ -398,7 +398,7 @@ and so forth, iterating until convergence.
 \begin{frame}[fragile]
 \frametitle{The EM Algorithm}
 
-Call $\theta = (\gamma, \phi)$. You're interested in the mode of $p(\phi \mid y)$.
+Call $\theta = (\gamma, \phi)$. You're interested in the mode of $p(\phi \mid y)$. Typically, $\gamma$ is ``hidden data."
 \newline
 
 $$
@@ -458,9 +458,9 @@ So
 \begin{align*}
 &\log p(\phi^{\text{new}} \mid y) - \log p(\phi^{\text{old}} \mid y) \\
 &= \log p(\phi^{\text{new}} \mid y) - \left\{Q(\phi^{\text{old}} \mid \phi^{\text{old}}) - E\left[\log p(\gamma \mid \phi^{\text{old}}, y) \mid \phi^{\text{old}}, y \right] \right\} \\
-&\ge Q(\phi \mid \phi^{\text{old}}) - E\left[\log p(\gamma \mid \phi^{\text{old}}, y) \mid \phi^{\text{old}}, y \right] \\
+&\ge Q(\phi^{\text{new}} \mid \phi^{\text{old}}) - E\left[\log p(\gamma \mid \phi^{\text{old}}, y) \mid \phi^{\text{old}}, y \right] \\
 &\hspace{10mm} - \left\{Q(\phi^{\text{old}} \mid \phi^{\text{old}}) - E\left[\log p(\gamma \mid \phi^{\text{old}}, y) \mid \phi^{\text{old}}, y \right] \right\} \\
-&= Q(\phi \mid \phi^{\text{old}}) - Q(\phi^{\text{old}} \mid \phi^{\text{old}})
+&= Q(\phi^{\text{new}} \mid \phi^{\text{old}}) - Q(\phi^{\text{old}} \mid \phi^{\text{old}})
 \end{align*}
 
 \end{frame}
@@ -474,11 +474,11 @@ Notes:
 \item The EM algo isn't inherently Bayesian. It can also be used to accomplish maximum likelihood estimation.
 \item The expectation of $\log p(\gamma, \phi \mid y)$ is usually easy to compute because it is a sum, and might only depend on sufficient statistics
 \item The EM algorithm implicitly deals with parameter constraints in the M-step
-\item The EM algorithm is parmeterization independent
+\item The EM algorithm is parameterization independent
 \item The *Generalized* EM (GEM) just increases $Q$ instead of maximizing it.
-\item The book describes many generalizations in addition to this one
-\item You can find multiple modes if you start from multiple starting points (using mixture approximations afterwards)
-\item Debug by printing $\log p(\phi^i \mid y)$ at every iteration and make sure it increases monotonically
+\item The book describes many generalizations, in addition to this one
+\item You might find multiple modes if you start from multiple starting points (using mixture approximations afterwards)
+\item if you can, debug by printing $\log p(\phi^i \mid y)$ at every iteration and make sure it increases monotonically
 \end{enumerate}
 
 \end{frame}
@@ -492,7 +492,7 @@ Notes:
 \newline
 \pause
 
-We will assume all $J$ parameters are independent a posteriori. In other words 
+We will assume this approximating distribution factors into $J$ components:
 $$
 g(\theta \mid \phi) = \prod_{j=1}^J g_j(\theta_j \mid \phi_j) = g_j(\theta_j \mid \phi_j)g_{-j}(\theta_{-j} \mid \phi_{-j}).
 $$
@@ -506,7 +506,7 @@ We will find $\phi$ using an EM-like algorithm that minimizes Kullback-Leibler d
 \begin{frame}[fragile]
 \frametitle{Variational Inference}
 
-Kullback-Leibler divergence is reversed this time:
+Kullback-Leibler divergence is ``reversed" this time:
 \begin{align*}
 KL(g || p) &= - \int \log \left( \frac{ p(\theta \mid y)}{g(\theta \mid \phi)} \right) g(\theta \mid \phi)\text{d}\theta  \\
 &= - \int \log \left( \frac{ p(\theta, y)}{g(\theta \mid \phi)} \right) g(\theta \mid \phi)\text{d}\theta
@@ -524,6 +524,10 @@ The term that we maximize (minimize the negative) is called the {\bf variational
 \frametitle{Variational Inference}
 
 Every iteration, we cycle through all the hyper-parameters $\phi_1, \ldots, \phi_J$, and change them until convergence is reached.
+\newline
+\pause
+
+Looking at $\phi_j$...
 \begin{align*}
 &\int \log \left( \frac{ p(\theta, y)}{g(\theta \mid \phi)} \right) g(\theta \mid \phi)\text{d}\theta \\
 &=  \iint \left[\log p(\theta, y) - \log g_j(\theta_j \mid \phi_j) - \log g_{-j}(\theta_{-j} \mid \phi_{-j})\right]  \\
@@ -543,7 +547,7 @@ We think of $\tilde{p}(\theta_j)$ as an unnormalized density
 $$
 \log\tilde{p}(\theta_j) = \int\log p(\theta, y)g_{-j}(\theta_{-j} \mid \phi_{-j}) \text{d}\theta_{-j}
 $$
-if
+because usually
 
 \begin{align*}
 \int \tilde{p}(\theta_j) \text{d}\theta_j &= \int \exp\left[ \int\log p(\theta, y)g_{-j}(\theta_{-j} \mid \phi_{-j}) \text{d}\theta_{-j}\right] \text{d}\theta_j \\
@@ -559,15 +563,122 @@ if
 \frametitle{Variational Inference}
 
 \begin{block}{VI algorithm}
-For $j=1,\ldots,J$:
-
-Set $\phi_j$ so that $\log g_j(\theta_j \mid \phi_j)$ is equal to 
+For $j=1,\ldots,J$ set $\phi_j$ so that $\log g_j(\theta_j \mid \phi_j)$ is equal to 
 $$
 \log\tilde{p}(\theta_j) = \int\log p(\theta, y)g_{-j}(\theta_{-j} \mid \phi_{-j}) \text{d}\theta_{-j}
 $$
 \end{block}
 
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Variational Inference: educational testing example}
+
+When the parameters are $\alpha_1, \ldots, \alpha_8, \mu, \tau$, the log posterior is
+$$
+\log p(\theta \mid y) = \text{constant} - \frac{1}{2}\sum_{j=1}^8\frac{(y_j - \alpha_j)^2 }{\sigma^2_j } - 8 \log \tau - \frac{1}{2}\frac{1}{\tau^2}\sum_{j=1}^8(\alpha_j - \mu)^2
+$$
+and we assume
+$$
+g(\alpha_1, \ldots, \alpha_8, \mu, \tau) = g(\alpha_1) \times  \cdots \times g(\alpha_8) g(\mu) g(\tau).
+$$
+
+Let's reparameterize $\tau$ as $\tau^2$ and assume $g(\alpha_1), \ldots, g(\alpha_8) g(\mu)$ are all normal distributions, and $g(\tau^2)$ is an Inverse-Gamma.
+
+  
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Variational Inference: example}
+
+
+\begin{align*}
+&\log g(\alpha_j) \\
+&\overset{\text{set}}{=} \log\tilde{p}(\alpha_j) \\
+&= \int\log p(\theta, y)g_{-j}(\theta_{-j}) \text{d}\theta_{-j} \\
+&= - \frac{1}{2}\sum_{i=1}^8\frac{E_{-j}[(y_i - \alpha_i)^2 ] }{\sigma^2_i } - 8 E_{-j}[\log \tau] - \frac{1}{2} E_{-j}\left[\frac{1}{\tau^2}\right] \sum_{i=1}^8 E[(\alpha_i - \mu)^2 ] + c \\
+&= - \frac{1}{2}\frac{(y_j - \alpha_j)^2 }{\sigma^2_j } -  \frac{1}{2} E_{-j}\left[\frac{1}{\tau^2}\right] E_{-j}[(\alpha_j - \mu)^2 ] + c' \\
+&= - \frac{1}{2}\frac{(y_j - \alpha_j)^2 }{\sigma^2_j } -  \frac{1}{2} E_{-j}\left[\frac{1}{\tau^2}\right] (\alpha_j^2 - 2\alpha_j E_{-j}[\mu] ) ] + c''
+\end{align*}
+We are using linearity, independence, the data aren't random, and we're grouping all the terms that don't involve $\alpha_j$ into the constant.
+\newline
+
+So $g(\alpha_j) = $...
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Variational Inference: example}
+
+
+For $\mu$:
+\begin{align*}
+\log\tilde{p}(\mu) &= \int\log p(\theta, y)g_{-j}(\theta_{-j} \mid \phi_{-j}) \text{d}\theta_{-j} \\
+&= - \frac{1}{2}E_{-\mu}\left[ \frac{1}{\tau^2}\sum_{j=1}^8(\alpha_j - \mu)^2\right] + \text{constant} \\
+&= - \frac{1}{2}E_{-\mu}\left[ \frac{1}{\tau^2} \right] \sum_{j=1}^8 \left( \mu^2 - 2 \mu E_{-\mu}[ \alpha_j] \right) + \text{constant} \\
+&= - \frac{1}{2}E_{-\mu}\left[ \frac{1}{\tau^2} \right]  \left( 8 \mu^2 - 2 \mu \sum_{j=1}^8 E_{-\mu}[ \alpha_j] \right) + \text{constant}
+\end{align*}
+
+So $g(\mu) = $...
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Variational Inference: example}
+
+
+For $\tau$ (not $\tau^2$):
+\begin{align*}
+\log\tilde{p}(\tau) &= \int\log p(\theta, y)g_{-j}(\theta_{-j} \mid \phi_{-j}) \text{d}\theta_{-j} \\
+&= - 8 \log \tau - \frac{1}{2}\frac{1}{\tau^2} E_{-\tau}\left[ \sum_{j=1}^8(\alpha_j - \mu)^2 \right] + c \\
+\end{align*}
+
+So $g(\tau) \propto \tau^{-8} \exp\left[-\frac{\sum_jE_{-\tau}[(\alpha_j - \mu)^2]}{2 \tau^2} \right]$ which means $$
+g(\tau^2) = (\tau^2)^{-(\frac{7}{2}+1)}\exp\left[-\frac{\sum_jE_{-\tau}[(\alpha_j - \mu)^2]}{2 \tau^2} \right]
+$$
+which is an InverseGamma$\left( \frac{7}{2}, \frac{\sum_jE_{-\tau}[(\alpha_j - \mu)^2]}{2 }\right)$
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Variational Inference: example}
+
+To complete this example, we need to derive:
+\begin{itemize}
+\item for $g(\alpha_j)$: 
+  \begin{enumerate}
+  \item $E_{-j}\left[\frac{1}{\tau^2}\right] = E_{\tau^2}\left[\frac{1}{\tau^2}\right]$, 
+  \item $ E_{-j}[\mu] = E_{\mu}[\mu]$ 
+  \end{enumerate}
+\item for $g(\mu)$: 
+  \begin{enumerate}
+  \item $E_{-\mu}[ \alpha_j] = E_{\alpha_j}[ \alpha_j]$, 
+  \item $E_{-j}\left[\frac{1}{\tau^2}\right] = E_{\tau^2}\left[\frac{1}{\tau^2}\right]$ 
+  \end{enumerate}
+\item for $g(\tau^2)$: 
+  \begin{enumerate}
+  \item $\sum_jE_{-\tau}[(\alpha_j - \mu)^2] = \sum_jE_{\alpha_j,\mu}[(\alpha_j - \mu)^2]$, 
+  \end{enumerate}
+\end{itemize}
 
 \end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Variational Inference: example}
+
+\begin{center}
+\includegraphics[width=120mm]{vi_convergence.png}
+\end{center}
+
+\end{frame}
+
+
+
+
+
 
 \end{document} 

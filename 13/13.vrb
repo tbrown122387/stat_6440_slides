@@ -1,12 +1,6 @@
-\frametitle{Variational Inference}
+\frametitle{Variational Inference: example}
 
-\begin{block}{VI algorithm}
-For $j=1,\ldots,J$:
-
-Set $\phi_j$ so that $\log g_j(\theta_j \mid \phi_j)$ is equal to
-$$
-\log\tilde{p}(\theta_j) = \int\log p(\theta, y)g_{-j}(\theta_{-j} \mid \phi_{-j}) \text{d}\theta_{-j}
-$$
-\end{block}
-
+\begin{center}
+\includegraphics[width=120mm]{vi_convergence.png}
+\end{center}
 
