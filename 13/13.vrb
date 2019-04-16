@@ -1,6 +1,19 @@
-\frametitle{Variational Inference: example}
+\frametitle{Expectation Propagation: example}
 
-\begin{center}
-\includegraphics[width=120mm]{vi_convergence.png}
-\end{center}
+
+Step 6: find $g(\theta) \propto g_i(\theta)g_{-i}(\theta)$.
+\newline
+
+\begin{align*}
+g(\theta)
+&\propto   \exp\left[-\frac{1}{2}\left( \theta'\left[\underbrace{ \sum_{i=0}^n \Sigma^{-1}_i}_{\Sigma^{-1} }\right] \theta - 2 \left[\underbrace{\sum_{i=0}^n\mu_i' \Sigma^{-1}_i}_{ \Sigma^{-1}\mu } \right]\theta \right) \right]
+\end{align*}
+
+$$
+\Sigma^{-1}\mu = \overbrace{\Sigma^{-1}_{-i}\mu_{-i}}^{\text{from step 1} } + \overbrace{\Sigma^{-1}_{i}\mu_{i}}^{\text{from step 5}}
+$$
+and
+$$
+\Sigma^{-1} = \underbrace{\Sigma^{-1}_{-i}}_{\text{from step 1} } + \underbrace{\Sigma^{-1}_i}_{\text{from step 5}}
+$$
 

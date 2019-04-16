@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  14 APR 2019 15:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  16 APR 2019 11:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1151,7 +1151,7 @@ Overfull \vbox (17.84917pt too high) detected at line 610
 \openout4 = `13.vrb'.
 
  (./13.vrb
-<vi_convergence.png, id=972, 1174.3875pt x 501.875pt>
+<vi_convergence.png, id=973, 1174.3875pt x 501.875pt>
 File: vi_convergence.png Graphic file (type png)
 <use vi_convergence.png>
 Package pdftex.def Info: vi_convergence.png  used on input line 4.
@@ -1159,6 +1159,72 @@ Package pdftex.def Info: vi_convergence.png  used on input line 4.
 ) [36
 
  <./vi_convergence.png>]
+\openout4 = `13.vrb'.
+
+ (./13.vrb) [37
+
+]
+\openout4 = `13.vrb'.
+
+ (./13.vrb) [38
+
+]
+\openout4 = `13.vrb'.
+
+ (./13.vrb) [39
+
+]
+\openout4 = `13.vrb'.
+
+ (./13.vrb)
+[40
+
+]
+\openout4 = `13.vrb'.
+
+ (./13.vrb) [41
+
+]
+\openout4 = `13.vrb'.
+
+ (./13.vrb) [42
+
+]
+\openout4 = `13.vrb'.
+
+ (./13.vrb) [43
+
+]
+\openout4 = `13.vrb'.
+
+ (./13.vrb) [44
+
+]
+\openout4 = `13.vrb'.
+
+ (./13.vrb) [45
+
+]
+\openout4 = `13.vrb'.
+
+ (./13.vrb) [46
+
+]
+\openout4 = `13.vrb'.
+
+ (./13.vrb) [47
+
+]
+\openout4 = `13.vrb'.
+
+ (./13.vrb) [48
+
+]
+\openout4 = `13.vrb'.
+
+ (./13.vrb) [49
+
+]
 \tf@nav=\write6
 \openout6 = `13.nav'.
 
@@ -1168,19 +1234,19 @@ Package pdftex.def Info: vi_convergence.png  used on input line 4.
 \tf@snm=\write8
 \openout8 = `13.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 684.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 684.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 916.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 916.
  (./13.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 684.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 684.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 916.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 916.
 Package rerunfilecheck Info: File `13.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 18617 strings out of 492982
- 351134 string characters out of 6134895
+ 18695 strings out of 492982
+ 351771 string characters out of 6134895
  428697 words of memory out of 5000000
- 21590 multiletter control sequences out of 15000+600000
+ 21616 multiletter control sequences out of 15000+600000
  17763 words of font info for 67 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  56i,19n,61p,769b,949s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1200,10 +1266,10 @@ ts/cm/cmssi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
 /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/sh
 are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/tex
 live/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on 13.pdf (36 pages, 337102 bytes).
+Output written on 13.pdf (49 pages, 372754 bytes).
 PDF statistics:
- 1073 PDF objects out of 1200 (max. 8388607)
- 989 compressed objects within 10 object streams
- 73 named destinations out of 1000 (max. 500000)
+ 1425 PDF objects out of 1440 (max. 8388607)
+ 1324 compressed objects within 14 object streams
+ 99 named destinations out of 1000 (max. 500000)
  94 words of extra memory for PDF output out of 10000 (max. 10000000)
 

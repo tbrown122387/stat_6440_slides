@@ -679,6 +679,238 @@ To complete this example, we need to derive:
 
 
 
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Expectation Propagation: warmup}
+
+$p(x \mid \theta)$ is in the exponential family if it can be written as  
+$$
+h(x)\exp\left[\eta(\theta)'T(x) - A(\theta) \right]
+$$
+
+Example:
+$$
+N(\theta \mid \mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left[-\frac{1}{2\sigma^2}\theta^2 + \frac{\mu}{\sigma^2}\theta - \frac{\mu^2}{2\sigma^2} \right]
+$$
+sufficient statistic: $(\theta^2,\theta)$
+
+canonical/natural parameters: $(-\frac{1}{2\sigma^2}, \frac{\mu}{\sigma^2})$
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Expectation Propagation}
+
+{\bf Expectation Propogation} is another deterministic iterative technique that approximates the posterior with a distribution that is in the exponential family. 
+\newline
+
+\begin{enumerate}
+\item $p(\theta \mid y) = f(\theta) = \prod_{i=0}^{n} f_i(\theta)$
+\item $g(\theta) = \prod_{i=0}^{n} g_i(\theta)$
+\end{enumerate}
+
+$f_0(\theta) = p(\theta)$, $f_1(\theta) = p(y_1 \mid \theta)$, ...
+\newline
+
+For more info: \url{https://arxiv.org/abs/1412.4869}
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Expectation Propagation}
+
+The {\bf cavity distribution} is 
+$$
+g_{-i}(\theta) \propto g(\theta) / g_i(\theta),
+$$
+and the {\bf tilted distribution} is 
+$$
+g_{-i}(\theta) f_i(\theta).
+$$
+
+At each stage, we update $g_i(\theta)$ so that we ``target" $g_{-i}(\theta) f_i(\theta)$ with $g(\theta)$. 
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Expectation Propagation}
+
+At each stage, we update $g_i(\theta)$ so that we ``target" $g_{-i}(\theta) f_i(\theta)$ with $g(\theta)$. 
+\newline
+
+Notice that
+$$
+\frac{\text{target}}{\text{``proposal"} } = \frac{g_{-i}(\theta) f_i(\theta)}{g(\theta)} = \frac{f_i(\theta)}{g_i(\theta)}.
+$$
+
+However, we cannot ignore the cavity distribution in each ``site" update. This is because we choose $g(\theta)$ so that its {\bf moments match} those of $g_{-i}(\theta) f_i(\theta)$. This is like choosing $g_i(\theta)$ to approximate $f_i(\theta)$ {\bf in the context of} $g_{-i}(\theta)$.
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Expectation Propagation}
+
+If $g(\theta) = \text{Normal}(\mu, \Sigma)$, for each $i$ we change $\mu$ and $\Sigma$ by solving
+$$
+\mu \overset{\text{set}}{=} E_{\text{tilted }i}[\theta] 
+$$
+and
+$$
+\Sigma \overset{\text{set}}{=} \operatorname{Var}_{\text{tilted }i}[\theta] 
+$$
+where $E_{\text{tilted }i}[\theta] = \int \theta g_{-i}(\theta)f_i(\theta) \text{d}\theta $ and $\operatorname{Var}_{\text{tilted }i}[\theta] = \int (\theta-\mu)(\theta-\mu)' g_{-i}(\theta)f_i(\theta) \text{d}\theta $.
+\newline
+
+The hard part is integrating.
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Expectation Propagation: example}
+
+Let $\theta$ be a vector of regression parameters for a logistic regression:
+\begin{align*}
+p(\theta \mid y) &\propto \prod_{i=1}^n p(y_i \mid \theta)p(\theta) \\
+&= \prod_{i=0}^n f_i(\theta) \\
+&= f_0(\theta) \prod_{i=1}^n [\text{invlogit}(X_i'\theta )]^{y_i}[1-\text{invlogit}(X_i'\theta)]^{m_i - y_i}
+\end{align*}
+
+and choose $g(\theta)$ to be $\text{Normal}(\mu, \Sigma)$
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Expectation Propagation: example}
+
+We choose $g(\theta)$ to be $\text{Normal}(\mu, \Sigma)$:
+\begin{align*}
+g(\theta) 
+&\propto \prod_{i=0}^n \exp\left[-\frac{1}{2}(\theta - \mu_i)'\Sigma^{-1}_i(\theta - \mu_i)  \right] \\
+&\propto  \exp\left[-\frac{1}{2}\sum_{i=0}^n\left( \theta'\Sigma^{-1}_i\theta - 2 \mu_i' \Sigma^{-1}_i\theta \right) \right] \\
+&=  \exp\left[-\frac{1}{2}\left( \theta'\left[\underbrace{ \sum_{i=0}^n \Sigma^{-1}_i}_{\Sigma^{-1} }\right] \theta - 2 \left[\underbrace{\sum_{i=0}^n\mu_i' \Sigma^{-1}_i}_{ \text{natural param 2} } \right]\theta \right) \right]
+\end{align*}
+
+Algorithmically, $\mu, \Sigma$ change at each iteration.
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Expectation Propagation: example}
+
+
+$g(\theta)$ is $\text{Normal}(\mu, \Sigma)$:
+\begin{align*}
+g(\theta) 
+&\propto   \exp\left[-\frac{1}{2}\left( \theta'\left[\underbrace{ \sum_{i=0}^n \Sigma^{-1}_i}_{\Sigma^{-1} }\right] \theta - 2 \left[\underbrace{\sum_{i=0}^n\mu_i' \Sigma^{-1}_i}_{ \Sigma^{-1}\mu } \right]\theta \right) \right]
+\end{align*}
+
+Step 1: determine cavity distribution. $g_{-i}(\theta) = \text{Normal}(\mu_{-i}, \Sigma_{-i})$ where
+$$
+\Sigma_{-i}^{-1} = \Sigma^{-1} - \Sigma_{i}^{-1}
+$$
+and
+$$
+\Sigma_{-i}^{-1}\mu_{-i} = \Sigma^{-1}\mu - \Sigma_{i}^{-1}\mu_{i}
+$$
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Expectation Propagation: example}
+
+
+Step 2: find cavity distribution for $\eta = X_i'\theta$. 
+\newline
+
+Because any linear transformation of normals is normal and because $g_{-i}(\theta) = \text{Normal}(\mu_{-i}, \Sigma_{-i})$:
+$$
+g_{-i}(\eta) = \text{Normal}(M_{-i}, V_{-i}) 
+$$
+where 
+$M_{-i} = X_i'\mu_{-i}$ and $V_{-i} = X_i'\Sigma_{-i}X_i$.
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Expectation Propagation: example}
+
+
+Step 3: define the unnormalized tilted distribution
+$$
+g_{-i}(\eta)f_i(\eta) = g_{-i}(\eta)\text{Binomial}(m_i, \text{invlogit}(\eta)).
+$$
+and find its expectations numerically with the Gauss-Kronrod quadrature method:
+\begin{align*}
+E_k &= \int_{-\infty}^{\infty} \eta^k g_{-i}(\eta)f_i(\eta) \text{d}\eta \\
+&\approx \int_{M_{-i}- \delta \sqrt{V_{-i}} }^{M_{-i}+ \delta \sqrt{V_{-i}}} \eta^k g_{-i}(\eta)f_i(\eta) \text{d}\eta \\
+\end{align*}
+for $k=0,1,2$ and $\delta$ is some large number (e.g. $10$). Finally compute $M = E_1/E_0$ and $V = E_2/E_0 - (E_1/E_0)^2$ and set $g(\eta) = \text{Normal}(M,V)$.
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Expectation Propagation: example}
+
+In the previous steps we found $g(\eta) = \text{Normal}(M,V)$ and $g_{-i}(\eta) = \text{Normal}(M_{-i}, V_{-i}) $.
+\newline
+
+
+Step 4: find $g_i(\eta) = \text{Normal}(M_i, V_i)$:
+\begin{align*}
+g_i(\eta) &= g(\eta)/g_{-i}(\eta)  \\
+&\propto \frac{ \exp\left[-\frac{1}{2V}\eta^2 + \frac{M}{V}\eta  \right] }{\exp\left[-\frac{1}{2V_{-i} }\eta^2 + \frac{M_{-i} }{V_{-i} }\eta  \right] } \\
+&= \exp\left[-\frac{1}{2} \left(\underbrace{ \frac{1}{V} - \frac{1}{V_{-i} }  }_{\frac{1}{V_i}} \right)\eta^2 + \left( \underbrace{\frac{M}{V} - \frac{M_{-i} }{V_{-i} }}_{\frac{M_i}{V_i} } \right) \eta  \right] 
+\end{align*}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Expectation Propagation: example}
+
+
+Step 5: find $g_i(\theta)$.
+\newline
+
+$$
+g_i(\theta) = \text{Normal}(\mu_i, \Sigma_i)
+$$
+where 
+$$
+\Sigma_i^{-1} \mu_i = X_i \frac{M_i}{V_i} 
+$$
+and
+$$
+\Sigma_i^{-1} = X_i \frac{1}{V_i}X_i'
+$$
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Expectation Propagation: example}
+
+
+Step 6: find $g(\theta) \propto g_i(\theta)g_{-i}(\theta)$.
+\newline
+
+\begin{align*}
+g(\theta) 
+&\propto   \exp\left[-\frac{1}{2}\left( \theta'\left[\underbrace{ \sum_{i=0}^n \Sigma^{-1}_i}_{\Sigma^{-1} }\right] \theta - 2 \left[\underbrace{\sum_{i=0}^n\mu_i' \Sigma^{-1}_i}_{ \Sigma^{-1}\mu } \right]\theta \right) \right]
+\end{align*}
+
+$$
+\Sigma^{-1}\mu = \overbrace{\Sigma^{-1}_{-i}\mu_{-i}}^{\text{from step 1} } + \overbrace{\Sigma^{-1}_{i}\mu_{i}}^{\text{from step 5}}
+$$
+and
+$$
+\Sigma^{-1} = \underbrace{\Sigma^{-1}_{-i}}_{\text{from step 1} } + \underbrace{\Sigma^{-1}_i}_{\text{from step 5}}
+$$
+
+\end{frame}
 
 
 \end{document} 
