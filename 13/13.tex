@@ -155,7 +155,7 @@ Notes:
 \begin{enumerate}
 \item Quasi-Newton methods (approximate second derivatives) are available when second derivatives are too costly or unavailable
 \item "Broyden-Fletcher-Goldfarb-Shanno" is a common example of a Quasi-Newton method
-\item in \verb|R|: \verb|optim(2.9,F,method="BFGS")|
+\item in \verb|R|: \verb|optim(2.9,F,method=``BFGS")|
 \item conjugate-gradient methods only use gradient information, but they are for models of the form $\Vert A \theta - b \Vert_2$ (also handled by \verb|optim()| )
 \item compared with the two above, they generally require more iterations, but use less computation per iteration and less storage
 \end{enumerate}
@@ -249,7 +249,7 @@ n\theta + .5\exp(-2\theta)\left[(n-1)  s^2 + n(\bar{y} - \mu)^2 \right]
 $$
 and 
 $$
-L'(\theta) = \left[\begin{array}{c}
+-L'(\theta) = \left[\begin{array}{c}
 -\exp(-2\theta)(\bar{y}-\mu)n \\ 
 n - \exp(-2\theta)\left[(n-1)  s^2 + n(\bar{y} - \mu)^2 \right]
 \end{array}\right]
@@ -379,7 +379,7 @@ The book has a few more generalizations that we don't address:
 \begin{frame}[fragile]
 \frametitle{The EM Algorithm}
 
-The {\bf expectation-maximization algorithm} finds the argument that maximizes the marginal posterior. It's useful in situations where there is missing data in a model (e.g. factor models, hidden markov models, state space models, etc.). 
+The {\bf expectation-maximization algorithm} finds the argument that maximizes the marginal posterior. It's useful in situations where there is missing data in a model (e.g. hierarchical models, factor models, hidden markov models, state space models, etc.). 
 \newline
 
 It folows the following steps
@@ -424,7 +424,7 @@ $$
 We iteratively use the middle term in
 $\log p(\phi \mid y) =  E\left[ \log p(\gamma, \phi \mid y) \mid \phi^{\text{old}}, y \right] - E\left[\log p(\gamma \mid \phi, y) \mid \phi^{\text{old}}, y \right]$.
 
-\begin{block}{The Q quantity in the "E" step}
+\begin{block}{The Q quantity in the ``E" step}
 
 $$
 Q(\phi \mid \phi^{\text{old}}) = E\left[ \log p(\gamma, \phi \mid y) \mid \phi^{\text{old}}, y \right]
