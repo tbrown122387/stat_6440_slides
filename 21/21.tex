@@ -99,9 +99,12 @@ If you would like to dig a little deeper, this is considered a good reference: \
 \begin{frame}
 \frametitle{Definitions}
 
-Let your predictors $x_i \in \mathbb{R}^p$. We say $\mu$ follows a {\bf Gaussian process} with mean function $m$ and covariance function $k$ if for any finite set of nonrandom points $x_1, \ldots, x_n$
+It's helpful to initially consider $x_i \in \mathbb{R}^p$ where $p=1$ or $p=2$.
+\newline
+
+We say $\mu$ follows a {\bf Gaussian process} with mean function $m$ and covariance function $k$ if for any finite set of nonrandom points $x_1, \ldots, x_n$
 $$
-\mu(x_i), \ldots, \mu(x_n) \sim \text{Normal}( (m(x_1), \ldots, m(x_n)), K(x_1, \ldots, x_n)).
+\mu(x_1), \ldots, \mu(x_n) \sim \text{Normal}( (m(x_1), \ldots, m(x_n)), K(x_1, \ldots, x_n)).
 $$
 For short, we write $\mu \sim \text{GP}(m,k)$. 
 \pause
@@ -110,55 +113,65 @@ For short, we write $\mu \sim \text{GP}(m,k)$.
 This means $E[\mu(x_i)] = m(x_i)$ and $\text{Cov}(\mu(x_i), \mu(x_j)) = K_{i,j} = k(x_i,x_j)$.
 \newline
 
-Confusingly, $\mu$ is also a (random) mean function, but it's the mean for the $y$s.
-\newline
 
 \end{frame}
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
-\frametitle{Definitions}
+\frametitle{A first example: Gaussian process regression}
 
-Let's assume we're regressing univariate $y_i$s on vector-valued $x_i$s. Then we are interested in either
-$$
-y_i = \mu(x_i) 
-$$
-or
+Let's assume we're regressing univariate $y_i$s on vector-valued $x_i$s. Then we are interested in 
 $$
 y_i = \mu(x_i) + \epsilon_i.
 $$
-Clearly
+We could also be interested in the ``noiseless" situation, as well. 
+
+
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{A first example: Gaussian process regression}
+
 $$
-E[y_i \mid x_i] = E[\mu(x_i) \mid x_i] = m(x_i).
+y_i = \mu(x_i) + \epsilon_i.
 $$
-It is common to put $m(x) = 0$ (e.g. if $\mu(x) = x'\beta$ and $\beta$ is given a mean zero prior).
+The $\mu$ function can be nonlinear and very flexible!
 \newline
 
-However, you may assume $\beta$ is known, or put a nonzero mean prior on it, or use a nonlinear (in $x$) mean function.
-\newline
 
 \end{frame}
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
-\frametitle{Definitions}
+\frametitle{A first example: Gaussian process regression}
 
-If
 $$
-\mu(x_i), \ldots, \mu(x_n) \sim \text{Normal}( (m(x_1), \ldots, m(x_n)), K(x_1, \ldots, x_n)).
+y_i = \mu(x_i) + \epsilon_i.
 $$
-then $K(x_1, \ldots, x_n)$ is an $n \times n$ covariance matrix with its $p,q$ element $K_{p,q} = k(x_p,x_q)$.
-\newline
 
-This $k$ function gives you a ``similarity" or ``nearness" measure for any two pairs of inputs. It needs to be chosen very carefully. 
-\newline
+Picking a prior means we need to pick $m$ and $k$. We can see that 
+$$
+E[y_i \mid x_i] = E[\mu(x_i) \mid x_i] = m(x_i).
+$$
 
+For $m$
+\begin{itemize}
+\item can assume $m(x) = 0$ (like assuming regression coefficients have a zero-mean prior)
+\item can use an informative prior
+\end{itemize}
+
+For $k$...
 
 \end{frame}
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
 \frametitle{A popular choice}
+
+Any $k$ function gives you a ``similarity" or ``nearness" measure for any two pairs of inputs. It needs to be chosen very carefully. 
+\newline
+
 
 We will often use a {\bf squared exponential kernel} 
 $$
@@ -169,6 +182,7 @@ Each $l_j$ determines the wiggliness in the $j$th direction of the predictors.
 \newline
 
 The $\tau^2$ parameter is an overall variance for each $\mu(x)$.
+\newline
 
 
 \end{frame}
@@ -182,7 +196,44 @@ The $\tau^2$ parameter is an overall variance for each $\mu(x)$.
 \includegraphics[width=120mm]{mu_realizations.png}
 \end{center}
 
-There's a lot to say about many more kernels: \url{https://www.cs.toronto.edu/~duvenaud/cookbook/}
+More to say about kernel choice: \url{https://www.cs.toronto.edu/~duvenaud/cookbook/}
+
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Inference: conditional posterior}
+
+We will use a lot of properties of Gaussian random vectors when we conduct inference.
+\newline
+
+If 
+$$
+x = 
+\left[\begin{array}{c}
+x_1 \\
+x_2
+\end{array}\right]
+\sim
+\text{Normal}\left( 
+\left[\begin{array}{c}
+\mu_1 \\
+\mu_2
+\end{array}\right],
+\left[\begin{array}{cc}
+\Sigma_{11} & \Sigma_{12} \\
+\Sigma_{21} & \Sigma_{22} 
+\end{array}\right]
+\right)
+$$
+then $x_1 \mid x_2$ is also normally distributed with mean vector
+$$
+\mu_1 + \Sigma_{12}\Sigma_{22}^{-1}(x_2 - \mu_2)
+$$
+and covariance matrix
+$$
+\Sigma_{11} - \Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}
+$$
 
 
 \end{frame}
@@ -213,17 +264,31 @@ K(x,x) & K(x,x)
 \end{array}\right)
 \right)
 $$
-By properties of multivariate normal random vectors $\mu \mid x, y, \tau, l, \sigma$ is normally distributed with
+\pause
+
+By properties of multivariate normal random vectors $\mu \mid x, y, \tau, l, \sigma$ is normally distributed with mean and covariance
 \begin{align*}
-E[\mu] &= K(x, x) [K(x,x) + \sigma^2 I]^{-1} y \\
-Var[\mu] &= K(x, x) - K(x, x)[K(x,x) + \sigma^2 I]^{-1} K(x,x)
+E[\mu \mid x, y, \tau, l, \sigma] &= K(x, x) [K(x,x) + \sigma^2 I]^{-1} y \\
+Var[\mu \mid x, y, \tau, l, \sigma] &= K(x, x) - K(x, x)[K(x,x) + \sigma^2 I]^{-1} K(x,x)
 \end{align*}
+\pause
+
+What does this simplify to in the case of ``noiseless" regression?
 
 \end{frame}
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
-\frametitle{Inference}
+\frametitle{Inference: conditional posterior}
+
+\begin{center}
+\includegraphics[width=120mm]{conditional_posterior.png}
+\end{center}
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Inference: prediction/smoothing at new points}
 
 
 Let's assume the likelihood is $y_i = \mu(x_i) + \epsilon_i$ where $\epsilon_i \sim \text{Normal}(0,\sigma^2)$, and for the prior, $m(x) = 0$. 
@@ -249,11 +314,170 @@ K(\tilde{x}, x) & K(\tilde{x}, \tilde{x})
 $$
 By properties of multivariate normal random vectors, $\tilde{\mu} \mid x, y, \tau, l, \sigma$ is normally distributed with
 \begin{align*}
-E[\tilde{\mu}] &= K(\tilde{x}, x) [K(x,x) + \sigma^2 I]^{-1} y \\
-Var[\tilde{\mu}] &= K(\tilde{x}, \tilde{x}) - K(\tilde{x}, x)[K(x,x) + \sigma^2 I]^{-1} K(x,\tilde{x})
+E[\tilde{\mu} \mid x, y, \tau, l, \sigma] &= K(\tilde{x}, x) [K(x,x) + \sigma^2 I]^{-1} y \\
+Var[\tilde{\mu}\mid x, y, \tau, l, \sigma] &= K(\tilde{x}, \tilde{x}) - K(\tilde{x}, x)[K(x,x) + \sigma^2 I]^{-1} K(x,\tilde{x})
 \end{align*}
 
 \end{frame}
 
+
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Inference: estimating unknown parameters}
+
+We need the marginal likelihood for MCMC techniques: $\log p(y \mid \tau, l, \sigma^2)$ equals
+$$
+-\frac{n}{2}\log(2\pi) - \frac{1}{2}\log \det(K(x,x) + \sigma^2I) - \frac{1}{2} y^T [K(x,x) + \sigma^2I]^{-1} y
+$$
+We could use this to do Gibbs sampling or some sort of Metropolis-Hastings technique.
+\newline
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Birthdays and Birthdates example}
+
+$$
+y(t) = \mu(t) + \epsilon_t
+$$
+with
+$$
+\mu(t) = f_1(t) + f_2(t) + f_3(t) + f_4(t) + f_5(t).
+$$
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Birthdays and Birthdates example}
+
+Slow and fast trends:
+
+$$
+f_1(t) \sim GP(0, k_1)
+$$
+$$
+k_1(t,t') = \sigma_1^2 \exp\left[-\frac{(t-t')^2}{ 2l_1^2 } \right]
+$$
+and
+$$
+f_2(t) \sim GP(0, k_2)
+$$
+$$
+k_2(t,t') = \sigma_2^2 \exp\left[-\frac{(t-t')^2}{ 2 l_2^2 } \right].
+$$
+There is an identifiability concern. They mention that they put log-t priors on $l_1$ and $l_2$ and log-uniform priors on $\sigma_1$ and $\sigma_2^2$, but they do not give specifics.
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Birthdays and Birthdates example}
+
+A quasi-periodic weekly effect:
+$$
+f_3(t) \sim GP(0, k_3)
+$$
+$$
+k_3(t,t') = \sigma_3^2 \exp\left[-\frac{2\sin^2 (\pi[t-t']/7)}{ l_{3,1}^2 } \right]\exp\left[-\frac{(t-t')^2}{ 2 l_{3,2}^2 } \right].
+$$
+The kernel $k_3$ is ``high" only when both baby kernels are ``high."
+\newline
+
+Also note $2\sin^2 (\pi[t-t']/7) = 1 - \cos\left( \frac{2\pi [t-t']}{7} \right)$ by ``product identity."
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Birthdays and Birthdates example}
+
+A quasi-periodic yearly effect:
+$$
+f_4(t) \sim GP(0, k_4)
+$$
+$$
+k_4(t,t') = \sigma_4^2 \exp\left[-\frac{2\sin^2 (\pi[t-t']/365.25)}{ l_{4,1}^2 } \right]\exp\left[-\frac{(t-t')^2}{ 2 l_{4,2}^2 } \right].
+$$
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Birthdays and Birthdates example}
+
+Regular regression parameters
+
+$$
+f_5(t) = I_{\text{special day}}\beta_{a} + I_{\text{special day and weekend}}\beta_b
+$$
+where $I_{\text{special day}} = (I_{\text{New Year's Day} }, I_{\text{Valentine's Day} }, \ldots, I_{\text{Christmas} })'$.
+\newline
+
+$$
+k_5(t,t') = ?
+$$
+\end{frame}
+
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Birthdays and Birthdates example}
+
+This means 
+$$
+\mu(t) = f_1(t) + f_2(t) + f_3(t) + f_4(t) + f_5(t) \sim GP(0, k)
+$$
+where
+$$
+k(t,t') = k_1(t,t') + k_2(t,t') + k_3(t,t') + k_4(t,t') + k_5(t,t').
+$$
+
+\end{frame}
+
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Birthdays and Birthdates example}
+
+\begin{center}
+\includegraphics[width=70mm]{marginal_posterior.png}
+\end{center}
+
+
+\end{frame}
+
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{The Catch}
+
+All of this seems easy. We're just using normal-normal conjugacy, right?
+\newline
+\pause
+
+Yes, but there are computational difficulties. For large data sets with more than several thousand rows, naively inverting $K(x,x) + \sigma^2I$ is going to be brutal.
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Density estimation example}
+
+So far we have discussed Gaussian processes as prior distributions for a function controlling
+the location and potentially the shape parameter of a parametric observation model. 
+\pause
+\newline
+
+
+To get more flexibility we would like to model also the conditional observation model as nonpara-
+metric.
+
+\end{frame}
 
 \end{document} 
