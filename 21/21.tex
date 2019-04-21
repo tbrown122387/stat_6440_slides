@@ -92,7 +92,7 @@ University of Virginia \\
 We talk about Gaussian process models in this chapter. Gaussian processes describe random functions, and they can show up in statistical modeling in a few places. 
 \newline
 
-If you would like to dig a little deeper, this is considered a good reference: \url{http://gaussianprocess.org/gpml/}. We will be using chapter 2 as an additional resource.
+If you would like to dig a little deeper, this is considered a good reference: \url{http://gaussianprocess.org/gpml/}. The textbook's bibliography for this chapter includes many other sources.
 
 \end{frame}
 %----------------------------------------------------------------------------------------
@@ -125,20 +125,9 @@ $$
 y_i = \mu(x_i) + \epsilon_i.
 $$
 We could also be interested in the ``noiseless" situation, as well. 
-
-
-
-\end{frame}
-%----------------------------------------------------------------------------------------
-\begin{frame}
-\frametitle{A first example: Gaussian process regression}
-
-$$
-y_i = \mu(x_i) + \epsilon_i.
-$$
-The $\mu$ function can be nonlinear and very flexible!
 \newline
 
+The $\mu$ function can be nonlinear and very flexible!
 
 \end{frame}
 
@@ -475,9 +464,43 @@ the location and potentially the shape parameter of a parametric observation mod
 \newline
 
 
-To get more flexibility we would like to model also the conditional observation model as nonpara-
-metric.
+To get more flexibility we would like to model also the conditional observation model as nonparametric.
+\newline
+
+One way to do this is with the {\bf logistic Gaussian proces} (LGP).
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Density estimation example}
+
+We want a density $p$ for random variables $y_1, \ldots, y_n \overset{\text{iid}}{\sim} p(y \mid f)$. 
+\newline
+
+So far this semester we have assumed $p$ is parametric (conditioning on parameters $\theta$). However, here, we want this density to be based on a nonparametric function $f$, which is a realization of a Gaussian process.
+\newline
+\pause
+
+Recall that $p$ needs to be nonnegative, and it needs to integrate to $1$:
+$$
+p(y \mid f) = \frac{e^{f(y)} }{ \int e^{f(y)} \text{d}y }.
+$$
 
 \end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Density estimation example}
+
+\begin{center}
+\includegraphics[width=90mm]{density_est.png}
+\end{center}
+
+\end{frame}
+
+
+
+
 
 \end{document} 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  19 APR 2019 14:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  20 APR 2019 11:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -977,33 +977,33 @@ LaTeX Font Info:    Try loading font information for U+bbold on input line 117.
 
 ] [7
 
-] [8
-
 ]
-<mu_realizations.png, id=250, 1170.3725pt x 403.5075pt>
+<mu_realizations.png, id=223, 1170.3725pt x 403.5075pt>
 File: mu_realizations.png Graphic file (type png)
 <use mu_realizations.png>
-Package pdftex.def Info: mu_realizations.png  used on input line 202.
+Package pdftex.def Info: mu_realizations.png  used on input line 191.
 (pdftex.def)             Requested size: 341.43306pt x 117.71608pt.
- [9
+ [8
 
- <./mu_realizations.png>] [10
+ <./mu_realizations.png>] [9
+
+] [10
 
 ] [11
 
 ] [12
 
-] [13
-
 ]
-<conditional_posterior.png, id=386, 1152.305pt x 537.00626pt>
+<conditional_posterior.png, id=359, 1152.305pt x 537.00626pt>
 File: conditional_posterior.png Graphic file (type png)
 <use conditional_posterior.png>
-Package pdftex.def Info: conditional_posterior.png  used on input line 288.
+Package pdftex.def Info: conditional_posterior.png  used on input line 277.
 (pdftex.def)             Requested size: 341.43306pt x 159.12016pt.
- [14
+ [13
 
- <./conditional_posterior.png>] [15
+ <./conditional_posterior.png>] [14
+
+] [15
 
 ] [16
 
@@ -1017,21 +1017,21 @@ Package pdftex.def Info: conditional_posterior.png  used on input line 288.
 
 ] [21
 
-] [22
-
 ]
-<marginal_posterior.png, id=626, 730.73pt x 808.01875pt>
+<marginal_posterior.png, id=600, 730.73pt x 808.01875pt>
 File: marginal_posterior.png Graphic file (type png)
 <use marginal_posterior.png>
-Package pdftex.def Info: marginal_posterior.png  used on input line 452.
+Package pdftex.def Info: marginal_posterior.png  used on input line 441.
 (pdftex.def)             Requested size: 199.16928pt x 220.22697pt.
 
-Overfull \vbox (3.15639pt too high) detected at line 452
+Overfull \vbox (3.15639pt too high) detected at line 441
  []
 
-[23
+[22
 
- <./marginal_posterior.png>] [24
+ <./marginal_posterior.png>] [23
+
+] [24
 
 ] [25
 
@@ -1039,7 +1039,17 @@ Overfull \vbox (3.15639pt too high) detected at line 452
 
 ] [27
 
+] [28
+
 ]
+<density_est.png, id=786, 806.01125pt x 463.7325pt>
+File: density_est.png Graphic file (type png)
+<use density_est.png>
+Package pdftex.def Info: density_est.png  used on input line 500.
+(pdftex.def)             Requested size: 256.0748pt x 147.32895pt.
+ [29
+
+ <./density_est.png>]
 \tf@nav=\write6
 \openout6 = `21.nav'.
 
@@ -1049,19 +1059,19 @@ Overfull \vbox (3.15639pt too high) detected at line 452
 \tf@snm=\write8
 \openout8 = `21.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 483.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 483.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 506.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 506.
  (./21.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 483.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 483.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 506.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 506.
 Package rerunfilecheck Info: File `21.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 18436 strings out of 492982
- 348374 string characters out of 6134895
+ 18447 strings out of 492982
+ 348522 string characters out of 6134895
  424665 words of memory out of 5000000
- 21488 multiletter control sequences out of 15000+600000
+ 21494 multiletter control sequences out of 15000+600000
  12253 words of font info for 47 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  56i,15n,57p,769b,570s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1078,10 +1088,10 @@ amsfonts/cm/cmssi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfon
 ts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
 cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.p
 fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on 21.pdf (27 pages, 413404 bytes).
+Output written on 21.pdf (29 pages, 450993 bytes).
 PDF statistics:
- 818 PDF objects out of 1000 (max. 8388607)
- 750 compressed objects within 8 object streams
- 55 named destinations out of 1000 (max. 500000)
- 82 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 872 PDF objects out of 1000 (max. 8388607)
+ 800 compressed objects within 8 object streams
+ 59 named destinations out of 1000 (max. 500000)
+ 87 words of extra memory for PDF output out of 10000 (max. 10000000)
 
