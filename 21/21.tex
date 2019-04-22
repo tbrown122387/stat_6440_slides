@@ -499,6 +499,22 @@ $$
 
 \end{frame}
 
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Density estimation example}
+
+$p$ is a density for random variables $y_1, \ldots, y_n \overset{\text{iid}}{\sim} p(y \mid f)$: 
+
+$$
+p(y \mid f) = \frac{e^{f(y)} }{ \int e^{f(y)} \text{d}y }.
+$$
+
+It is not possible to ``evaluate" the denominator because you cannot sample a mathematical function to be symbolically integrated. 
+\newline
+
+``In practice this integral is computed using a finite basis function representation or a discretization of a chosen finite region." 
+
+\end{frame}
 
 
 
