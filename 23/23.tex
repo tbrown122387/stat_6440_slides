@@ -94,7 +94,7 @@ TODO
 \end{frame}
 %----------------------------------------------------------------------------------------
 \begin{frame}
-\frametitle{Definitions}
+\frametitle{Bayesian histograms}
 
 A probability model for the density analagous to the histogram 
 $$
@@ -114,7 +114,7 @@ $$
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
-\frametitle{Definitions}
+\frametitle{Bayesian histograms}
 
 $$
 f(y \mid \pi) = \sum_{h=1}^k 1_{\xi_{h-1} < y \le \xi_{h} } \frac{\pi_h}{(\xi_{h} - \xi_{h-1})}
@@ -130,7 +130,7 @@ where $a = (a_1, \ldots, a_k)$ are the chosen parameters of the prior.
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
-\frametitle{Definitions}
+\frametitle{Bayesian histograms}
 
 Note that $f(y \mid \pi)$ was for one data point $y$. Let $\sigma(i) = \{k : \xi_{k-1} < y_i \le \xi_{k} \}$. Notice that this function is many-to-one. Then
 
@@ -145,7 +145,7 @@ where $n_h = \sum_{i=1}^n 1_{\xi_{h-1} < y_i \le \xi_{h} }$.
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
-\frametitle{Definitions}
+\frametitle{Bayesian histograms}
 
 Bayes' rule:
 
@@ -161,5 +161,88 @@ So $p(\pi \mid y) = \text{Dirichlet}(a_1 + n_1, \ldots, a_k + n_k)$.
 But bin specification is annoying!
 \end{frame}
 
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{A quick note}
+
+If $\pi \sim \text{Dirichlet}(a_1, \ldots, a_k)$ then
+$$
+E[\pi] = \left(\frac{a_1}{\alpha}, \cdots, \frac{a_k}{\alpha} \right)
+$$
+where 
+$$
+\alpha = a_1 + \cdots + a_k.
+$$
+So we can write 
+$$
+\pi \sim \text{Dirichlet}(\alpha E[\pi])
+$$
+as well. $\alpha$ has the interpretation of a sample size.
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Definitions}
+
+A {\bf random probability measure} assigns probabilities to sets, and they still satisfy the three probability axioms, but these probabilities are random. 
+\newline
+\pause
+
+The random probability measure $P$ is a {\bf Dirichlet process} if for {\bf any} measurable partition $B_1, \ldots, B_k$ of a sample space $\Omega$, the vector
+$$
+P(B_1), \ldots, P(B_k) \sim \text{Dirichlet}(\alpha P_0(B_1), \ldots, \alpha P_0(B_k)).
+$$
+
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Definitions}
+
+
+\begin{enumerate}
+\item $P_0$ is a $P_0$ is a baseline probability measure we pick (e.g. normal)
+\item shorthand: $P \sim \text{DP}(\alpha P_0)$
+\item $P(B) \sim \text{Beta}(\alpha P_0(B), \alpha(1-P_0(B)))$ for any measurable $B$
+\item $E[P(B)] = P_0(B)$
+\item $V[P(B)] = P_0(B)[1-P(B)]/(1+\alpha)$
+\end{enumerate}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Returning to the Bayesian histogram}
+
+Assume $y_i \overset{iid}{\sim} P$ and $P \sim \text{DP}(\alpha P_0)$. Then, for any partition $B_1, \ldots, B_k$,  
+\begin{align*}
+&P(B_1), \ldots, P(B_k) \mid y_1, \ldots, y_n \\
+&\sim \text{Dirichlet}\left(\alpha P_0(B_1) + \sum_{i=1}^n 1_{y_i \in B_1}, \ldots, \alpha P_0(B_k) + \sum_{i=1}^n 1_{y_i \in B_k} \right)
+\end{align*}
+using the same reasoning as in slide 5.
+\newline
+\pause
+
+What happens when we take the noninformative prior $\alpha \downarrow 0$?
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Returning to the Bayesian histogram}
+
+In particular, for any measurable $B$, $P(B)\mid y_1, \ldots, y_n$ follows a 
+$$
+\text{Beta}\left(\alpha P_0(B) + \sum_{i=1}^n 1_{y_i \in B},  \alpha + n -  \left[ \alpha P_0(B) + \sum_{i=1}^n 1_{y_i \in B} \right] \right)
+$$
+and
+\begin{align*}
+E[P(B) \mid y_1, \ldots, y_n ] 
+&= \frac{\alpha P_0(B) + \sum_{i=1}^n 1_{y_i \in B}}{\alpha + n} \\
+&= \frac{\alpha }{\alpha + n}P_0(B)  + \frac{n}{\alpha + n}\sum_{i=1}^n \frac{1_{y_i \in B}}{n}
+\end{align*}
+
+\end{frame}
 
 \end{document} 

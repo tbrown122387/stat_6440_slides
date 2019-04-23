@@ -191,7 +191,45 @@ More to say about kernel choice: \url{https://www.cs.toronto.edu/~duvenaud/cookb
 \end{frame}
 %----------------------------------------------------------------------------------------
 \begin{frame}
-\frametitle{Inference: conditional posterior}
+\frametitle{Properties of Gaussian random vectors}
+
+We will use a lot of properties of Gaussian random vectors when we conduct inference.
+\newline
+
+If 
+$$
+x = 
+\left[\begin{array}{c}
+x_1 \\
+x_2
+\end{array}\right]
+\sim
+\text{Normal}\left( 
+\left[\begin{array}{c}
+\mu_1 \\
+\mu_2
+\end{array}\right],
+\left[\begin{array}{cc}
+\Sigma_{11} & \Sigma_{12} \\
+\Sigma_{21} & \Sigma_{22} 
+\end{array}\right]
+\right)
+$$
+then $x_1$ is also normally distributed with mean vector
+$$
+\mu_1 
+$$
+and covariance matrix
+$$
+\Sigma_{11} 
+$$
+
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Properties of Gaussian random vectors}
 
 We will use a lot of properties of Gaussian random vectors when we conduct inference.
 \newline
