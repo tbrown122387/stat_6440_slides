@@ -151,7 +151,7 @@ Bayes' rule:
 
 \begin{align*}
 p(\pi \mid y) &\propto p(y \mid \pi) p(\pi) \\
-&= \left[\prod_{h=1}^k   \frac{\pi_{h} }{(\xi_{h} - \xi_{h-1}  )} \right] ^{n_h}\prod_{h=1}^k \pi_h^{a_h-1} \\
+&= \left[\prod_{h=1}^k   \left(\frac{\pi_{h} }{(\xi_{h} - \xi_{h-1}  )}\right)  ^{n_h} \right]\prod_{h=1}^k \pi_h^{a_h-1} \\
 &\propto \prod_{h=1}^k \pi_h^{a_h+n_h-1}
 \end{align*}
 So $p(\pi \mid y) = \text{Dirichlet}(a_1 + n_1, \ldots, a_k + n_k)$.
@@ -202,7 +202,7 @@ $$
 
 
 \begin{enumerate}
-\item $P_0$ is a $P_0$ is a {\bf baseline probability measure} we pick (e.g. normal)
+\item $P_0$ is a {\bf baseline probability measure} we pick (e.g. normal)
 \item shorthand: $P \sim \text{DP}(\alpha P_0)$
 \item $P(B) \sim \text{Beta}(\alpha P_0(B), \alpha(1-P_0(B)))$ for any measurable $B$
 \item $E[P(B)] = P_0(B)$
