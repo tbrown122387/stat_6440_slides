@@ -89,7 +89,7 @@ University of Virginia \\
 \begin{frame}
 \frametitle{Introduction}
 
-TODO
+We'll take a look at {\bf Dirichlet Processes} now, and see how they're useful for mixture modeling.
 
 \end{frame}
 %----------------------------------------------------------------------------------------
@@ -202,11 +202,11 @@ $$
 
 
 \begin{enumerate}
-\item $P_0$ is a $P_0$ is a baseline probability measure we pick (e.g. normal)
+\item $P_0$ is a $P_0$ is a {\bf baseline probability measure} we pick (e.g. normal)
 \item shorthand: $P \sim \text{DP}(\alpha P_0)$
 \item $P(B) \sim \text{Beta}(\alpha P_0(B), \alpha(1-P_0(B)))$ for any measurable $B$
 \item $E[P(B)] = P_0(B)$
-\item $V[P(B)] = P_0(B)[1-P(B)]/(1+\alpha)$
+\item $V[P(B)] = P_0(B)[1-P_0(B)]/(1+\alpha)$
 \end{enumerate}
 
 \end{frame}
@@ -242,7 +242,100 @@ E[P(B) \mid y_1, \ldots, y_n ]
 &= \frac{\alpha P_0(B) + \sum_{i=1}^n 1_{y_i \in B}}{\alpha + n} \\
 &= \frac{\alpha }{\alpha + n}P_0(B)  + \frac{n}{\alpha + n}\sum_{i=1}^n \frac{1_{y_i \in B}}{n}
 \end{align*}
+\pause
+
+not ``smooth" even if $P_0$ was!
 
 \end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{The stick-breaking representation}
+
+We can write a DP as a countably infinite mixture of point masses:
+$$
+P(\cdot) = \sum_{h=1}^{\infty} \pi_h \delta_{\theta_h}(\cdot).
+$$
+
+Round 1
+\begin{enumerate}
+\item sample location $\theta_1 \sim P_0$
+\item sample associated probability $V_1 \sim \text{Uniform}(0,1)$
+\item we have $1-V_1$ probability left over...
+\end{enumerate}
+\pause
+
+Round 2
+\begin{enumerate}
+\item sample location $\theta_2 \sim P_0$
+\item sample $V_2 \sim \text{Uniform}(0,1)$
+\item probability at second location is now $(1-V_1)V_2$
+\item we have $1-(V_1 + V_2(1-V_1)) = 1-V_1 - V_2(1-V_1) = (1-V_1)(1-V_2)$ probability left over...
+\end{enumerate}
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{The stick-breaking representation}
+
+We can write a DP as a countably infinite mixture of point masses:
+$$
+P(\cdot) = \sum_{h=1}^{\infty} \pi_h \delta_{\theta_h}(\cdot).
+$$
+with
+$$
+\pi_h = V_h \prod_{l < h}(1-V_l)
+$$
+and $V_h \overset{\text{iid}}{\sim} \text{Beta}(1,\alpha)$, $\theta_h \overset{\text{iid}}{\sim} P_0$
+
+\end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{The stick-breaking representation}
+
+\begin{center}
+\includegraphics[width=80mm]{stick_breaking.png}
+\end{center}
+
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{The stick-breaking representation}
+
+
+\begin{align*}
+E[P(B)] &= \sum_{h=1}^{\infty} E[\pi_h 1_{\theta_h \in B}]\\
+&= \sum_{h=1}^{\infty} E[\pi_h] E[1_{\theta_h \in B}] \\
+&= \sum_{h=1}^{\infty} E[V_h \prod_{l < h}(1-V_l)] P_0(B) \\
+&= P_0(B) \sum_{h=1}^{\infty} E[V_h] \prod_{l < h}E[(1-V_l)] \\
+&= P_0(B) \sum_{h=1}^{\infty} \frac{1}{1+\alpha}\left(\frac{\alpha}{1+\alpha}  \right)^{h-1}\\
+&= P_0(B) 
+\end{align*}
+
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Dirichlet process mixtures}
+
+Sampling $P \sim \text{DP}(\alpha P_0)$ and then using that random histogram as the distribution for a sample of continuous $y_i$ random variables is problematic because we would like $P$ to be smooth. 
+\newline
+\pause
+
+We can use DPs for {\bf general kernel mixture models} though:
+\begin{align*}
+f(y \mid P) &= \int \mathcal{K}(y \mid \theta) P( \text{d} \theta) \\
+&= \sum_{h=1}^{\infty} \pi_h \mathcal{K}(y \mid \theta_h)
+\end{align*}
+
+This is a mixture model, but there are an infinite number of mixands!
+
+\end{frame}
+
 
 \end{document} 
