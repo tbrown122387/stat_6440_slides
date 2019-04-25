@@ -526,7 +526,16 @@ p(y \mid f) = \frac{e^{f(y)} }{ \int e^{f(y)} \text{d}y }.
 $$
 
 \end{frame}
+%----------------------------------------------------------------------------------------
+\begin{frame}
+\frametitle{Density estimation example}
 
+Prior: $f \sim \text{GP}(m, k(\tau^2, l)) p(\tau^2, l)$
+\newline
+
+Likelihood: $\prod_{i=1}^n p(y_i \mid f)$. 
+
+\end{frame}
 %----------------------------------------------------------------------------------------
 \begin{frame}
 \frametitle{Density estimation example}
