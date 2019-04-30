@@ -1,0 +1,12 @@
+\frametitle{Gibbs sampling: Example}
+
+The ``Inverse-Gamma" part of the Normal-Inverse-Gamma
+
+\begin{align*}
+&p(\tau^2_h \mid  y, z) \\
+&\propto p(\mu_h \mid \tau^2_{h})p(\tau^2_{h})  \prod_{i=1}^n   f(y_i \mid \mu_h, \tau^2_h)^{z_{ih}}\\
+&\propto \frac{1}{\sqrt{2\pi \kappa \tau^2  }}\exp\left[-\frac{(\mu_{h} -  \mu_0)^2 }{ 2\kappa \tau_h^2 } \right] (\tau^2)^{-(a_{\tau}+1) } \exp\left[ - \frac{b_{\tau}}{\tau_h^2} \right] \times\\
+&\hspace{10mm}\prod_{i=1}^n \left[ \frac{1}{\sqrt{2\pi \tau^2_{h} }}\exp\left[-\frac{(y_i - \mu_{h} )^2 }{ 2\tau^2_{h} } \right] \right]^{z_{ih}} \\
+&\propto \exp\left[-\left\{ b_\tau +  \frac{(\mu_{h} -  \mu_0)^2 }{ 2\kappa  }  + \frac{\sum_{i : z_i = h}(y_i - \mu_{h} )^2 }{ 2 } \right\} \frac{1}{\tau^2_h} \right] (\tau^2)^{-\left( \frac{n_h}{2} + \alpha_{\tau} + 1 \right)-1/2 }
+\end{align*}
+

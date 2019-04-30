@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  29 APR 2019 09:09
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  30 APR 2019 16:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**23.tex
-(./23.tex
+**22.tex
+(./22.tex
 LaTeX2e <2017-04-15>
 Babel <3.18> and hyphenation patterns for 84 language(s) loaded.
 (/usr/share/texlive/texmf-dist/tex/latex/beamer/beamer.cls
@@ -759,8 +759,8 @@ Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
 \sift@deathcycles=\count164
 \@vwid@loff=\dimen276
 \@vwid@roff=\dimen277
-)) (./23.aux)
-\openout1 = `23.aux'.
+)) (./22.aux)
+\openout1 = `22.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 81.
 LaTeX Font Info:    ... okay on input line 81.
@@ -857,9 +857,9 @@ LaTeX Info: Redefining \ref on input line 81.
 LaTeX Info: Redefining \pageref on input line 81.
 LaTeX Info: Redefining \nameref on input line 81.
 
-(./23.out) (./23.out)
+(./22.out) (./22.out)
 \@outlinefile=\write5
-\openout5 = `23.out'.
+\openout5 = `22.out'.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/cmr/m/n --> OT1/cmss/m/n on input line 81.
@@ -937,35 +937,47 @@ Dictionary: translator-numbers-dictionary, Language: English
 (/usr/share/texlive/texmf-dist/tex/latex/translator/translator-theorem-dictiona
 ry-English.dict
 Dictionary: translator-theorem-dictionary, Language: English 
-) (./23.nav) [1
+) (./22.nav) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2
 
 ]
-LaTeX Font Info:    Try loading font information for U+msa on input line 112.
- (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+<mixpic1.png, id=79, 602.25pt x 453.695pt>
+File: mixpic1.png Graphic file (type png)
+<use mixpic1.png>
+Package pdftex.def Info: mixpic1.png  used on input line 105.
+(pdftex.def)             Requested size: 128.0374pt x 96.45564pt.
+<mixpic2.png, id=81, 777.90625pt x 676.5275pt>
+File: mixpic2.png Graphic file (type png)
+<use mixpic2.png>
+Package pdftex.def Info: mixpic2.png  used on input line 105.
+(pdftex.def)             Requested size: 128.0374pt x 111.34349pt.
+ [3
+
+ <./mixpic1.png> <./mixpic2.png>]
+LaTeX Font Info:    Try loading font information for U+msa on input line 125.
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 112.
+LaTeX Font Info:    Try loading font information for U+msb on input line 125.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+rsfs on input line 112.
+LaTeX Font Info:    Try loading font information for U+rsfs on input line 125.
 
 (/usr/share/texlive/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 )
 LaTeX Font Info:    Try loading font information for OT1+mathkerncmss on input 
-line 112.
+line 125.
 
 (/usr/share/texlive/texmf-dist/tex/latex/sansmathaccent/ot1mathkerncmss.fd
 File: ot1mathkerncmss.fd 2013/03/27 Fontinst v1.933 font definitions for OT1/ma
 thkerncmss.
 )
-[3
-
-] [4
+[4
 
 ] [5
 
@@ -991,69 +1003,88 @@ thkerncmss.
 
 ] [16
 
-] [17
+]
+\openout4 = `22.vrb'.
 
-] [18
+ (./22.vrb) [17
 
 ]
-[19
+\openout4 = `22.vrb'.
+
+
+(./22.vrb) [18
 
 ]
-<stick_breaking.png, id=538, 701.62125pt x 634.37pt>
-File: stick_breaking.png Graphic file (type png)
-<use stick_breaking.png>
-Package pdftex.def Info: stick_breaking.png  used on input line 304.
-(pdftex.def)             Requested size: 227.62204pt x 205.79997pt.
- [20
+\openout4 = `22.vrb'.
 
- <./stick_breaking.png>] [21
+ (./22.vrb) [19
 
-] [22
+]
+\openout4 = `22.vrb'.
 
-] [23
+ (./22.vrb) [20
+
+] (./22.vrb) [21
+
+]
+\openout4 = `22.vrb'.
+
+ (./22.vrb)
+[22
+
+]
+\openout4 = `22.vrb'.
+
+ (./22.vrb
+Overfull \hbox (12.12662pt too wide) detected at line 11
+[]
+ []
+
+) [23
 
 ]
 \tf@nav=\write6
-\openout6 = `23.nav'.
+\openout6 = `22.nav'.
 
 \tf@toc=\write7
-\openout7 = `23.toc'.
+\openout7 = `22.toc'.
 
 \tf@snm=\write8
-\openout8 = `23.snm'.
+\openout8 = `22.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 342.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 342.
- (./23.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 342.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 342.
-Package rerunfilecheck Info: File `23.out' has not changed.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 391.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 391.
+ (./22.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 391.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 391.
+Package rerunfilecheck Info: File `22.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 18399 strings out of 492982
- 347860 string characters out of 6134895
- 427667 words of memory out of 5000000
- 21469 multiletter control sequences out of 15000+600000
- 11529 words of font info for 43 fonts, out of 8000000 for 9000
+ 18426 strings out of 492982
+ 348075 string characters out of 6134895
+ 431661 words of memory out of 5000000
+ 21479 multiletter control sequences out of 15000+600000
+ 11697 words of font info for 44 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 56i,15n,55p,769b,620s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 56i,15n,55p,769b,619s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
-e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texli
-ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmssbx10.pfb></usr/share/texlive/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmssi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmssi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-sy8.pfb>
-Output written on 23.pdf (23 pages, 184898 bytes).
+e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmssbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmssi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmssi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
+sy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pf
+b>
+Output written on 22.pdf (23 pages, 530723 bytes).
 PDF statistics:
- 696 PDF objects out of 1000 (max. 8388607)
- 639 compressed objects within 7 object streams
+ 702 PDF objects out of 1000 (max. 8388607)
+ 642 compressed objects within 7 object streams
  47 named destinations out of 1000 (max. 500000)
- 72 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 77 words of extra memory for PDF output out of 10000 (max. 10000000)
 

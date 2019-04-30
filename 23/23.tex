@@ -220,13 +220,14 @@ Assume $y_i \overset{iid}{\sim} P$ and $P \sim \text{DP}(\alpha P_0)$. Then, for
 &P(B_1), \ldots, P(B_k) \mid y_1, \ldots, y_n \\
 &\sim \text{Dirichlet}\left(\alpha P_0(B_1) + \sum_{i=1}^n 1_{y_i \in B_1}, \ldots, \alpha P_0(B_k) + \sum_{i=1}^n 1_{y_i \in B_k} \right)
 \end{align*}
-using the same reasoning as in slide 5.
+using the same reasoning as in slide 5 (let $B_i = \xi_i - \xi_{i-1}$).
 \newline
 \pause
 
 What happens when we take the noninformative prior $\alpha \downarrow 0$?
 
 \end{frame}
+
 
 %----------------------------------------------------------------------------------------
 \begin{frame}
