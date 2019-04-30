@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  30 APR 2019 16:13
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  30 APR 2019 18:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1001,7 +1001,10 @@ thkerncmss.
 
 ] [15
 
-] [16
+]
+\openout4 = `22.vrb'.
+
+ (./22.vrb) [16
 
 ]
 \openout4 = `22.vrb'.
@@ -1011,36 +1014,30 @@ thkerncmss.
 ]
 \openout4 = `22.vrb'.
 
-
-(./22.vrb) [18
+ (./22.vrb) [18
 
 ]
 \openout4 = `22.vrb'.
 
  (./22.vrb) [19
 
-]
-\openout4 = `22.vrb'.
-
- (./22.vrb) [20
-
-] (./22.vrb) [21
+] (./22.vrb) [20
 
 ]
 \openout4 = `22.vrb'.
 
- (./22.vrb)
-[22
+ (./22.vrb) [21
 
 ]
 \openout4 = `22.vrb'.
 
- (./22.vrb
+
+(./22.vrb
 Overfull \hbox (12.12662pt too wide) detected at line 11
 []
  []
 
-) [23
+) [22
 
 ]
 \tf@nav=\write6
@@ -1052,18 +1049,18 @@ Overfull \hbox (12.12662pt too wide) detected at line 11
 \tf@snm=\write8
 \openout8 = `22.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 391.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 391.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 385.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 385.
  (./22.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 391.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 391.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 385.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 385.
 Package rerunfilecheck Info: File `22.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 18426 strings out of 492982
- 348075 string characters out of 6134895
- 431661 words of memory out of 5000000
+ 18424 strings out of 492982
+ 348056 string characters out of 6134895
+ 430661 words of memory out of 5000000
  21479 multiletter control sequences out of 15000+600000
  11697 words of font info for 44 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1081,10 +1078,10 @@ sfonts/cm/cmssi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
 /cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
 sy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pf
 b>
-Output written on 22.pdf (23 pages, 530723 bytes).
+Output written on 22.pdf (22 pages, 526146 bytes).
 PDF statistics:
- 702 PDF objects out of 1000 (max. 8388607)
- 642 compressed objects within 7 object streams
- 47 named destinations out of 1000 (max. 500000)
+ 676 PDF objects out of 1000 (max. 8388607)
+ 617 compressed objects within 7 object streams
+ 45 named destinations out of 1000 (max. 500000)
  77 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -228,12 +228,6 @@ You can't really say any more without more details on the model.
 \begin{frame}
 \frametitle{Gibbs sampling: Example}
 
-Instead of a one-hot representation, we'll use $z_i \in \{1,\ldots,H\}$.
-\newline
-\pause
-
-
-
 Here's the complete-data likelihood:
 
 \begin{enumerate}
@@ -246,14 +240,14 @@ Here's the complete-data likelihood:
 
 The priors for $(\theta_1, \ldots, \theta_H) = (\mu_1, \tau^2_1, \ldots, \mu_H, \tau^2_H)$ require us to pick $\mu_0$, $\kappa$, $a_{\tau}$, and $b_{\tau}$:
 \begin{enumerate}
-\item $p(\mu_h \mid \tau^2_{h}) = \frac{1}{\sqrt{2\pi \kappa \tau^2  }}\exp\left[-\frac{(\mu_{h} -  \mu_0)^2 }{ 2\kappa \tau_h^2 } \right]$
+\item $p(\mu_h \mid \tau^2_{h}) = \frac{1}{\sqrt{2\pi \kappa \tau_h^2  }}\exp\left[-\frac{(\mu_{h} -  \mu_0)^2 }{ 2\kappa \tau_h^2 } \right]$
 \item $p(\tau^2_{h}) = \text{Inv-Gamma}(a_{\tau}, b_{\tau})$.
 \end{enumerate}
 \pause
 
 Last, 
 \begin{enumerate}
-\item $p(\lambda_1, \ldots, \lambda_H) \propto \prod_{h=1}^H \lambda^{a_h-1}$
+\item $p(\lambda_1, \ldots, \lambda_H) \propto \prod_{h=1}^H \lambda_h^{a_h-1}$
 \end{enumerate}
 
 \end{frame}
@@ -294,8 +288,8 @@ Continuing on now with specific distributions...
 \begin{align*}
 p(\lambda \mid z, y) &\propto p(\theta)p(\lambda )p(y \mid z, \theta)p(z \mid \lambda) \\
 &\propto p(\lambda )p(z \mid \lambda) \\
-&\propto \left[\prod_{h=1}^H   \lambda^{a_h-1}\right] \left[\prod_{i=1}^n  \prod_{h=1}^H \lambda_h^{z_{ih}} \right] \\
-&= \prod_{h=1}^H \lambda^{a_h + n_h -1}
+&\propto \left[\prod_{h=1}^H   \lambda_h^{a_h-1}\right] \left[\prod_{i=1}^n  \prod_{h=1}^H \lambda_h^{z_{ih}} \right] \\
+&= \prod_{h=1}^H \lambda_h^{a_h + n_h -1}
 \end{align*}
 where $n_h = \sum_{i=1}^n 1_{z_{i} = h }$
 
@@ -354,7 +348,7 @@ The ``Normal" part of the Normal-Inverse-Gamma (continued)
 \begin{align*}
 &p(\mu_h \mid \tau^2_h, y, z) \\
 &\propto p(\mu_h \mid \tau^2_{h})  \prod_{i=1}^n   f(y_i \mid \mu_h, \tau^2_h)^{z_{ih}}\\
-&\propto \frac{1}{\sqrt{2\pi \kappa \tau^2  }}\exp\left[-\frac{(\mu_{h} -  \mu_0)^2 }{ 2\kappa \tau_h^2 } \right] \prod_{i=1}^n \left[ \frac{1}{\sqrt{2\pi \tau^2_{h} }}\exp\left[-\frac{(y_i - \mu_{h} )^2 }{ 2\tau^2_{h} } \right] \right]^{z_{ih}} \\
+&\propto \frac{1}{\sqrt{2\pi \kappa \tau_h^2  }}\exp\left[-\frac{(\mu_{h} -  \mu_0)^2 }{ 2\kappa \tau_h^2 } \right] \prod_{i=1}^n \left[ \frac{1}{\sqrt{2\pi \tau^2_{h} }}\exp\left[-\frac{(y_i - \mu_{h} )^2 }{ 2\tau^2_{h} } \right] \right]^{z_{ih}} \\
 &\propto \exp\left[-\frac{1}{2}\left\{  \frac{(\mu_{h} -  \mu_0)^2 }{ \kappa \tau_h^2 }  + \frac{\sum_{i : z_i = h}(y_i - \mu_{h} )^2 }{ \tau^2_{h} } \right\}\right]
 \end{align*}
 
@@ -380,9 +374,9 @@ The ``Inverse-Gamma" part of the Normal-Inverse-Gamma
 \begin{align*}
 &p(\tau^2_h \mid  y, z) \\
 &\propto p(\mu_h \mid \tau^2_{h})p(\tau^2_{h})  \prod_{i=1}^n   f(y_i \mid \mu_h, \tau^2_h)^{z_{ih}}\\
-&\propto \frac{1}{\sqrt{2\pi \kappa \tau^2  }}\exp\left[-\frac{(\mu_{h} -  \mu_0)^2 }{ 2\kappa \tau_h^2 } \right] (\tau^2)^{-(a_{\tau}+1) } \exp\left[ - \frac{b_{\tau}}{\tau_h^2} \right] \times\\
+&\propto \frac{1}{\sqrt{2\pi \kappa \tau_h^2  }}\exp\left[-\frac{(\mu_{h} -  \mu_0)^2 }{ 2\kappa \tau_h^2 } \right] (\tau^2)^{-(a_{\tau}+1) } \exp\left[ - \frac{b_{\tau}}{\tau_h^2} \right] \times\\
 &\hspace{10mm}\prod_{i=1}^n \left[ \frac{1}{\sqrt{2\pi \tau^2_{h} }}\exp\left[-\frac{(y_i - \mu_{h} )^2 }{ 2\tau^2_{h} } \right] \right]^{z_{ih}} \\
-&\propto \exp\left[-\left\{ b_\tau +  \frac{(\mu_{h} -  \mu_0)^2 }{ 2\kappa  }  + \frac{\sum_{i : z_i = h}(y_i - \mu_{h} )^2 }{ 2 } \right\} \frac{1}{\tau^2_h} \right] (\tau^2)^{-\left( \frac{n_h}{2} + \alpha_{\tau} + 1 \right)-1/2 }
+&\propto \exp\left[-\left\{ b_\tau +  \frac{(\mu_{h} -  \mu_0)^2 }{ 2\kappa  }  + \frac{\sum_{i : z_i = h}(y_i - \mu_{h} )^2 }{ 2 } \right\} \frac{1}{\tau^2_h} \right] (\tau_h^2)^{-\left( \frac{n_h}{2} + \alpha_{\tau} + 1 \right)-1/2 }
 \end{align*}
 
 \end{frame}
